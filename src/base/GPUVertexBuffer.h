@@ -10,12 +10,58 @@
 #define	__GPUVERTEXBUFFER_H_
 
 #include <vector>
-#include "McReference.h"
 #include "GPUContext.h"
 
 using namespace std;
-using namespace mc;
-class GPUVertexBuffer: public Reference{
+
+class BaseReference{
+public:
+    BaseReference(){
+        m_referencecount = 0;
+        m_is_reference = true;
+    }
+    
+    bool lock(){
+        if (m_is_reference) {
+            m_referencecount++;
+        }
+        
+        return true;
+    }
+    
+    bool unLock(){
+        if (m_is_reference && m_referencecount<=0)
+        {
+            err_log("unlock error! referencecount[%d]", m_referencecount);
+            return false;
+        }
+        
+        if (m_is_reference) {
+            m_referencecount--;
+        }
+        
+        return true;
+    }
+    
+    bool idle(){
+        return m_referencecount==0;
+    }
+    
+    void disableReference(){
+        m_referencecount = false;
+    }
+    
+    bool release(){
+        m_referencecount = 0;
+        return true;
+    }
+    
+protected:
+    int     m_referencecount;
+    bool    m_is_reference;
+};
+
+class GPUVertexBuffer: public BaseReference{
 public:
     GPUVertexBuffer(uint32_t vertexCount = 4, uint32_t dimension = 2, bool cache = false);
     ~GPUVertexBuffer();

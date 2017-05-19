@@ -46,6 +46,7 @@ void GPUPixelBuffer::upload(GLubyte* bytes, uint32_t format){
 		glBufferData(GL_PIXEL_UNPACK_BUFFER, m_width*m_height*4, bytes, GL_STREAM_DRAW);
 	}
 }
+
 void GPUPixelBuffer::unpack(){
 	GPUContext::shareInstance()->makeCurrent();
 	glBindTexture(GL_TEXTURE_2D, m_texture);

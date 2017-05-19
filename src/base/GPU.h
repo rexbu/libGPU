@@ -18,9 +18,9 @@
 #ifdef __ANDROID__
 #include "GPUTextureInput.h"
 #endif
-#include "GPURawInput.h"    // byte/texture视频输出源
-#include "GPUTwoPassFilter.h"   // x、y方向filter
-#include "GPUGroupFilter.h"     // 多filter组合
+#include "GPURawInput.h"            // byte/texture视频输出源
+#include "GPUTwoPassFilter.h"       // x、y方向filter
+#include "GPUGroupFilter.h"         // 多filter组合
 #include "GPUYUVFilter.h"           // yuv、rgb转换相关
 #include "GPUView.h"                // 输出到显存
 #include "GPURawOutput.h"           // 获取处理后byte流
@@ -34,14 +34,7 @@
 #include "GPUGaussianBlurFilter.h"  // 高斯滤波
 #include "GPULuminanceFilter.h"     // 灰度
 #include "GPUSobelEdgeFilter.h"     // Sobel边缘检测
-#include "GPUOutlineFilter.h"       // 外部轮廓检测
-#include "GPUBackgroundFilter.h"    // 背景
-#include "GPUMarkerFilter.h"        // Marker
 
-#include "GPUFileFilter.h"
-#include "GPUColorFilter.h"
-#include "GPUSmoothFilter.h"
-#include "GPUBeautyFilter.h"
 #include "GPUBlendImageFilter.h"
 #include "GPUBlend2Filter.h"
 
