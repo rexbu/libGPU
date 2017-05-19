@@ -14,6 +14,8 @@
 #import <OpenGLES/ES2/glext.h>
 #import <OpenGLES/EAGL.h>
 
+EAGLContext* g_share_context = NULL;
+
 typedef struct _gpu_context_t{
     EAGLContext*                context;
     EAGLSharegroup*             sharegroup;
@@ -34,9 +36,14 @@ void GPUContext::createContext(){
     m_gpu_context = new _gpu_context_t;
     memset(m_gpu_context, 0, sizeof(_gpu_context_t));
     
-    m_gpu_context->context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2 sharegroup:m_gpu_context->sharegroup];
-    //NSAssert(m_context != NULL, @"Unable to create an OpenGL ES 2.0 context. The GPUImage framework requires OpenGL ES 2.0 support to work.");
-    assert(m_gpu_context->context!=NULL);
+    if (g_share_context==NULL) {
+        m_gpu_context->context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2 sharegroup:m_gpu_context->sharegroup];
+        //NSAssert(m_context != NULL, @"Unable to create an OpenGL ES 2.0 context. The GPUImage framework requires OpenGL ES 2.0 support to work.");
+        assert(m_gpu_context->context!=NULL);
+    }
+    else{
+        m_gpu_context->context = g_share_context;
+    }
     
     [EAGLContext setCurrentContext:m_gpu_context->context];
     // Set up a few global settings for the image processing pipeline
