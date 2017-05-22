@@ -21,11 +21,13 @@ public:
     
     // 线段宽度，像素数
     void setLineWidth(uint32_t width);
-    void setPoints(gpu_point_t* points, int n);
-    void setColors(gpu_colorf_t* color, int n);
-    void setColor(gpu_colorf_t* color, int i);
+    virtual void setPoints(gpu_point_t* points, int n);
+    virtual void setColors(gpu_colorf_t* color, int n);
+    virtual void setColor(gpu_colorf_t* color, int i);
     
+    // 利用360个点画三角形形成圆
     void drawPoint(float x, float y, uint32_t radius, float* color);
+    // 利用360个点和圆心画扇形形成圆
     void drawRound(float x, float y, uint32_t radius, float* color);
     
 protected:

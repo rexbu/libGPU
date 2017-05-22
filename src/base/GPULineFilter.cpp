@@ -34,6 +34,7 @@ GPULineFilter::GPULineFilter(int w, int h):GPUFilter(false, "GPULineFilter"){
     // initParams函数会初始化m_out_width和m_out_height
     m_out_width = w;
     m_out_height = h;
+    m_line_width = 1;
 }
 
 void GPULineFilter::initShader(){
@@ -60,19 +61,6 @@ void GPULineFilter::render(){
 #if DEBUG_FILTER_NAME
     err_log("filter name: %s texture: %d", m_filter_name.c_str(), m_input_buffers[0]->m_texture);
 #endif
-    
-    GPUCheckGlError(m_filter_name.c_str());
-    
-    GPUContext* context = GPUContext::shareInstance();
-    context->glContextLock();   // 加锁，防止此时设置参数
-    context->setActiveProgram(m_program);
-    
-    // active framebuffer
-    m_outbuffer = GPUBufferCache::shareInstance()->getFrameBuffer(sizeOfFBO(), false);
-    m_outbuffer->activeBuffer();
-    
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-    glClear( GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     
     gpu_size_t size = sizeOfFBO();
     size.width /= 2;
@@ -141,14 +129,6 @@ void GPULineFilter::render(){
 //    
 //    glDrawArrays(GL_LINE_STRIP, 0, m_vertex_count);
     glFlush();
-    
-    context->glContextUnlock();
-    
-    
-    // render后的回调
-    if (m_complete!=NULL) {
-        m_complete(this, m_para);
-    }
 }
 
 void GPULineFilter::drawPoint(float x, float y, uint32_t radius, float* color){

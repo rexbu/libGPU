@@ -118,6 +118,8 @@
 		C8A0AD951ECEBBC70043ADE9 /* GPUWhiteningFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = C8A0AD031ECE9DD00043ADE9 /* GPUWhiteningFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C8A0ADD21ECED4520043ADE9 /* GPULineFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8A0ADD01ECED4520043ADE9 /* GPULineFilter.cpp */; };
 		C8A0ADD31ECED4520043ADE9 /* GPULineFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = C8A0ADD11ECED4520043ADE9 /* GPULineFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C8B0553E1ED2DDF2003ABF3C /* GPUBezierFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8B0553C1ED2DDF2003ABF3C /* GPUBezierFilter.cpp */; };
+		C8B0553F1ED2DDF2003ABF3C /* GPUBezierFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = C8B0553D1ED2DDF2003ABF3C /* GPUBezierFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -245,6 +247,8 @@
 		C8A0AD491ECEA4E80043ADE9 /* bs_vector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bs_vector.h; path = bs/bs_vector.h; sourceTree = "<group>"; };
 		C8A0ADD01ECED4520043ADE9 /* GPULineFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GPULineFilter.cpp; path = base/GPULineFilter.cpp; sourceTree = "<group>"; };
 		C8A0ADD11ECED4520043ADE9 /* GPULineFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPULineFilter.h; path = base/GPULineFilter.h; sourceTree = "<group>"; };
+		C8B0553C1ED2DDF2003ABF3C /* GPUBezierFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GPUBezierFilter.cpp; path = filter/GPUBezierFilter.cpp; sourceTree = "<group>"; };
+		C8B0553D1ED2DDF2003ABF3C /* GPUBezierFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUBezierFilter.h; path = filter/GPUBezierFilter.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -345,6 +349,8 @@
 		C8A0ACB21ECE9D2D0043ADE9 /* filter */ = {
 			isa = PBXGroup;
 			children = (
+				C8B0553C1ED2DDF2003ABF3C /* GPUBezierFilter.cpp */,
+				C8B0553D1ED2DDF2003ABF3C /* GPUBezierFilter.h */,
 				C8A0ACF21ECE9DD00043ADE9 /* GPUMedianFilter.cpp */,
 				C8A0ACF31ECE9DD00043ADE9 /* GPUMedianFilter.h */,
 				C8A0ACF41ECE9DD00043ADE9 /* GPUOutlineFilter.cpp */,
@@ -465,6 +471,7 @@
 				C8A0AD821ECEBBC70043ADE9 /* GPURawInput.h in Headers */,
 				C8A0AD831ECEBBC70043ADE9 /* GPURawOutput.h in Headers */,
 				C8A0AD841ECEBBC70043ADE9 /* GPUSampleBufferInput.h in Headers */,
+				C8B0553F1ED2DDF2003ABF3C /* GPUBezierFilter.h in Headers */,
 				C8A0AD851ECEBBC70043ADE9 /* GPUTextureInput.h in Headers */,
 				C8A0AD861ECEBBC70043ADE9 /* GPUTriangleFilter.h in Headers */,
 				C8A0AD871ECEBBC70043ADE9 /* GPUTwoPassFilter.h in Headers */,
@@ -595,6 +602,7 @@
 				C8A0AD151ECE9DDD0043ADE9 /* GPUPicture.mm in Sources */,
 				C8A0AD531ECEA4E80043ADE9 /* bs_object.c in Sources */,
 				C8A0AD5D1ECEA4E80043ADE9 /* bs_cqueue.c in Sources */,
+				C8B0553E1ED2DDF2003ABF3C /* GPUBezierFilter.cpp in Sources */,
 				C8A0AD721ECEA4E80043ADE9 /* bs_vector.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

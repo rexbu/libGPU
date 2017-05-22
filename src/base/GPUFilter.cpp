@@ -114,6 +114,7 @@ void GPUFilter::initParams(){
     m_frame_width = 0;
     m_frame_height = 0;
     m_outbuffer = NULL;
+    m_special_outbuffer = NULL;
     m_rotation = GPUNoRotation;
     // 初始化顶点数据
     m_vertices.resize(8);
@@ -183,19 +184,8 @@ void GPUFilter::render(){
     err_log("filter name: %s texture: %d", m_filter_name.c_str(), m_input_buffers[0]->m_texture);
 #endif
 
-    GPUCheckGlError(m_filter_name.c_str());
-    
-    GPUContext* context = GPUContext::shareInstance();
-    context->glContextLock();   // 加锁，防止此时设置参数
-    context->setActiveProgram(m_program);
+    GPUCheckGlError(m_filter_name.c_str(), true, false);
 
-    // active framebuffer
-    m_outbuffer = GPUBufferCache::shareInstance()->getFrameBuffer(sizeOfFBO(), false);
-    m_outbuffer->activeBuffer();
-
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-    glClear( GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-    
      for (int i=0; i<m_inputs; i++) {
         m_input_buffers[i]->activeTexture(GL_TEXTURE0+i);
         glUniform1i(m_input_textures[i], 0+i);
@@ -224,13 +214,8 @@ void GPUFilter::render(){
         m_coordinate_buffers[i]->unLock();
     }
     
-    context->glContextUnlock();
     vertex_buffer->unLock();
 
-    // render后的回调
-    if (m_complete!=NULL) {
-        m_complete(this, m_para);
-    }
 }
 
 void GPUFilter::newFrame(){
@@ -242,10 +227,38 @@ void GPUFilter::newFrame(){
             informTargets();
         }
         else{
+            GPUContext* context = GPUContext::shareInstance();
+            context->glContextLock();   // 加锁，防止此时设置参数
+            context->setActiveProgram(m_program);
+            
+            activeOutFrameBuffer();
             render();
+            context->glContextUnlock();
+            m_special_outbuffer = NULL;
+            
+            // render后的回调
+            if (m_complete!=NULL) {
+                m_complete(this, m_para);
+            }
+            
             unlockInputFrameBuffers();
             informTargets();
         }
+    }
+}
+
+void GPUFilter::activeOutFrameBuffer(){
+    if (m_special_outbuffer==NULL) {
+        // active framebuffer
+        m_outbuffer = GPUBufferCache::shareInstance()->getFrameBuffer(sizeOfFBO(), false);
+        m_outbuffer->activeBuffer();
+        
+        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        glClear( GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
+    }
+    else{
+        m_outbuffer = m_special_outbuffer;
+        m_outbuffer->activeBuffer();
     }
 }
 

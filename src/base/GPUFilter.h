@@ -42,7 +42,9 @@ public:
     // 修改shader
     virtual void changeShader(const char* fragment, const char* vertex = NULL);
     virtual void setExtraParameter(float p){}
-
+    
+    // 设置输出framebuffer，如果设置了，则不再从cache中获取buffer
+    void setOutputFrameBuffer(GPUFrameBuffer* buffer){ m_special_outbuffer = buffer;}
     void setFloat(const char* name, GLfloat val);
     void setFloat(const char* name, GLfloat* val, int num);
     void setFloatv(const char* name, GLfloat* val, int num);
@@ -55,6 +57,7 @@ protected:
     virtual void initShader();
     void initParams();
     
+    void activeOutFrameBuffer();
     virtual gpu_size_t sizeOfFBO();
     /// 更新帧尺寸并重新计算裁剪
     virtual void setFrameSize(uint32_t width, uint32_t height);
@@ -84,8 +87,9 @@ protected:
     // 顶点，涉及裁剪
     std::vector<GLfloat> m_vertices;
     // 填充方式
-    gpu_fill_mode_t   m_fill_mode;
-
+    gpu_fill_mode_t     m_fill_mode;
+    
+    GPUFrameBuffer*     m_special_outbuffer;
     std::string m_filter_name;  // 用于debug
 };
 
