@@ -52,8 +52,9 @@ public:
 
 protected:
     virtual void init();
+    virtual void initShader();
     void initParams();
-    void initShader();
+    
     virtual gpu_size_t sizeOfFBO();
     /// 更新帧尺寸并重新计算裁剪
     virtual void setFrameSize(uint32_t width, uint32_t height);

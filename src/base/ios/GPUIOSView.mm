@@ -105,7 +105,7 @@ void GPUIOSView::setOutputRotation(gpu_rotation_t rotation){
         self.contentScaleFactor = [[UIScreen mainScreen] scale];
     }
 
-    GPUCheckGlError(NULL);
+    GPUCheckGlError("IOSView init");
     displayProgram = new GPUProgram(GPUFilter::g_vertext_shader[0], GPUFilter::g_fragment_shader);
     _rotation = GPUNoRotation;
     displayPositionAttribute = displayProgram->attributeIndex("position");
@@ -122,7 +122,8 @@ void GPUIOSView::setOutputRotation(gpu_rotation_t rotation){
     eaglLayer.opaque = YES;
     // 设置描绘属性，在这里设置不维持渲染内容以及颜色格式为 RGBA8
     eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:NO], kEAGLDrawablePropertyRetainedBacking, kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat, nil];
-
+    
+    GPUCheckGlError("IOSView init");
     self.enabled = YES;
 }
 
@@ -348,6 +349,10 @@ void GPUIOSView::setOutputRotation(gpu_rotation_t rotation){
 {
     static bool vboinit = NO;
     static GLuint vboIds[2];
+    
+    GPUContext* context = GPUContext::shareInstance();
+    context->glContextLock();
+    
     if (vboinit == NO)
     {
         glGenBuffers(2, vboIds);
@@ -359,8 +364,7 @@ void GPUIOSView::setOutputRotation(gpu_rotation_t rotation){
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         vboinit = YES;
     }
-    GPUContext* context = GPUContext::shareInstance();
-    context->glContextLock();
+    
     context->setActiveProgram(displayProgram);
     [self activeBuffer];
     

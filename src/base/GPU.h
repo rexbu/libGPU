@@ -9,6 +9,7 @@
 #ifndef	__GPU_H_
 #define	__GPU_H_
 
+#include "GL.h"
 #include "GPUContext.h"     // glContext
 #include "GPUProgram.h"     // glProgram
 #include "GPUInput.h"       // 接受流
@@ -28,6 +29,7 @@
 #include "GPUZoomFilter.h"          // 缩放filter
 #include "GPUYUV420Filter.h"        // yuv420、nv21相关转换
 #include "GPUBlendFilter.h"
+#include "GPULineFilter.h"
 
 #include "GPUMedianFilter.h"        // 中值滤波
 #include "GPUGaussianBlurFilter.h"  // 高斯滤波

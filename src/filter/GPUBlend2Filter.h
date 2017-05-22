@@ -18,8 +18,8 @@ public:
     ~GPUBlend2Filter();
     
     // 设置要进行blend的图片
-    void setBlendImage(GPUPicture* image, gpu_rect_t rect);
-    void setBlendImagePoints(GPUPicture* pic, gpu_point_t points[4]);
+    void setBlendImage(GPUPicture* image, gpu_rect_t rect, bool mirror);
+    void setBlendImagePoints(GPUPicture* pic, gpu_point_t points[4], bool mirror);
     
     virtual void render();
     virtual void setInputFrameBuffer(GPUFrameBuffer *buffer, int location=0);

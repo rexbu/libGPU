@@ -37,7 +37,7 @@ GPUBlend2Filter::~GPUBlend2Filter(){
     }
 }
 
-void GPUBlend2Filter::setBlendImage(GPUPicture* pic, gpu_rect_t rect){
+void GPUBlend2Filter::setBlendImage(GPUPicture* pic, gpu_rect_t rect, bool mirror){
     gpu_point_t points[4];
     points[0].x = rect.pointer.x;
     points[0].y = rect.pointer.y;
@@ -47,10 +47,10 @@ void GPUBlend2Filter::setBlendImage(GPUPicture* pic, gpu_rect_t rect){
     points[2].y = rect.pointer.y + rect.size.height;
     points[3].x = rect.pointer.x + rect.size.width;
     points[3].y = rect.pointer.y + rect.size.height;
-    setBlendImagePoints(pic, points);
+    setBlendImagePoints(pic, points, mirror);
 }
 
-void GPUBlend2Filter::setBlendImagePoints(GPUPicture* pic, gpu_point_t points[4]){
+void GPUBlend2Filter::setBlendImagePoints(GPUPicture* pic, gpu_point_t points[4], bool mirror){
     if (m_blend_pic!=NULL) {
         m_blend_pic->removeAllTargets();
         delete m_blend_pic;
@@ -88,6 +88,19 @@ void GPUBlend2Filter::setBlendImagePoints(GPUPicture* pic, gpu_point_t points[4]
             m_coordinates[i*2] = 1+(1-points[3].x)/unit_x;
             m_coordinates[i*2+1] = 1+(1-points[3].y)/unit_y;
         }
+    }
+    
+    if (mirror) {
+        GLfloat coors[8];
+        coors[0] = m_coordinates[2];
+        coors[1] = m_coordinates[3];
+        coors[2] = m_coordinates[0];
+        coors[3] = m_coordinates[1];
+        coors[4] = m_coordinates[6];
+        coors[5] = m_coordinates[7];
+        coors[6] = m_coordinates[4];
+        coors[7] = m_coordinates[5];
+        memcpy(m_coordinates, coors, sizeof(GLfloat)*8);
     }
     
     m_blend_pic = pic;
