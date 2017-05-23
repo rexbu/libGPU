@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C88D0AFE1ED3FF5F0084AF89 /* GPUPaintFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C88D0AFC1ED3FF5F0084AF89 /* GPUPaintFilter.cpp */; };
+		C88D0AFF1ED3FF5F0084AF89 /* GPUPaintFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = C88D0AFD1ED3FF5F0084AF89 /* GPUPaintFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C8A0ACDE1ECE9D420043ADE9 /* GPUFrameBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8A0ACB31ECE9D410043ADE9 /* GPUFrameBuffer.cpp */; };
 		C8A0ACDF1ECE9D420043ADE9 /* GPUBlendFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8A0ACB41ECE9D410043ADE9 /* GPUBlendFilter.cpp */; };
 		C8A0ACE01ECE9D420043ADE9 /* GPUContext.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8A0ACB51ECE9D410043ADE9 /* GPUContext.cpp */; };
@@ -135,6 +137,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		C88D0AFC1ED3FF5F0084AF89 /* GPUPaintFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GPUPaintFilter.cpp; path = filter/GPUPaintFilter.cpp; sourceTree = "<group>"; };
+		C88D0AFD1ED3FF5F0084AF89 /* GPUPaintFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUPaintFilter.h; path = filter/GPUPaintFilter.h; sourceTree = "<group>"; };
 		C8A0ACA41ECE9CE10043ADE9 /* liblibGPU.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = liblibGPU.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		C8A0ACB31ECE9D410043ADE9 /* GPUFrameBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GPUFrameBuffer.cpp; path = base/GPUFrameBuffer.cpp; sourceTree = "<group>"; };
 		C8A0ACB41ECE9D410043ADE9 /* GPUBlendFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GPUBlendFilter.cpp; path = base/GPUBlendFilter.cpp; sourceTree = "<group>"; };
@@ -349,6 +353,8 @@
 		C8A0ACB21ECE9D2D0043ADE9 /* filter */ = {
 			isa = PBXGroup;
 			children = (
+				C88D0AFC1ED3FF5F0084AF89 /* GPUPaintFilter.cpp */,
+				C88D0AFD1ED3FF5F0084AF89 /* GPUPaintFilter.h */,
 				C8B0553C1ED2DDF2003ABF3C /* GPUBezierFilter.cpp */,
 				C8B0553D1ED2DDF2003ABF3C /* GPUBezierFilter.h */,
 				C8A0ACF21ECE9DD00043ADE9 /* GPUMedianFilter.cpp */,
@@ -475,6 +481,7 @@
 				C8A0AD851ECEBBC70043ADE9 /* GPUTextureInput.h in Headers */,
 				C8A0AD861ECEBBC70043ADE9 /* GPUTriangleFilter.h in Headers */,
 				C8A0AD871ECEBBC70043ADE9 /* GPUTwoPassFilter.h in Headers */,
+				C88D0AFF1ED3FF5F0084AF89 /* GPUPaintFilter.h in Headers */,
 				C8A0AD881ECEBBC70043ADE9 /* GPUVertexBuffer.h in Headers */,
 				C8A0AD891ECEBBC70043ADE9 /* GPUView.h in Headers */,
 				C8A0AD8A1ECEBBC70043ADE9 /* GPUYUV420Filter.h in Headers */,
@@ -572,6 +579,7 @@
 				C8A0ACDF1ECE9D420043ADE9 /* GPUBlendFilter.cpp in Sources */,
 				C8A0AD051ECE9DD00043ADE9 /* GPUOutlineFilter.cpp in Sources */,
 				C8A0ADD21ECED4520043ADE9 /* GPULineFilter.cpp in Sources */,
+				C88D0AFE1ED3FF5F0084AF89 /* GPUPaintFilter.cpp in Sources */,
 				C8A0AD081ECE9DD00043ADE9 /* GPUGaussianBlurFilter.cpp in Sources */,
 				C8A0AD511ECEA4E80043ADE9 /* bs_socket.c in Sources */,
 				C8A0AD6C1ECEA4E80043ADE9 /* bs_sign.c in Sources */,

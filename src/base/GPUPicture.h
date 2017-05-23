@@ -30,12 +30,13 @@ public:
     void processImage();
     void setPixel(uint8_t* pixels, uint32_t width, uint32_t height, uint32_t format=GL_RGBA);
 
+    uint8_t*    m_pixels;
+    gpu_size_t  m_image_size;
 protected:
 #if __IOS__
     void init(void* image);
 #endif
 
-    gpu_size_t  pixelSizeOfImage;
     bool        hasProcessedImage;
     
     bool        m_exist;

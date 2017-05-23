@@ -44,7 +44,9 @@ public:
     virtual void setExtraParameter(float p){}
     
     // 设置输出framebuffer，如果设置了，则不再从cache中获取buffer
-    void setOutputFrameBuffer(GPUFrameBuffer* buffer){ m_special_outbuffer = buffer;}
+    virtual void setOutputFrameBuffer(GPUFrameBuffer* buffer){ m_special_outbuffer = buffer;}
+    void activeOutFrameBuffer();
+    
     void setFloat(const char* name, GLfloat val);
     void setFloat(const char* name, GLfloat* val, int num);
     void setFloatv(const char* name, GLfloat* val, int num);
@@ -57,7 +59,6 @@ protected:
     virtual void initShader();
     void initParams();
     
-    void activeOutFrameBuffer();
     virtual gpu_size_t sizeOfFBO();
     /// 更新帧尺寸并重新计算裁剪
     virtual void setFrameSize(uint32_t width, uint32_t height);

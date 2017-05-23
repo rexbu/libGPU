@@ -212,12 +212,76 @@ void GPUIOSView::setOutputRotation(gpu_rotation_t rotation){
     
     glBindFramebuffer(GL_FRAMEBUFFER, displayFramebuffer);
     glViewport(0, 0, (GLint)_sizeInPixels.width, (GLint)_sizeInPixels.height);
+    glClearColor(1.0, 1.0, 1.0, 1.0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+- (void)newFrame;
+{
+    GPUContext* context = GPUContext::shareInstance();
+    context->glContextLock();
+    
+    context->setActiveProgram(displayProgram);
+    [self activeBuffer];
+    
+    inputFramebufferForDisplay->activeTexture(GL_TEXTURE4);
+    glUniform1i(displayInputTextureUniform, 4);
+    
+    GPUVertexBuffer* coors_buffer = GPUVertexBufferCache::shareInstance()->getVertexBuffer();
+    coors_buffer->activeBuffer(displayTextureCoordinateAttribute, [GPUUIView textureCoordinatesForRotation:_rotation]);
+    
+    // vbo
+    GPUVertexBuffer* vertex_buffer = GPUVertexBufferCache::shareInstance()->getVertexBuffer();
+    vertex_buffer->activeBuffer(displayPositionAttribute, imageVertices);
+    
+    //    glEnableVertexAttribArray(displayPositionAttribute);
+    //    glBindBuffer(GL_ARRAY_BUFFER, vboIds[0]);
+    //    glBufferSubData(GL_ARRAY_BUFFER, 0, 32, imageVertices);
+    //    glVertexAttribPointer(displayPositionAttribute, 2, GL_FLOAT, 0, 8, 0);
+    //    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    //
+    //    glEnableVertexAttribArray(displayTextureCoordinateAttribute);
+    //    glBindBuffer(GL_ARRAY_BUFFER, vboIds[1]);
+    //    glBufferSubData(GL_ARRAY_BUFFER, 0, 32, [GPUUIView textureCoordinatesForRotation:_rotation]);
+    //    glVertexAttribPointer(displayTextureCoordinateAttribute, 2, GL_FLOAT, 0, 8, 0);
+    //    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    
+    //glVertexAttribPointer(displayPositionAttribute, 2, GL_FLOAT, 0, 0, imageVertices);
+    //glVertexAttribPointer(displayTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, [GPUUIView textureCoordinatesForRotation:_rotation]);
+    //
+    //glVertexAttribPointer(displayTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, [GPUImageView textureCoordinatesForRotation:inputRotation]);
+    
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    [self presentFramebuffer];
+    glFlush();
+    
+    context->glContextUnlock();
+    coors_buffer->unLock();
+    vertex_buffer->unLock();
+    
+    inputFramebufferForDisplay->unlock();
+    //inputFramebufferForDisplay = NULL;
 }
 
 - (void)presentFramebuffer;
 {
     glBindRenderbuffer(GL_RENDERBUFFER, displayRenderbuffer);
     GPUContext::shareInstance()->swapBuffer();
+}
+
+#pragma mark -
+#pragma mark Accessors
+
+- (void)setFillMode:(gpu_fill_mode_t)newValue;
+{
+    _fillMode = newValue;
+    [self recalculateViewGeometry];
+}
+
+-(void)setInputFrameBuffer:(GPUIOSFrameBuffer*)frameBuffer{
+    inputFramebufferForDisplay = frameBuffer;
+    inputImageSize = CGSizeMake(frameBuffer->m_width, frameBuffer->m_height);
+    [self recalculateViewGeometry];
 }
 
 #pragma mark -
@@ -342,78 +406,5 @@ void GPUIOSView::setOutputRotation(gpu_rotation_t rotation){
     }
 }
 
-#pragma mark -
-#pragma mark GPUInput protocol
-
-- (void)newFrame;
-{
-    static bool vboinit = NO;
-    static GLuint vboIds[2];
-    
-    GPUContext* context = GPUContext::shareInstance();
-    context->glContextLock();
-    
-    if (vboinit == NO)
-    {
-        glGenBuffers(2, vboIds);
-        glBindBuffer(GL_ARRAY_BUFFER, vboIds[0]);
-        glBufferData(GL_ARRAY_BUFFER, 32, NULL, GL_DYNAMIC_DRAW);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindBuffer(GL_ARRAY_BUFFER, vboIds[1]);
-        glBufferData(GL_ARRAY_BUFFER, 32, NULL, GL_DYNAMIC_DRAW);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        vboinit = YES;
-    }
-    
-    context->setActiveProgram(displayProgram);
-    [self activeBuffer];
-    
-    glClearColor(1.0, 1.0, 1.0, 1.0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    
-    inputFramebufferForDisplay->activeTexture(GL_TEXTURE4);
-    glUniform1i(displayInputTextureUniform, 4);
-    
-    glEnableVertexAttribArray(displayPositionAttribute);
-    glBindBuffer(GL_ARRAY_BUFFER, vboIds[0]);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, 32, imageVertices);
-    glVertexAttribPointer(displayPositionAttribute, 2, GL_FLOAT, 0, 8, 0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    
-    glEnableVertexAttribArray(displayTextureCoordinateAttribute);
-    glBindBuffer(GL_ARRAY_BUFFER, vboIds[1]);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, 32, [GPUUIView textureCoordinatesForRotation:_rotation]);
-    glVertexAttribPointer(displayTextureCoordinateAttribute, 2, GL_FLOAT, 0, 8, 0);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    
-    //glVertexAttribPointer(displayPositionAttribute, 2, GL_FLOAT, 0, 0, imageVertices);
-    //glVertexAttribPointer(displayTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, [GPUUIView textureCoordinatesForRotation:_rotation]);
-    //
-    //glVertexAttribPointer(displayTextureCoordinateAttribute, 2, GL_FLOAT, 0, 0, [GPUImageView textureCoordinatesForRotation:inputRotation]);
-    
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-    [self presentFramebuffer];
-    glFlush();
-    
-    context->glContextUnlock();
-    
-    inputFramebufferForDisplay->unlock();
-    //inputFramebufferForDisplay = NULL;
-}
-
-#pragma mark -
-#pragma mark Accessors
-
-- (void)setFillMode:(gpu_fill_mode_t)newValue;
-{
-    _fillMode = newValue;
-    [self recalculateViewGeometry];
-}
-
--(void)setInputFrameBuffer:(GPUIOSFrameBuffer*)frameBuffer{
-    inputFramebufferForDisplay = frameBuffer;
-    inputImageSize = CGSizeMake(frameBuffer->m_width, frameBuffer->m_height);
-    [self recalculateViewGeometry];
-}
 @end
 

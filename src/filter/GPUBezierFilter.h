@@ -14,7 +14,7 @@
 // 三点贝塞尔曲线
 class GPUBezierFilter: public GPULineFilter{
 public:
-    GPUBezierFilter(){};
+    GPUBezierFilter(int w=720, int h=1280):GPULineFilter(w, h){};
     // 此处p1不是控制点，是要经过的点，利用三点猜测控制点坐标
     GPUBezierFilter(gpu_point_t p0, gpu_point_t p1, gpu_point_t p2);
     
@@ -22,7 +22,7 @@ public:
     void setPoints(gpu_point_t p0, gpu_point_t p1, gpu_point_t p2);
     // 穿过多个点画曲线
     virtual void setPoints(gpu_point_t* points, int n);
-    
+    // 从c0-c1，颜色渐变
     void setColors(gpu_colorf_t c0, gpu_colorf_t c1);
     
 protected:

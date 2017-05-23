@@ -70,18 +70,18 @@ void GPUPicture::init(void* image){
     // If passed an empty image reference, CGContextDrawImage will fail in future versions of the SDK.
     assert( widthOfImage > 0 && heightOfImage > 0);
     
-    pixelSizeOfImage = {static_cast<uint32_t>(widthOfImage), static_cast<uint32_t>(heightOfImage)};
-    gpu_size_t pixelSizeToUseForTexture = pixelSizeOfImage;
+    m_image_size = {static_cast<uint32_t>(widthOfImage), static_cast<uint32_t>(heightOfImage)};
+    gpu_size_t pixelSizeToUseForTexture = m_image_size;
     
     BOOL shouldRedrawUsingCoreGraphics = NO;
     
     // For now, deal with images larger than the maximum texture size by resizing to be within that limit
-    gpu_size_t scaledImageSizeToFitOnGPU = GPUContext::shareInstance()->sizeFitsTextureMaxSize(pixelSizeOfImage);
+    gpu_size_t scaledImageSizeToFitOnGPU = GPUContext::shareInstance()->sizeFitsTextureMaxSize(m_image_size);
     
-    if (!(scaledImageSizeToFitOnGPU.width==pixelSizeOfImage.width && scaledImageSizeToFitOnGPU.height==pixelSizeOfImage.height))
+    if (!(scaledImageSizeToFitOnGPU.width==m_image_size.width && scaledImageSizeToFitOnGPU.height==m_image_size.height))
     {
-        pixelSizeOfImage = scaledImageSizeToFitOnGPU;
-        pixelSizeToUseForTexture = pixelSizeOfImage;
+        m_image_size = scaledImageSizeToFitOnGPU;
+        pixelSizeToUseForTexture = m_image_size;
         shouldRedrawUsingCoreGraphics = YES;
     }
     
