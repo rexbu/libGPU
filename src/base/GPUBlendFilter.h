@@ -1,6 +1,7 @@
 /**
  * file :	GPUBlendFilter.h
  * author :	Rex
+ * email : rex@labjk.com
  * create :	2016-07-29 14:36
  * func : 
  * history:

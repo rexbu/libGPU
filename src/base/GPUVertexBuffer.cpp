@@ -1,6 +1,7 @@
 /**
  * file :	GPUVertexBuffer.cpp
  * author :	Rex
+ * email : rex@labjk.com
  * create :	2016-09-27 14:51
  * func : 
  * history:

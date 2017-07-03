@@ -1,6 +1,7 @@
 /**
  * file :	GPUYUVFilter.cpp
  * author :	Rex
+ * email : rex@labjk.com
  * create :	2016-05-03 15:54
  * func : 
  * history:

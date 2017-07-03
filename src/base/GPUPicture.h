@@ -1,6 +1,7 @@
 /**
  * file :	GPUPicture.h
  * author :	Rex
+ * email : rex@labjk.com
  * create :	2016-08-10 17:06
  * func : 
  * history:

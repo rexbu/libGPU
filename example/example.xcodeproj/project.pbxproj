@@ -27,6 +27,15 @@
 		C8A0ADEB1ECFE5A10043ADE9 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C8A0ADE91ECFE5A10043ADE9 /* Main.storyboard */; };
 		C8A0ADED1ECFE5A10043ADE9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C8A0ADEC1ECFE5A10043ADE9 /* Assets.xcassets */; };
 		C8A0ADF01ECFE5A10043ADE9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C8A0ADEE1ECFE5A10043ADE9 /* LaunchScreen.storyboard */; };
+		C8B610411EE9850A00CF9D57 /* me.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = C8B6103E1EE9850A00CF9D57 /* me.jpeg */; };
+		C8B610421EE9850A00CF9D57 /* z1.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = C8B6103F1EE9850A00CF9D57 /* z1.jpeg */; };
+		C8B610431EE9850A00CF9D57 /* z2.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = C8B610401EE9850A00CF9D57 /* z2.jpeg */; };
+		C8DACD2E1ED4684A001F607A /* facepoints.json in Resources */ = {isa = PBXBuildFile; fileRef = C8DACD2B1ED4684A001F607A /* facepoints.json */; };
+		C8DACD2F1ED4684A001F607A /* kaiwen.png in Resources */ = {isa = PBXBuildFile; fileRef = C8DACD2C1ED4684A001F607A /* kaiwen.png */; };
+		C8DACD301ED4684A001F607A /* me.png in Resources */ = {isa = PBXBuildFile; fileRef = C8DACD2D1ED4684A001F607A /* me.png */; };
+		C8DACD3A1ED477B3001F607A /* kaiwen2.png in Resources */ = {isa = PBXBuildFile; fileRef = C8DACD391ED477B3001F607A /* kaiwen2.png */; };
+		C8EB12CE1ED70B5000D72F8F /* EdgeViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = C8EB12CD1ED70B5000D72F8F /* EdgeViewController.mm */; };
+		C8EB52E31ED97524000EA55C /* me2.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = C8EB52E21ED97524000EA55C /* me2.jpeg */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -71,6 +80,16 @@
 		C8A0ADEF1ECFE5A10043ADE9 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C8A0ADF11ECFE5A10043ADE9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C8A0ADF71ECFE5C40043ADE9 /* libGPU.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = libGPU.xcodeproj; path = ../src/libGPU.xcodeproj; sourceTree = "<group>"; };
+		C8B6103E1EE9850A00CF9D57 /* me.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = me.jpeg; sourceTree = "<group>"; };
+		C8B6103F1EE9850A00CF9D57 /* z1.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = z1.jpeg; sourceTree = "<group>"; };
+		C8B610401EE9850A00CF9D57 /* z2.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = z2.jpeg; sourceTree = "<group>"; };
+		C8DACD2B1ED4684A001F607A /* facepoints.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = facepoints.json; sourceTree = "<group>"; };
+		C8DACD2C1ED4684A001F607A /* kaiwen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = kaiwen.png; sourceTree = "<group>"; };
+		C8DACD2D1ED4684A001F607A /* me.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = me.png; sourceTree = "<group>"; };
+		C8DACD391ED477B3001F607A /* kaiwen2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = kaiwen2.png; sourceTree = "<group>"; };
+		C8EB12CC1ED70B5000D72F8F /* EdgeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EdgeViewController.h; sourceTree = "<group>"; };
+		C8EB12CD1ED70B5000D72F8F /* EdgeViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EdgeViewController.mm; sourceTree = "<group>"; };
+		C8EB52E21ED97524000EA55C /* me2.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = me2.jpeg; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -139,15 +158,25 @@
 		C8A0ADDF1ECFE5A10043ADE9 /* example */ = {
 			isa = PBXGroup;
 			children = (
+				C8B6103E1EE9850A00CF9D57 /* me.jpeg */,
+				C8B6103F1EE9850A00CF9D57 /* z1.jpeg */,
+				C8B610401EE9850A00CF9D57 /* z2.jpeg */,
+				C8EB52E21ED97524000EA55C /* me2.jpeg */,
 				C8A0ADE31ECFE5A10043ADE9 /* AppDelegate.h */,
 				C8A0ADE41ECFE5A10043ADE9 /* AppDelegate.m */,
+				C8A0ADEC1ECFE5A10043ADE9 /* Assets.xcassets */,
+				C8EB12CC1ED70B5000D72F8F /* EdgeViewController.h */,
+				C8EB12CD1ED70B5000D72F8F /* EdgeViewController.mm */,
+				C8DACD2B1ED4684A001F607A /* facepoints.json */,
+				C8A0ADF11ECFE5A10043ADE9 /* Info.plist */,
+				C8DACD2C1ED4684A001F607A /* kaiwen.png */,
+				C8DACD391ED477B3001F607A /* kaiwen2.png */,
+				C8A0ADEE1ECFE5A10043ADE9 /* LaunchScreen.storyboard */,
+				C8A0ADE91ECFE5A10043ADE9 /* Main.storyboard */,
+				C8DACD2D1ED4684A001F607A /* me.png */,
+				C8A0ADE01ECFE5A10043ADE9 /* Supporting Files */,
 				C8A0ADE61ECFE5A10043ADE9 /* ViewController.h */,
 				C8A0ADE71ECFE5A10043ADE9 /* ViewController.mm */,
-				C8A0ADE91ECFE5A10043ADE9 /* Main.storyboard */,
-				C8A0ADEC1ECFE5A10043ADE9 /* Assets.xcassets */,
-				C8A0ADEE1ECFE5A10043ADE9 /* LaunchScreen.storyboard */,
-				C8A0ADF11ECFE5A10043ADE9 /* Info.plist */,
-				C8A0ADE01ECFE5A10043ADE9 /* Supporting Files */,
 			);
 			path = example;
 			sourceTree = "<group>";
@@ -244,9 +273,17 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C8EB52E31ED97524000EA55C /* me2.jpeg in Resources */,
 				C8A0ADF01ECFE5A10043ADE9 /* LaunchScreen.storyboard in Resources */,
+				C8B610421EE9850A00CF9D57 /* z1.jpeg in Resources */,
 				C8A0ADED1ECFE5A10043ADE9 /* Assets.xcassets in Resources */,
+				C8DACD3A1ED477B3001F607A /* kaiwen2.png in Resources */,
+				C8DACD2F1ED4684A001F607A /* kaiwen.png in Resources */,
+				C8DACD301ED4684A001F607A /* me.png in Resources */,
+				C8B610431EE9850A00CF9D57 /* z2.jpeg in Resources */,
+				C8B610411EE9850A00CF9D57 /* me.jpeg in Resources */,
 				C8A0ADEB1ECFE5A10043ADE9 /* Main.storyboard in Resources */,
+				C8DACD2E1ED4684A001F607A /* facepoints.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -260,6 +297,7 @@
 				C8A0ADE81ECFE5A10043ADE9 /* ViewController.mm in Sources */,
 				C8A0ADE51ECFE5A10043ADE9 /* AppDelegate.m in Sources */,
 				C8A0ADE21ECFE5A10043ADE9 /* main.m in Sources */,
+				C8EB12CE1ED70B5000D72F8F /* EdgeViewController.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

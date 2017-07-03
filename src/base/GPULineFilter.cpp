@@ -1,6 +1,7 @@
 /**
  * file :	GPULineFilter.cpp
  * author :	Rex
+ * email : rex@labjk.com
  * create :	2017-05-19 15:20
  * func : 
  * history:
@@ -98,7 +99,7 @@ void GPULineFilter::render(){
             vertex[i*2+1] = (vertex[i*2+1] - size.height) / size.height;
         }
         
-        GPUVertexBuffer* vertex_buffer = GPUVertexBufferCache::shareInstance()->getVertexBuffer(m_vertex_count);
+        GPUVertexBuffer* vertex_buffer = GPUVertexBufferCache::shareInstance()->getVertexBuffer(4);
         vertex_buffer->activeBuffer(m_position, vertex);
         
         GLfloat colors[4*4];
@@ -106,7 +107,7 @@ void GPULineFilter::render(){
         memcpy(colors+4, &m_colors[v*4], sizeof(GLfloat)*4);
         memcpy(colors+8, &m_colors[(v+1)*4], sizeof(GLfloat)*4);
         memcpy(colors+12, &m_colors[(v+1)*4], sizeof(GLfloat)*4);
-        GPUVertexBuffer* color_buffer = GPUVertexBufferCache::shareInstance()->getVertexBuffer(m_vertex_count, 4);
+        GPUVertexBuffer* color_buffer = GPUVertexBufferCache::shareInstance()->getVertexBuffer(4, 4);
         color_buffer->activeBuffer(m_color, colors);
         
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);

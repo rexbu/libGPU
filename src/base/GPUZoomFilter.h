@@ -1,6 +1,7 @@
 /**
  * file :	GPUZoomFilter.h
  * author :	Rex
+ * email : rex@labjk.com
  * create :	2016-07-12 20:33
  * func : 
  * history:

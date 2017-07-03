@@ -1,6 +1,7 @@
 /**
  * file :	GPUOutputFilter.cpp
  * author :	Rex
+ * email : rex@labjk.com
  * create :	2017-03-25 16:11
  * func : 
  * history:

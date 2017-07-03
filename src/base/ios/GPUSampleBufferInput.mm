@@ -1,6 +1,7 @@
 /**
  * file :	GPUSampleBufferInput.mm
  * author :	Rex
+ * email : rex@labjk.com
  * create :	2017-03-25 20:41
  * func : 
  * history:

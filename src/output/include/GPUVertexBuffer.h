@@ -63,7 +63,7 @@ protected:
 
 class GPUVertexBuffer: public BaseReference{
 public:
-    GPUVertexBuffer(uint32_t vertexCount = 4, uint32_t dimension = 2, bool cache = false);
+    GPUVertexBuffer(uint32_t vertexCount = 4, uint32_t dimension = 2, bool cache = true);
     ~GPUVertexBuffer();
     
     GLuint  getVertexBuffer(){
@@ -103,8 +103,8 @@ public:
     GPUVertexBufferCache();
     ~GPUVertexBufferCache();
     
-    GPUVertexBuffer* getVertexBuffer(uint32_t vertexCount = 4 , uint32_t dimension = 2, bool cache = false);
-    virtual GPUVertexBuffer* newVertexBuffer(uint32_t vertexCount = 4 , uint32_t dimension = 2, bool cache = false);
+    GPUVertexBuffer* getVertexBuffer(uint32_t vertexCount = 4 , uint32_t dimension = 2, bool cache = true);
+    virtual GPUVertexBuffer* newVertexBuffer(uint32_t vertexCount = 4 , uint32_t dimension = 2, bool cache = true);
     void clear();
     /**
      * 设置是否使用顶点缓存。

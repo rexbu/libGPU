@@ -1,6 +1,7 @@
 /**
  * file :	GPUFilter.cpp
  * author :	Rex
+ * email : rex@labjk.com
  * create :	2016-04-27 19:12
  * func : 
  * history:
@@ -183,10 +184,15 @@ void GPUFilter::render(){
 #if DEBUG_FILTER_NAME
     err_log("filter name: %s texture: %d", m_filter_name.c_str(), m_input_buffers[0]->m_texture);
 #endif
-
+    
+    GPUContext* context = GPUContext::shareInstance();
+    context->glContextLock();   // 加锁，防止此时设置参数
     GPUCheckGlError(m_filter_name.c_str(), true, false);
+    
+    context->setActiveProgram(m_program);
+    activeOutFrameBuffer();
 
-     for (int i=0; i<m_inputs; i++) {
+    for (int i=0; i<m_inputs; i++) {
         m_input_buffers[i]->activeTexture(GL_TEXTURE0+i);
         glUniform1i(m_input_textures[i], 0+i);
 
@@ -204,7 +210,7 @@ void GPUFilter::render(){
     
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     glFlush();
-
+    
     vertex_buffer->disableBuffer(m_position);
     for (int i = 0; i < m_inputs; ++i)
     {
@@ -215,7 +221,8 @@ void GPUFilter::render(){
     }
     
     vertex_buffer->unLock();
-
+    
+    context->glContextUnlock();
 }
 
 void GPUFilter::newFrame(){
@@ -227,13 +234,7 @@ void GPUFilter::newFrame(){
             informTargets();
         }
         else{
-            GPUContext* context = GPUContext::shareInstance();
-            context->glContextLock();   // 加锁，防止此时设置参数
-            context->setActiveProgram(m_program);
-            
-            activeOutFrameBuffer();
             render();
-            context->glContextUnlock();
             m_special_outbuffer = NULL;
             
             // render后的回调
@@ -249,7 +250,6 @@ void GPUFilter::newFrame(){
 
 void GPUFilter::activeOutFrameBuffer(){
     if (m_special_outbuffer==NULL) {
-        // active framebuffer
         m_outbuffer = GPUBufferCache::shareInstance()->getFrameBuffer(sizeOfFBO(), false);
         m_outbuffer->activeBuffer();
         

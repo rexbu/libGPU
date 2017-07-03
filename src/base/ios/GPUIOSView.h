@@ -1,3 +1,12 @@
+/**
+ * file :	GPUIOSView.h
+ * author :	Rex
+ * email : rex@labjk.com
+ * create :	2016-07-08 16:08
+ * func :
+ * history:
+ */
+
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>

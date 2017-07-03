@@ -122,6 +122,10 @@
 		C8A0ADD31ECED4520043ADE9 /* GPULineFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = C8A0ADD11ECED4520043ADE9 /* GPULineFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C8B0553E1ED2DDF2003ABF3C /* GPUBezierFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8B0553C1ED2DDF2003ABF3C /* GPUBezierFilter.cpp */; };
 		C8B0553F1ED2DDF2003ABF3C /* GPUBezierFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = C8B0553D1ED2DDF2003ABF3C /* GPUBezierFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C8EB52D71ED7CBDB000EA55C /* GPUBilateralBlurFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8EB52D51ED7CBDB000EA55C /* GPUBilateralBlurFilter.cpp */; };
+		C8EB52D81ED7CBDB000EA55C /* GPUBilateralBlurFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = C8EB52D61ED7CBDB000EA55C /* GPUBilateralBlurFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C8EB52E01ED7E306000EA55C /* GPUColorFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C8EB52DE1ED7E306000EA55C /* GPUColorFilter.cpp */; };
+		C8EB52E11ED7E306000EA55C /* GPUColorFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = C8EB52DF1ED7E306000EA55C /* GPUColorFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -253,6 +257,10 @@
 		C8A0ADD11ECED4520043ADE9 /* GPULineFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPULineFilter.h; path = base/GPULineFilter.h; sourceTree = "<group>"; };
 		C8B0553C1ED2DDF2003ABF3C /* GPUBezierFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GPUBezierFilter.cpp; path = filter/GPUBezierFilter.cpp; sourceTree = "<group>"; };
 		C8B0553D1ED2DDF2003ABF3C /* GPUBezierFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUBezierFilter.h; path = filter/GPUBezierFilter.h; sourceTree = "<group>"; };
+		C8EB52D51ED7CBDB000EA55C /* GPUBilateralBlurFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GPUBilateralBlurFilter.cpp; path = filter/GPUBilateralBlurFilter.cpp; sourceTree = "<group>"; };
+		C8EB52D61ED7CBDB000EA55C /* GPUBilateralBlurFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUBilateralBlurFilter.h; path = filter/GPUBilateralBlurFilter.h; sourceTree = "<group>"; };
+		C8EB52DE1ED7E306000EA55C /* GPUColorFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GPUColorFilter.cpp; path = filter/GPUColorFilter.cpp; sourceTree = "<group>"; };
+		C8EB52DF1ED7E306000EA55C /* GPUColorFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUColorFilter.h; path = filter/GPUColorFilter.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -353,6 +361,10 @@
 		C8A0ACB21ECE9D2D0043ADE9 /* filter */ = {
 			isa = PBXGroup;
 			children = (
+				C8EB52DE1ED7E306000EA55C /* GPUColorFilter.cpp */,
+				C8EB52DF1ED7E306000EA55C /* GPUColorFilter.h */,
+				C8EB52D51ED7CBDB000EA55C /* GPUBilateralBlurFilter.cpp */,
+				C8EB52D61ED7CBDB000EA55C /* GPUBilateralBlurFilter.h */,
 				C88D0AFC1ED3FF5F0084AF89 /* GPUPaintFilter.cpp */,
 				C88D0AFD1ED3FF5F0084AF89 /* GPUPaintFilter.h */,
 				C8B0553C1ED2DDF2003ABF3C /* GPUBezierFilter.cpp */,
@@ -476,6 +488,7 @@
 				C8A0AD811ECEBBC70043ADE9 /* GPUProgram.h in Headers */,
 				C8A0AD821ECEBBC70043ADE9 /* GPURawInput.h in Headers */,
 				C8A0AD831ECEBBC70043ADE9 /* GPURawOutput.h in Headers */,
+				C8EB52D81ED7CBDB000EA55C /* GPUBilateralBlurFilter.h in Headers */,
 				C8A0AD841ECEBBC70043ADE9 /* GPUSampleBufferInput.h in Headers */,
 				C8B0553F1ED2DDF2003ABF3C /* GPUBezierFilter.h in Headers */,
 				C8A0AD851ECEBBC70043ADE9 /* GPUTextureInput.h in Headers */,
@@ -490,6 +503,7 @@
 				C8A0AD8D1ECEBBC70043ADE9 /* GPUMedianFilter.h in Headers */,
 				C8A0AD8E1ECEBBC70043ADE9 /* GPUOutlineFilter.h in Headers */,
 				C8A0AD8F1ECEBBC70043ADE9 /* GPUSaturationFilter.h in Headers */,
+				C8EB52E11ED7E306000EA55C /* GPUColorFilter.h in Headers */,
 				C8A0AD901ECEBBC70043ADE9 /* GPUSobelEdgeFilter.h in Headers */,
 				C8A0AD911ECEBBC70043ADE9 /* GPUGaussianBlurFilter.h in Headers */,
 				C8A0AD921ECEBBC70043ADE9 /* GPULuminanceFilter.h in Headers */,
@@ -571,12 +585,14 @@
 				C8A0ACF11ECE9D420043ADE9 /* GPUZoomFilter.cpp in Sources */,
 				C8A0AD621ECEA4E80043ADE9 /* bs_list.c in Sources */,
 				C8A0AD601ECEA4E80043ADE9 /* bs_hashmap.c in Sources */,
+				C8EB52D71ED7CBDB000EA55C /* GPUBilateralBlurFilter.cpp in Sources */,
 				C8A0AD641ECEA4E80043ADE9 /* bs_lock.c in Sources */,
 				C8A0AD6F1ECEA4E80043ADE9 /* bs_timer.c in Sources */,
 				C8A0ACEF1ECE9D420043ADE9 /* GPUYUV420Filter.cpp in Sources */,
 				C8A0AD541ECEA4E80043ADE9 /* bs_data.c in Sources */,
 				C8A0ACE61ECE9D420043ADE9 /* GPUPicture.cpp in Sources */,
 				C8A0ACDF1ECE9D420043ADE9 /* GPUBlendFilter.cpp in Sources */,
+				C8EB52E01ED7E306000EA55C /* GPUColorFilter.cpp in Sources */,
 				C8A0AD051ECE9DD00043ADE9 /* GPUOutlineFilter.cpp in Sources */,
 				C8A0ADD21ECED4520043ADE9 /* GPULineFilter.cpp in Sources */,
 				C88D0AFE1ED3FF5F0084AF89 /* GPUPaintFilter.cpp in Sources */,

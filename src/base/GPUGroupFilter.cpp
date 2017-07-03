@@ -1,6 +1,7 @@
 /**
  * file :	GPUGroupFilter.cpp
  * author :	Rex
+ * email : rex@labjk.com
  * create :	2016-08-06 21:57
  * func : 
  * history:

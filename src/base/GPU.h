@@ -1,6 +1,7 @@
 /**
  * file :	GPU.h
- * author :	Rex
+ * author :	Rex 
+ * email : rex@labjk.com
  * create :	2016-04-28 22:29
  * func : 
  * history:
@@ -35,6 +36,9 @@
 #include "GPUGaussianBlurFilter.h"  // 高斯滤波
 #include "GPULuminanceFilter.h"     // 灰度
 #include "GPUSobelEdgeFilter.h"     // Sobel边缘检测
+#include "GPUBilateralBlurFilter.h" // 平滑滤波
+#include "GPUSmoothFilter.h"
+#include "GPUColorFilter.h"
 
 #include "GPUBezierFilter.h"        // 贝塞尔曲线
 #include "GPUPaintFilter.h"

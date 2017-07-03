@@ -1,6 +1,7 @@
 /**
  * file :	GPUYUV420Filter.h
  * author :	Rex
+ * email : rex@labjk.com
  * create :	2016-07-22 18:37
  * func : 
  * history:

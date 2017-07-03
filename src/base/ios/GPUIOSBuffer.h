@@ -1,6 +1,7 @@
 /**
  * file :	GPUIOSBuffer.h
  * author :	Rex
+ * email : rex@labjk.com
  * create :	2016-07-08 16:08
  * func : 
  * history:

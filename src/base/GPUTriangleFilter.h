@@ -1,6 +1,7 @@
 /**
  * file :	GPUTriangleFilter.h
  * author :	Rex
+ * email : rex@labjk.com
  * create :	2017-02-25 23:32
  * func : 
  * history:

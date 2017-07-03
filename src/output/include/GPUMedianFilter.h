@@ -9,8 +9,23 @@
 #ifndef	__GPUMEDIANFILTER_H_
 #define	__GPUMEDIANFILTER_H_
 
-#include "GPUTwoPassFilter.h"
+#include "GPUFilter.h"
 
+class GPUMedianFilter: public GPUFilter{
+public:
+    GPUMedianFilter();
+    
+    virtual void setFrameSize(uint32_t width, uint32_t height);
+};
+
+class GPUMeansFilter: public GPUFilter{
+public:
+    GPUMeansFilter();
+    
+    virtual void setFrameSize(uint32_t width, uint32_t height);
+};
+
+/*
 class GPUMedianFilter:public GPUTwoPassFilter{
 public:
     GPUMedianFilter(uint32_t distance = 2);
@@ -27,4 +42,5 @@ protected:
     uint32_t 	m_frame_width;
     uint32_t	m_frame_height;
 };
+ */
 #endif

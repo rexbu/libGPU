@@ -1,6 +1,7 @@
 /**
  * file :	GPUPicture.mm
  * author :	Rex
+ * email : rex@labjk.com
  * create :	2016-08-01 16:39
  * func : 
  * history:

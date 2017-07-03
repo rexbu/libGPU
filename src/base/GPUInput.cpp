@@ -1,6 +1,7 @@
 /**
  * file :	GPUFilter.h
  * author :	rex
+ * email : rex@labjk.com
  * create :	2016-04-27 19:11
  * func :
  * history:

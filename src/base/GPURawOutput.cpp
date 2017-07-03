@@ -1,6 +1,7 @@
 /**
  * file :	GPURawOutput.cpp
  * author :	Rex
+ * email : rex@labjk.com
  * create :	2016-06-01 14:41
  * func : 
  * history:
