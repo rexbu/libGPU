@@ -1,6 +1,7 @@
 /**
  * file :	GPUProgram.h
  * author :	Rex
+ * email : rex@labjk.com
  * create :	2016-05-09 22:30
  * func : 
  * history:

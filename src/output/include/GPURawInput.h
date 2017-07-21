@@ -1,6 +1,7 @@
 /**
  * file :	GPURawInput.h
  * author :	Rex
+ * email : rex@labjk.com
  * create :	2016-04-27 21:10
  * func : 
  * history:

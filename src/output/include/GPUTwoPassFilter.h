@@ -1,6 +1,7 @@
 /**
  * file :	GPUTwoPassFilter.h
  * author :	Rex
+ * email : rex@labjk.com
  * create :	2016-05-05 19:49
  * func : 
  * history:

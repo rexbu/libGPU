@@ -1,6 +1,7 @@
 /**
  * file :	GPUOutputFilter.h
  * author :	Rex
+ * email : rex@labjk.com
  * create :	2017-03-25 16:11
  * func :   输出group，支持bgra、rgba、nv12、nv21、i420等格式输出
  * history:

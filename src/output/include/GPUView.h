@@ -1,6 +1,7 @@
 /**
  * file :	gpu_view.h
  * author :	Rex
+ * email : rex@labjk.com
  * create :	2016-04-27 19:13
  * func : 
  * history:
