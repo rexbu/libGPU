@@ -15,8 +15,10 @@ GPUFilter(false){
     m_inputs = 0;
     m_line_width = 1;
     
-    m_c0 = {0, 0, 0, 1.0};
-    m_c1 = {0, 0, 0, 1.0};
+	memset(&m_c0, 0, sizeof(gpu_colorf_t));
+	memset(&m_c1, 0, sizeof(gpu_colorf_t));
+	m_c0.a = 1.0;
+	m_c1.a = 1.0;
 }
 
 GPUPaintFilter::~GPUPaintFilter(){

@@ -6,6 +6,7 @@
  * history:
  */
 
+#include <math.h>
 #include "GPUGaussianBlurFilter.h"
 
 const static char* g_gaussian_fragment_shader = SHADER_STRING(
@@ -37,7 +38,7 @@ void GPUGaussianBlurFilter::setExtraParameter(float pixel){
     {
         // Calculate the number of pixels to sample from by setting a bottom limit for the contribution of the outermost pixel
         float minimumWeightToFindEdgeOfSamplingArea = 1.0/256.0;
-        calculatedSampleRadius = floor(sqrt(-2.0 * pow(blurRadiusInPixels, 2.0) * log(minimumWeightToFindEdgeOfSamplingArea * sqrt(2.0 * M_PI * pow(blurRadiusInPixels, 2.0))) ));
+        calculatedSampleRadius = floor(sqrt(-2.0 * pow((double)blurRadiusInPixels, 2.0) * log(minimumWeightToFindEdgeOfSamplingArea * sqrt(2.0 * M_PI * pow((double)blurRadiusInPixels, 2.0))) ));
         calculatedSampleRadius += calculatedSampleRadius % 2; // There's nothing to gain from handling odd radius sizes, due to the optimizations I use
     }
 
@@ -52,7 +53,7 @@ char* GPUGaussianBlurFilter::generateShader(uint32_t radius, float sigma){
     const char* value_p = "value += %f * texture2D(inputImageTexture, textureCoordinate + stepOffset*%f);";
     const char* value_d = "value += %f * texture2D(inputImageTexture, textureCoordinate - stepOffset*%f);";
     for (int i=0; i<radius+1; i++) {
-        weight[i] = (1.0 / sqrt(2.0 * M_PI * pow(sigma, 2.0))) * exp(-pow(i, 2.0) / (2.0 * pow(sigma, 2.0)));
+        weight[i] = (1.0 / sqrt(2.0 * M_PI * pow((double)sigma, 2.0))) * exp(-pow((double)i, 2.0) / (2.0 * pow((double)sigma, 2.0)));
         
         if (i == 0)
         {
