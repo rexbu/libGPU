@@ -10,6 +10,8 @@
 #include "GPUPicture.h"
 
 extern JavaVM*  g_jvm;
+static jclass g_fileutil_class = NULL;
+
 GPUPicture::GPUPicture(uint8_t * data, uint32_t size){
 	JNIEnv*     	env;
     g_jvm->AttachCurrentThread(&env, NULL);
@@ -17,9 +19,13 @@ GPUPicture::GPUPicture(uint8_t * data, uint32_t size){
 	jbyteArray  jbarray = env->NewByteArray(size);
 	env->SetByteArrayRegion(jbarray, 0, size, (jbyte*)data); 
 
-	jclass jc= env->FindClass("com/rex/utils/FileUtil");
-	jmethodID method = env->GetStaticMethodID(jc, "readPNG", "([B)Landroid/graphics/Bitmap;");
-	jobject bitmap = (jstring)env->CallStaticObjectMethod(jc, method, jbarray);
+	if (g_fileutil_class==NULL)
+    {
+		jclass jc= env->FindClass("com/rex/utils/FileUtil");
+      	g_fileutil_class = (jclass)env->NewGlobalRef(jc);  
+    }
+	jmethodID method = env->GetStaticMethodID(g_fileutil_class, "readPNG", "([B)Landroid/graphics/Bitmap;");
+	jobject bitmap = (jstring)env->CallStaticObjectMethod(g_fileutil_class, method, jbarray);
 	env->DeleteLocalRef(jbarray);
 	m_exist = true;
 	if (bitmap==NULL)
@@ -50,9 +56,14 @@ GPUPicture::GPUPicture(const char* path){
     g_jvm->AttachCurrentThread(&env, NULL);
     
 	jstring jpath = env->NewStringUTF(path);
-	jclass jc= env->FindClass("com/rex/utils/FileUtil");
-	jmethodID method = env->GetStaticMethodID(jc, "readPNG", "(Ljava/lang/String;)Landroid/graphics/Bitmap;");
-	jobject bitmap = (jstring)env->CallStaticObjectMethod(jc, method, jpath);
+
+	if (g_fileutil_class==NULL)
+    {
+		jclass jc= env->FindClass("com/rex/utils/FileUtil");
+      	g_fileutil_class = (jclass)env->NewGlobalRef(jc);  
+    }
+	jmethodID method = env->GetStaticMethodID(g_fileutil_class, "readPNG", "(Ljava/lang/String;)Landroid/graphics/Bitmap;");
+	jobject bitmap = (jstring)env->CallStaticObjectMethod(g_fileutil_class, method, jpath);
 	m_exist = true;
 	if (bitmap==NULL)
 	{

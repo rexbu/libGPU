@@ -187,8 +187,8 @@
 			buildConfigurationList = C8A0ADF41ECFE5A10043ADE9 /* Build configuration list for PBXNativeTarget "example" */;
 			buildPhases = (
 				C8A0ADD91ECFE5A10043ADE9 /* Sources */,
-				C8A0ADDA1ECFE5A10043ADE9 /* Frameworks */,
 				C8A0ADDB1ECFE5A10043ADE9 /* Resources */,
+				C8A0ADDA1ECFE5A10043ADE9 /* Frameworks */,
 			);
 			buildRules = (
 			);
