@@ -23,11 +23,6 @@ LOCAL_SRC_FILES += $(SRCS)
 	# GPUSobelEdgeFilter.cpp		
 #LOCAL_SRC_FILES := 	$(wildcard ./*.cpp)
 
-LOCAL_STATIC_LIBRARIES := \
-	libgpu	\
-	libbs	
-
-LOCAL_LDLIBS += -L$(SYSROOT)/usr/lib -llog -lGLESv2 -lEGL -landroid -ljnigraphics
 LOCAL_MODULE := filter
 
 include $(BUILD_STATIC_LIBRARY)

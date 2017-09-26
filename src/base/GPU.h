@@ -37,7 +37,6 @@
 #include "GPULuminanceFilter.h"     // 灰度
 #include "GPUSobelEdgeFilter.h"     // Sobel边缘检测
 #include "GPUBilateralBlurFilter.h" // 平滑滤波
-#include "GPUSmoothFilter.h"
 #include "GPUColorFilter.h"
 
 #include "GPUBezierFilter.h"        // 贝塞尔曲线

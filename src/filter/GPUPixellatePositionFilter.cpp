@@ -37,6 +37,7 @@ const static char* g_positionmosaic_fragment_shader = SHADER_STRING (
  );
 
 GPUPixellatePositionFilter::GPUPixellatePositionFilter(float blockSize, float ratio):GPUFilter(g_positionmosaic_fragment_shader) {
+  m_filter_name = "GPUPixellatePositionFilter";
   setFloat("fractionalWidthOfPixel", blockSize);
   setFloat("aspectRatio", ratio);
   

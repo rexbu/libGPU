@@ -13,6 +13,14 @@ extern JavaVM*  g_jvm;
 static jclass g_fileutil_class = NULL;
 
 GPUPicture::GPUPicture(uint8_t * data, uint32_t size){
+	load(data, size);
+}
+GPUPicture::GPUPicture(const char* path){
+	load(path);
+}
+
+bool GPUPicture::load(uint8_t * data, uint32_t size)
+{
 	JNIEnv*     	env;
     g_jvm->AttachCurrentThread(&env, NULL);
     
@@ -24,7 +32,7 @@ GPUPicture::GPUPicture(uint8_t * data, uint32_t size){
 		jclass jc= env->FindClass("com/rex/utils/FileUtil");
       	g_fileutil_class = (jclass)env->NewGlobalRef(jc);  
     }
-	jmethodID method = env->GetStaticMethodID(g_fileutil_class, "readPNG", "([B)Landroid/graphics/Bitmap;");
+	jmethodID method = env->GetStaticMethodID(g_fileutil_class, "readImage", "([B)Landroid/graphics/Bitmap;");
 	jobject bitmap = (jstring)env->CallStaticObjectMethod(g_fileutil_class, method, jbarray);
 	env->DeleteLocalRef(jbarray);
 	m_exist = true;
@@ -32,7 +40,7 @@ GPUPicture::GPUPicture(uint8_t * data, uint32_t size){
 	{
 		err_log("Parse bytes[%d] to Bitmap Error. ", size);
 		m_exist = false;
-		return;
+		return false;
 	}
 
 	AndroidBitmapInfo info;
@@ -41,7 +49,7 @@ GPUPicture::GPUPicture(uint8_t * data, uint32_t size){
 	AndroidBitmap_getInfo(env, bitmap, &info);
 	if(info.format != ANDROID_BITMAP_FORMAT_RGBA_8888) {
 		err_log("Bitmap format[%d] is not RGBA_8888!", info.format);
-		return;
+		return false;
 	}
 
 	AndroidBitmap_lockPixels(env, bitmap, &pixels);
@@ -49,9 +57,10 @@ GPUPicture::GPUPicture(uint8_t * data, uint32_t size){
 	AndroidBitmap_unlockPixels(env, bitmap);
 	// 主线程不能销毁
 	// g_jvm->DetachCurrentThread();
+	return true;
 }
 
-GPUPicture::GPUPicture(const char* path){
+bool GPUPicture::load(const char* path){
     JNIEnv*     	env;
     g_jvm->AttachCurrentThread(&env, NULL);
     
@@ -62,13 +71,13 @@ GPUPicture::GPUPicture(const char* path){
 		jclass jc= env->FindClass("com/rex/utils/FileUtil");
       	g_fileutil_class = (jclass)env->NewGlobalRef(jc);  
     }
-	jmethodID method = env->GetStaticMethodID(g_fileutil_class, "readPNG", "(Ljava/lang/String;)Landroid/graphics/Bitmap;");
+	jmethodID method = env->GetStaticMethodID(g_fileutil_class, "readImage", "(Ljava/lang/String;)Landroid/graphics/Bitmap;");
 	jobject bitmap = (jstring)env->CallStaticObjectMethod(g_fileutil_class, method, jpath);
 	m_exist = true;
 	if (bitmap==NULL)
 	{
 		m_exist = false;
-		return;
+		return false;
 	}
 
 	AndroidBitmapInfo info;
@@ -77,11 +86,12 @@ GPUPicture::GPUPicture(const char* path){
 	AndroidBitmap_getInfo(env, bitmap, &info);
 	if(info.format != ANDROID_BITMAP_FORMAT_RGBA_8888) {
 		err_log("Bitmap format[%d] is not RGBA_8888!", info.format);
-		return;
+		return false;
 	}
 	
 	AndroidBitmap_lockPixels(env, bitmap, &pixels);
 	setPixel((uint8_t*)pixels, info.width, info.height);
 	AndroidBitmap_unlockPixels(env, bitmap);
 	// g_jvm->DetachCurrentThread();
+	return true;
 }
