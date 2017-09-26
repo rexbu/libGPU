@@ -29,6 +29,11 @@ public class GPUPipeline {
         }
     }
 
+    @Override
+    protected void finalize(){
+        destroyGPUPipeline();
+    }
+
     public native long createGPUPipeline(String[] name);
     public native void destroyGPUPipeline();
 
