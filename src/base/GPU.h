@@ -45,6 +45,7 @@
 
 #include "GPUBlendImageFilter.h"
 #include "GPUBlend2Filter.h"
+#include "GPUPixellateFilter.h"
 #include "GPUPixellatePositionFilter.h"
 
 #if !defined(MIN)
