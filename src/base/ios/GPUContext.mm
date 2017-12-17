@@ -38,7 +38,7 @@ void GPUContext::createContext(){
     memset(m_gpu_context, 0, sizeof(_gpu_context_t));
     
     if (g_share_context==NULL) {
-        m_gpu_context->context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2 sharegroup:m_gpu_context->sharegroup];
+        m_gpu_context->context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES3 sharegroup:m_gpu_context->sharegroup];
         //NSAssert(m_context != NULL, @"Unable to create an OpenGL ES 2.0 context. The GPUImage framework requires OpenGL ES 2.0 support to work.");
         assert(m_gpu_context->context!=NULL);
     }
@@ -47,8 +47,10 @@ void GPUContext::createContext(){
     }
     
     [EAGLContext setCurrentContext:m_gpu_context->context];
+    printParams();
     // Set up a few global settings for the image processing pipeline
     glDisable(GL_DEPTH_TEST);
+    // glEnable(GL_DEPTH_TEST);
 }
 
 // 作为当前的glContext

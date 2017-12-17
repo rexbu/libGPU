@@ -221,7 +221,7 @@ void GPUIOSView::setOutputRotation(gpu_rotation_t rotation){
     
     glBindFramebuffer(GL_FRAMEBUFFER, displayFramebuffer);
     glViewport(0, 0, (GLint)_sizeInPixels.width, (GLint)_sizeInPixels.height);
-    glClearColor(1.0, 1.0, 1.0, 1.0);
+    glClearColor(0.0, 0.0, 0.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
@@ -229,6 +229,7 @@ void GPUIOSView::setOutputRotation(gpu_rotation_t rotation){
 {
     GPUContext* context = GPUContext::shareInstance();
     context->glContextLock();
+    context->makeCurrent();
     
     context->setActiveProgram(displayProgram);
     [self activeBuffer];

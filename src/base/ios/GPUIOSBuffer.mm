@@ -7,30 +7,32 @@
  * history:
  */
 
-#import <OpenGLES/ES2/gl.h>
-#import <OpenGLES/ES2/glext.h>
+#import <OpenGLES/ES3/gl.h>
+#import <OpenGLES/ES3/glext.h>
 #import <OpenGLES/EAGL.h>
 #include "GPUIOSBuffer.h"
 #include "GPUContext.h"
 
 GPUIOSFrameBuffer::GPUIOSFrameBuffer(gpu_size_t size, bool only_texture):
 m_render_target(nil){
-    init(size.width, size.height, GPUFrameBuffer::defaultTextureOption(), only_texture);
+    gpu_frame_option_t op = defaultFrameOption();
+    init(size.width, size.height, 0, &op, only_texture);
 }
 
 GPUIOSFrameBuffer::GPUIOSFrameBuffer(int width, int height, bool only_texture):
 m_render_target(nil){
-    init(width, height, GPUFrameBuffer::defaultTextureOption(), only_texture);
+    gpu_frame_option_t op = defaultFrameOption();
+    init(width, height, 0, &op, only_texture);
 }
 
-GPUIOSFrameBuffer::GPUIOSFrameBuffer(int width, int height, GPUTextureOption_t option, bool only_texture):
+GPUIOSFrameBuffer::GPUIOSFrameBuffer(int width, int height, gpu_frame_option_t* option, bool only_texture):
 m_render_target(nil){
-    init(width, height, option, only_texture);
+    init(width, height, 0, option, only_texture);
 }
 
 GPUIOSFrameBuffer::GPUIOSFrameBuffer(int width, int height, GLuint texture):
 m_render_target(nil),
-GPUFrameBuffer(width, height, texture){}
+GPUFrameBuffer(width, height, 0, texture){}
 
 void GPUIOSFrameBuffer::generateFrameBuffer(){
     glGenFramebuffers(1, &m_framebuffer);
@@ -58,11 +60,11 @@ void GPUIOSFrameBuffer::generateFrameBuffer(){
     err = CVOpenGLESTextureCacheCreateTextureFromImage (kCFAllocatorDefault, coreVideoTextureCache, m_render_target,
                                                         NULL, // texture attributes
                                                         GL_TEXTURE_2D,
-                                                        m_texture_option.internal_format, // opengl format
+                                                        m_option.color_format, // opengl format
                                                         (int)m_width,
                                                         (int)m_height,
-                                                        m_texture_option.format, // native iOS format
-                                                        m_texture_option.type,
+                                                        m_option.format, // native iOS format
+                                                        m_option.type,
                                                         0,
                                                         &m_render_texture);
     if (err)
@@ -76,13 +78,13 @@ void GPUIOSFrameBuffer::generateFrameBuffer(){
     
     glBindTexture(CVOpenGLESTextureGetTarget(m_render_texture), CVOpenGLESTextureGetName(m_render_texture));
     m_texture = CVOpenGLESTextureGetName(m_render_texture);
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_texture_option.min_filter);
-//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_texture_option.mag_filter);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, m_texture_option.wrap_s);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_texture_option.wrap_t);
+    //    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_texture_option.min_filter);
+    //    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_texture_option.mag_filter);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, m_option.wrap_s);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_option.wrap_t);
     
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, CVOpenGLESTextureGetName(m_render_texture), 0);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24_OES, m_width, m_height);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, m_width, m_height);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_renderbuffer);
     
     GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
@@ -99,7 +101,7 @@ void GPUIOSFrameBuffer::generateFrameBuffer(){
             break;
     }
     
-    glBindTexture(GL_TEXTURE_2D, 0);
+    unactive();
 }
 
 GPUIOSFrameBuffer::~GPUIOSFrameBuffer(){
@@ -117,6 +119,6 @@ GPUBufferCache* GPUIOSBufferCache::shareInstance(){
     return m_instance;
 }
 
-GPUFrameBuffer* GPUIOSBufferCache::newFrameBuffer(int width, int height, GPUTextureOption_t option, bool only_texture){
+GPUFrameBuffer* GPUIOSBufferCache::newFrameBuffer(int width, int height, gpu_frame_option_t* option, bool only_texture){
     return new GPUIOSFrameBuffer(width, height, option, only_texture);
 }

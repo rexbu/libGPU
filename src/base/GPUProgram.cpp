@@ -147,6 +147,7 @@ GLint GPUProgram::attributeIndex(const char* name){
         //err_log("vertex: %s", m_vertex_str);
         GPUCheckGlError("glGetAttribLocation", true, false);
 	}
+    GPUCheckGlError("glGetAttribLocation", true, false);
 	return index;
 }
 
@@ -158,6 +159,13 @@ GLint GPUProgram::uniformIndex(const char* name){
         GPUCheckGlError("glGetUniformLocation", true, false);
     }
 	return index;
+}
+
+void GPUProgram::setUniformsIndex(const char* name, GLint* index, uint32_t size){
+    GLint location = uniformIndex(name);
+    if (location>=0) {
+        glUniform1iv(location, size, index);
+    }
 }
 
 void GPUProgram::setInteger(const char *name, int val){

@@ -18,13 +18,16 @@ void GPUPicture::setPixel(uint8_t* pixels, uint32_t width, uint32_t height, uint
     m_image_size.height = height;
     
     GPUContext::shareInstance()->makeCurrent();
+    // 如果图片被循环利用，使用GPUBufferCache获取会导致图片内容被改
     m_outbuffer = new GPUFrameBuffer(width, height, true);
     m_outbuffer->disableReference();
     
-    m_outbuffer->activeTexture(GL_TEXTURE0);
+    //m_outbuffer->activeTexture(GL_TEXTURE0);
+    m_outbuffer->setPixels(pixels);
     // no need to use self.outputTextureOptions here since pictures need this texture formats and type
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)width, (int)height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-    glBindTexture(GL_TEXTURE_2D, 0);
+//    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (int)width, (int)height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+//    glBindTexture(GL_TEXTURE_2D, 0);
+    
 }
 
 void GPUPicture::processImage(){

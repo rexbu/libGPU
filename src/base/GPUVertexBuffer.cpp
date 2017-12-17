@@ -33,11 +33,26 @@ void GPUVertexBuffer::activeBuffer(GLuint attribute, const GLvoid *data, int off
         glBindBuffer(GL_ARRAY_BUFFER, m_vertexbuffer);
         glBufferSubData(GL_ARRAY_BUFFER, offset, m_size, data);
         glVertexAttribPointer(attribute, m_dimension, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*m_dimension, 0);
-        //glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
     else{
         glEnableVertexAttribArray(attribute);
         glVertexAttribPointer(attribute, m_dimension , GL_FLOAT, GL_FALSE, 0, data);
+    }
+}
+void GPUVertexBuffer::activeBuffer(GLuint attribute){
+    if (m_cache) {
+        glEnableVertexAttribArray(attribute);
+        glBindBuffer(GL_ARRAY_BUFFER, m_vertexbuffer);
+        glVertexAttribPointer(attribute, m_dimension, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*m_dimension, 0);
+    }
+}
+
+void GPUVertexBuffer::setBuffer(const GLvoid *data, int offset){
+    if (m_cache) {
+        glBindBuffer(GL_ARRAY_BUFFER, m_vertexbuffer);
+        glBufferSubData(GL_ARRAY_BUFFER, offset, m_size, data);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 }
 

@@ -17,6 +17,7 @@
 #include "GPUOutput.h"      // 输出流
 #include "GPUFrameBuffer.h"
 #include "GPUFilter.h"
+#include "GPUArrayFilter.h"
 #ifdef __ANDROID__
 #include "GPUTextureInput.h"
 #endif

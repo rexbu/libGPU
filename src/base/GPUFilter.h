@@ -46,7 +46,7 @@ public:
     
     // 设置输出framebuffer，如果设置了，则不再从cache中获取buffer
     virtual void setOutputFrameBuffer(GPUFrameBuffer* buffer){ m_special_outbuffer = buffer;}
-    void activeOutFrameBuffer();
+    virtual void activeOutFrameBuffer();
     
     void setFloat(const char* name, GLfloat val);
     void setFloat(const char* name, GLfloat* val, int num);
@@ -64,13 +64,15 @@ protected:
     /// 更新帧尺寸并重新计算裁剪
     virtual void setFrameSize(uint32_t width, uint32_t height);
     // 计算裁剪比例，更新顶点
-    void calAspectRatio();
+    virtual void calAspectRatio();
 
     static const GLfloat* coordinatesRotation(gpu_rotation_t mode);
 
 public:
     static const char* g_vertext_shader[];
+    static const char* g_vertext30_shader;
     static const char* g_fragment_shader;
+    static const char* g_3dfragment_shader;
     static const GLfloat g_vertices[];
 
 ///	GPUFrameBuffer* m_firstbuffer;
@@ -80,6 +82,7 @@ protected:
     GLuint      m_position;
     GLuint      m_input_texture;
     GLuint      m_input_coordinate;
+    GLfloat     m_coordinates[8];   // 纹理贴图坐标
     
     std::vector<GLint> m_input_textures;
     std::vector<GLint> m_input_coordinates;
@@ -92,6 +95,8 @@ protected:
     gpu_fill_mode_t     m_fill_mode;
     
     GPUFrameBuffer*     m_special_outbuffer;
+    gpu_frame_option_t* m_option;   // 外部传入的option
+    float               m_clear_color[4];
     std::string m_filter_name;  // 用于debug
 };
 

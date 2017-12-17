@@ -16,6 +16,7 @@
 
 class GPUPicture: public GPUOutput{
 public:
+    GPUPicture(){}
 	GPUPicture(const char* path);
     GPUPicture(uint8_t * data, uint32_t size);
     GPUPicture(uint8_t * data, int width, int height);
@@ -24,9 +25,10 @@ public:
     // pathForResource路径初始化
     GPUPicture(const char* file, const char* type);
 #endif
-
     ~GPUPicture();
     
+    bool load(const char* path);
+    bool load(uint8_t * data, uint32_t size);
     virtual bool exist(){ return m_exist; }
     void processImage();
     void setPixel(uint8_t* pixels, uint32_t width, uint32_t height, uint32_t format=GL_RGBA);

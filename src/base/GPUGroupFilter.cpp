@@ -42,7 +42,7 @@ void GPUGroupFilter::newFrame(){
 
 void GPUGroupFilter::setInputFrameBuffer(GPUFrameBuffer* buffer, int location){
     // GPUGroupFilter的inputs为1，用m_input_buffers[0]存储第一个framebuffer，用于bypass时的传递
-    if (location==0) {
+    if (location==0 && buffer!=NULL) {
         m_input_buffers[location] = buffer;
         if (m_frame_width!=buffer->m_width || m_frame_height!=buffer->m_height) {
             setFrameSize(buffer->m_width, buffer->m_height);

@@ -61,8 +61,11 @@ void GPUSampleBufferInput::processSampleBuffer(CMSampleBufferRef sampleBuffer){
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         context->glContextUnlock();
         
-        GPUFrameBuffer luma_buffer(m_frame_width, m_frame_height, luminanceTexture, GPUFB_LUMA);
-        GPUFrameBuffer chrom_buffer(m_frame_width, m_frame_height, chrominanceTexture, GPUFB_UV);
+        gpu_frame_option_t op = GPUFrameBuffer::defaultFrameOption();
+        op.format = GL_LUMINANCE;
+        GPUFrameBuffer luma_buffer(m_frame_width, m_frame_height, luminanceTexture);
+        op.format = GL_LUMINANCE_ALPHA;
+        GPUFrameBuffer chrom_buffer(m_frame_width, m_frame_height, chrominanceTexture);
         
         CVPixelBufferUnlockBaseAddress(cameraFrame, 0);
         if (m_input == NULL) {

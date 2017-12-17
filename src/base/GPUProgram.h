@@ -23,6 +23,7 @@ public:
 
 	GLint attributeIndex(const char* name);
 	GLint uniformIndex(const char* name);
+    void setUniformsIndex(const char* name, GLint* index, uint32_t size);
 
 	void link();
 	void use();

@@ -5,7 +5,7 @@
 
 // 裁剪方式
 typedef enum{
-    GPUFillModeStretch,                       // 完全匹配
+    GPUFillModeStretch,                       // 完全匹配，直接拉伸
     GPUFillModePreserveAspectRatio,           // 适配输出尺寸，可能有边框
     GPUFillModePreserveAspectRatioAndFill     // 按照输出比例裁剪，不保留边框
 }gpu_fill_mode_t;
@@ -23,11 +23,19 @@ typedef enum{
     GPU_GRAY = 8,
 }gpu_pixel_format_t;
 
-// texture类型，GPU_TEXTURE_OES只能用于安卓
+// texture类别，GPU_TEXTURE_OES只能用于安卓
 typedef enum{
-    GPU_TEXTURE_RGBA = 0,
+    GPU_TEXTURE_RGBA = 0,   // 默认纹理，属于非规范化纹理
     GPU_TEXTURE_OES = 1,    // 用于安卓oes类型texutre，实际是nv21格式
-}gpu_texture_format_t;
+    GPU_TEXTURE_UNNORMAL,   // 非规范化纹理
+    /* 以下是gles3.0中才有 */
+    GPU_TEXTURE_NORMAL,     // 规范化纹理
+    GPU_TEXTURE_FLOAT,      // 浮点纹理
+    GPU_TEXTURE_INTEGER,    // 整数纹理
+    GPU_TEXTURE_SHARED,     // 共享指数纹理
+    GPU_TEXTURE_DEPTH,      // 深度纹理
+    GPU_TEXTURE_SRGB        // sRGB纹理
+}gpu_texture_type_t;
 
 // 旋转方向，一般用于指定人脸方向，均为顺时针旋转
 typedef enum{
@@ -87,14 +95,5 @@ typedef struct gpu_rect_t{
         float   height;
     }size;
 }gpu_rect_t;
-
-typedef enum {
-	GPUFB_NULL							= 0,
-	GPUFB_LUMA							= 1,	///	buffer format: Y, linear
-	GPUFB_UV							= 2,	///	buffer format: UV, linear
-	GPUFB_RGBA							= 3,	///	buffer format: RGBA, linear
-	GPUFB_XYZW							= 3|4,	///	buffer format: XYZW, nearest
-	GPUFB_FLOAT							= 1|4,	///	buffer format: float, nearest
-} gpu_buffer_t;
 
 #endif

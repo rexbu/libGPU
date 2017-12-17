@@ -12,6 +12,7 @@
 
 #ifdef __ANDROID__
 #include <jni.h>
+#include <GLES/gl.h>
 #include <GLES/glext.h>
 #include <GLES3/gl3.h>
 #include <GLES3/gl3ext.h>
@@ -25,8 +26,8 @@ typedef struct _gpu_context_t{
 }_gpu_context_t;
 
 #elif __IOS__
-#import <OpenGLES/ES2/gl.h>
-#import <OpenGLES/ES2/glext.h>
+#import <OpenGLES/ES3/gl.h>
+#import <OpenGLES/ES3/glext.h>
 struct _gpu_context_t;
 
 #else
@@ -49,6 +50,7 @@ struct _gpu_context_t;
 #define	STRINGIZE(x)	#x
 #define	SHADER_OESSTRING(text)	SHADER_PREFIX STRINGIZE(text)
 #define	SHADER_STRING(text)		"precision mediump float;" STRINGIZE(text)
+#define SHADER30_STRING(text)   "#version 300 es\nprecision mediump float;" STRINGIZE(text)
 
 #define GPURotationSwapsWidthAndHeight(rotation) ((rotation) == GPURotateLeft || (rotation) == GPURotateRight || (rotation) == GPURotateRightFlipVertical || (rotation) == GPURotateRightFlipHorizontal)
 void GPUCheckGlError(const char* op, bool log=true, bool lock=true);
@@ -74,6 +76,8 @@ public:
     
     // texture能存储的最大尺寸
     virtual int maximumTextureSize();
+    // fragment shader最大纹理数量
+    static int maxFragmentTextureCount();
     
     void setActiveProgram(GPUProgram* program);
     
@@ -87,7 +91,14 @@ public:
     static void setContextEnable(bool has){
         m_has_context = has;
     }
-
+    static int maxRenderBufferSize(){
+        int size;
+        glGetIntegerv(GL_MAX_RENDERBUFFER_SIZE, &size);
+        return size;
+    }
+    /// 一些参数打印
+    static void printParams();
+    
 #ifdef __IOS__
     void* coreVideoTextureCache();
 #endif

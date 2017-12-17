@@ -90,6 +90,30 @@ int GPUContext::glContextUnlock(){
     return pthread_mutex_unlock(&m_lock);
 }
 
+void GPUContext::printParams(){
+    int param;
+    glGetIntegerv(GL_MAX_TEXTURE_SIZE, &param);
+    info_log("max texture size: %d", param);
+    glGetIntegerv(GL_DEPTH_BITS, &param);
+    info_log("max depth count: %d", param);
+    glGetIntegerv(GL_STENCIL_BITS, &param);
+    info_log("max stencil count: %d", param);
+    glGetIntegerv(GL_MAX_VARYING_VECTORS, &param);
+    info_log("max varying count: %d", param);
+    glGetIntegerv(GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS, &param);
+    info_log("max vertex texture_unit count: %d", param);
+    glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &param);
+    info_log("max fragment texture_unit count: %d", param);
+}
+
+int GPUContext::maxFragmentTextureCount(){
+    static int param = -1;
+    if (param==-1) {
+        glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &param);
+    }
+    return param;
+}
+
 void GPUCheckGlError(const char* op, bool log, bool lock) {
     GPUContext* context;
     if (lock) {
@@ -97,10 +121,11 @@ void GPUCheckGlError(const char* op, bool log, bool lock) {
         context->glContextLock();
     }
     
+    const char* errors[] = {"GL_INVALID_ENUM", "GL_INVALID_VALUE", "GL_INVALID_OPERATION", "", "", "GL_OUT_OF_MEMORY", "GL_INVALID_FRAMEBUFFER_OPERATION"};
     for (GLint error = glGetError(); error!=GL_NO_ERROR; error = glGetError()) {
         if (log)
         {
-            err_log("after %s() glError (%x)", op, error);    
+            err_log("after %s() glError (%s)", op, errors[error-GL_INVALID_ENUM]);
         }
     }
     if (lock) {

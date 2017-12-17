@@ -84,7 +84,9 @@ public:
     }
     
     void activeBuffer(GLuint attribute, const GLvoid *data, int offset=0);
+    void activeBuffer(GLuint attribute);
     void disableBuffer(GLuint attribute);
+    void setBuffer(const GLvoid *data, int offset=0);
 protected:
     uint32_t        m_vertexcount;
     uint32_t        m_dimension;
