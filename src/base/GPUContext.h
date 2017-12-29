@@ -50,7 +50,7 @@ struct _gpu_context_t;
 #define	STRINGIZE(x)	#x
 #define	SHADER_OESSTRING(text)	SHADER_PREFIX STRINGIZE(text)
 #define	SHADER_STRING(text)		"precision mediump float;" STRINGIZE(text)
-#define SHADER30_STRING(text)   "#version 300 es\nprecision mediump float;" STRINGIZE(text)
+#define SHADER30_STRING(text)   "#version 300 es\nprecision highp float;" STRINGIZE(text)
 
 #define GPURotationSwapsWidthAndHeight(rotation) ((rotation) == GPURotateLeft || (rotation) == GPURotateRight || (rotation) == GPURotateRightFlipVertical || (rotation) == GPURotateRightFlipHorizontal)
 void GPUCheckGlError(const char* op, bool log=true, bool lock=true);

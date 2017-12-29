@@ -10,16 +10,21 @@
 #include "GPUPicture.h"
 
 GPUPicture::GPUPicture(uint8_t * data, int width, int height){
+    m_option = GPUFrameBuffer::defaultFrameOption();
     setPixel(data, width, height);
 }
-void GPUPicture::setPixel(uint8_t* pixels, uint32_t width, uint32_t height, uint32_t format){
+GPUPicture::GPUPicture(uint8_t * data, int width, int height, gpu_frame_option_t* format){
+    m_option = *format;
+    setPixel(data, width, height);
+}
+void GPUPicture::setPixel(uint8_t* pixels, uint32_t width, uint32_t height){
     m_pixels = pixels;
     m_image_size.width = width;
     m_image_size.height = height;
     
     GPUContext::shareInstance()->makeCurrent();
     // 如果图片被循环利用，使用GPUBufferCache获取会导致图片内容被改
-    m_outbuffer = new GPUFrameBuffer(width, height, true);
+    m_outbuffer = new GPUFrameBuffer(width, height, &m_option, true);
     m_outbuffer->disableReference();
     
     //m_outbuffer->activeTexture(GL_TEXTURE0);

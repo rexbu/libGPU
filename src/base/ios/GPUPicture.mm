@@ -22,6 +22,7 @@ GPUPicture::GPUPicture(uint8_t * data, uint32_t size){
         return;
     }
     
+    m_option = GPUFrameBuffer::defaultFrameOption();
     init(image.CGImage);
 }
 
@@ -32,6 +33,7 @@ GPUPicture::GPUPicture(void* cgImageRef){
         return;
     }
     
+    m_option = GPUFrameBuffer::defaultFrameOption();
     init(cgImageRef);
 }
 
@@ -46,6 +48,7 @@ GPUPicture::GPUPicture(const char* file, const char* type){
         return;
     }
     
+    m_option = GPUFrameBuffer::defaultFrameOption();
     init(image.CGImage);
 }
 
@@ -57,6 +60,7 @@ GPUPicture::GPUPicture(const char* path){
         return;
     }
     
+    m_option = GPUFrameBuffer::defaultFrameOption();
     init(image.CGImage);
 }
 
@@ -160,7 +164,8 @@ void GPUPicture::init(void* image){
         imageData = (GLubyte *)CFDataGetBytePtr(dataFromImageDataProvider);
     }
     
-    setPixel(imageData, pixelSizeToUseForTexture.width, pixelSizeToUseForTexture.height, format);
+    m_option.format = format;
+    setPixel(imageData, pixelSizeToUseForTexture.width, pixelSizeToUseForTexture.height);
     
     if (shouldRedrawUsingCoreGraphics)
     {

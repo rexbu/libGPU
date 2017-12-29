@@ -18,7 +18,7 @@ static gpu_frame_option_t g_frame_default_option = {
     GL_CLAMP_TO_EDGE,   // wrap_s
     GL_CLAMP_TO_EDGE,   // wrap_t
     GL_CLAMP_TO_EDGE,   // wrap_r
-    GL_RGBA,           // color_internal_format
+    GL_RGBA,            // color_internal_format
     GL_RGBA,            // format
     GL_UNSIGNED_BYTE,   // type
     GL_DEPTH_COMPONENT16,// depth_internal_format

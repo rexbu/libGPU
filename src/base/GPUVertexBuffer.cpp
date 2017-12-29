@@ -58,7 +58,8 @@ void GPUVertexBuffer::setBuffer(const GLvoid *data, int offset){
 
 void GPUVertexBuffer::disableBuffer(GLuint attribute){
     if (m_cache){
-        glBindBuffer(GL_ARRAY_BUFFER, 0);    
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glDisableVertexAttribArray(attribute);
     }
     else{
         glDisableVertexAttribArray(attribute);

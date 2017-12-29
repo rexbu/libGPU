@@ -35,6 +35,8 @@ public:
 	int setProgram(const char *fragment, const char *vertex = NULL);
 
 	void setInteger(const char *name, int val);
+    void setIntegerv(const char *name, int* val, int num);
+    void setUIntegerv(const char *name, uint32_t* val, int num);
 	void setFloat(const char* name, GLfloat val);
 	void setFloat(const char* name, GLfloat* val, int num);
     void setFloatv(const char* name, GLfloat* val, int num);

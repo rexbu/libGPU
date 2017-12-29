@@ -92,9 +92,9 @@ GPUFilter(g_mutable_vertext_shader, g_mutable_fragment_shader, inputs){
     char name[64];
     for (int i = m_inputs; i < GPU_MUTABLE_TEXTURE_NUM; ++i){
         sprintf(name, "inputTextureCoordinate%d", i+1);
-        m_input_coordinates[i] = m_program->attributeIndex(name);
-        if (m_input_coordinates[i] >= 0){
-            glEnableVertexAttribArray(m_input_coordinates[i]);
+        m_input_coordinate = m_program->attributeIndex(name);
+        if (m_input_coordinate >= 0){
+            glEnableVertexAttribArray(m_input_coordinate);
         }
         else{
             err_log("Filter[%s] get coordinate%d error", m_filter_name.c_str(), i+1);
@@ -114,9 +114,9 @@ GPUFilter(g_mutable_vertext_shader, fragment, inputs){
     char name[64];
     for (int i = m_inputs; i < GPU_MUTABLE_TEXTURE_NUM; ++i){
         sprintf(name, "inputTextureCoordinate%d", i+1);
-        m_input_coordinates[i] = m_program->attributeIndex(name);
-        if (m_input_coordinates[i] >= 0){
-            glEnableVertexAttribArray(m_input_coordinates[i]);
+        m_input_coordinate = m_program->attributeIndex(name);
+        if (m_input_coordinate >= 0){
+            glEnableVertexAttribArray(m_input_coordinate);
         }
         else{
             err_log("Filter[%s] get coordinate%d error", m_filter_name.c_str(), i+1);
@@ -136,9 +136,9 @@ GPUFilter(vertex, fragment, inputs){
     char name[64];
     for (int i = m_inputs; i < GPU_MUTABLE_TEXTURE_NUM; ++i){
         sprintf(name, "inputTextureCoordinate%d", i+1);
-        m_input_coordinates[i] = m_program->attributeIndex(name);
-        if (m_input_coordinates[i] >= 0){
-            glEnableVertexAttribArray(m_input_coordinates[i]);
+        m_input_coordinate = m_program->attributeIndex(name);
+        if (m_input_coordinate >= 0){
+            glEnableVertexAttribArray(m_input_coordinate);
         }
         else{
             err_log("Filter[%s] get coordinate%d error", m_filter_name.c_str(), i+1);
@@ -162,66 +162,6 @@ void GPUBlendFilter::newFrame(){
     setFloatv("alpha", enableAlpha, m_inputs);
     
     GPUFilter::newFrame();
-}
-
-void GPUBlendFilter::render(){
-    GPUContext* context = GPUContext::shareInstance();
-    context->glContextLock();   // 加锁，防止此时设置参数
-    context->setActiveProgram(m_program);
-    
-    m_outbuffer = GPUBufferCache::shareInstance()->getFrameBuffer(sizeOfFBO(), false);
-    m_outbuffer->activeBuffer();
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-    glClear( GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-    
-    for (int i=0; i<GPU_MUTABLE_TEXTURE_NUM; i++) {
-        if (i<m_inputs) {
-            m_input_buffers[i]->activeTexture(GL_TEXTURE0+i);
-            glUniform1i(m_input_textures[i], 0+i);
-            
-            m_coordinate_buffers[i] = GPUVertexBufferCache::shareInstance()->getVertexBuffer();
-            if (m_input_coordinates[i]>=0) {
-                m_coordinate_buffers[i]->activeBuffer(m_input_coordinates[i], m_coordinates[i]);
-            }
-            else{
-                //err_log("filter %s coordinate lost: %d", m_filter_name.c_str(), i);
-            }
-        }
-        else{
-            glUniform1i(m_input_textures[i], 0+i);
-            m_coordinate_buffers[i] = GPUVertexBufferCache::shareInstance()->getVertexBuffer();
-            if (m_input_coordinates[i]>=0) {
-                m_coordinate_buffers[i]->activeBuffer(m_input_coordinates[i], m_coordinates[i]);
-            }
-            else{
-                //err_log("filter %s coordinate lost: %d", m_filter_name.c_str(), i);
-            }
-        }
-    }
-    
-    // vbo
-    GPUVertexBuffer* vertex_buffer = GPUVertexBufferCache::shareInstance()->getVertexBuffer();
-    vertex_buffer->activeBuffer(m_position, &m_vertices[0]);
-    
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-    glFlush();
-    
-    vertex_buffer->disableBuffer(m_position);
-    for (int i = 0; i < m_inputs; ++i)
-    {
-        if (m_input_coordinates[i]>=0){
-            m_coordinate_buffers[i]->disableBuffer(m_input_coordinates[i]);
-        }
-        m_coordinate_buffers[i]->unLock();
-    }
-    
-    context->glContextUnlock();
-    vertex_buffer->unLock();
-    
-    // render后的回调
-    if (m_complete!=NULL) {
-        m_complete(this, m_para);
-    }
 }
 
 void GPUBlendFilter::setDrawRect(gpu_point_t points[4], int index){
