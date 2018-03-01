@@ -265,9 +265,7 @@ static const char* g_nv21torgb_vertex_shader = SHADER_STRING(
 
 static const char* g_nv21torgb_fragment_shader = SHADER_STRING(
 	varying mediump vec2 textureCoordinate;
-    varying mediump vec2 textureCoordinate2;
-    uniform sampler2D inputImageTexture;
-    uniform sampler2D inputImageTexture2;
+    uniform sampler2D inputImageTexture[2];
     mediump mat3 colorConversionMatrix = mat3(1.0, 1.0, 1.0, 0.0, -0.343, 1.765, 1.4, -0.711, 0.0);
 
 	void main()
@@ -275,8 +273,8 @@ static const char* g_nv21torgb_fragment_shader = SHADER_STRING(
         mediump vec3 yuv;
         mediump vec3 rgb;
          
-        yuv.x = texture2D(inputImageTexture, textureCoordinate).r;
-        yuv.zy = texture2D(inputImageTexture2, textureCoordinate2).ra - vec2(0.5, 0.5);
+        yuv.x = texture2D(inputImageTexture[0], textureCoordinate).r;
+        yuv.zy = texture2D(inputImageTexture[1], textureCoordinate).ra - vec2(0.5, 0.5);
         rgb = colorConversionMatrix * yuv;
          
         gl_FragColor = vec4(rgb, 1.0);

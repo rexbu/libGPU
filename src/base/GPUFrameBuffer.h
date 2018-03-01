@@ -37,7 +37,7 @@ public:
     GPUFrameBuffer(int width, int height, bool only_texture = true);
     GPUFrameBuffer(int width, int height, gpu_frame_option_t* option, bool only_texture = true);
     GPUFrameBuffer(int width, int height, int depth, gpu_frame_option_t* option, bool only_texture = true);
-    GPUFrameBuffer(int width, int height, GLuint texture);
+    GPUFrameBuffer(int width, int height, GLuint texture, gpu_frame_option_t* option=NULL);
     
     /// 默认构造函数只用于GPUIOSFrameBuffer的初始化，不能用于其他地方
     GPUFrameBuffer(){
@@ -55,7 +55,7 @@ public:
     virtual void generateFrameBuffer();
     /// 向纹理填充像素
     void setPixels(void* data);
-    void getPixels(uint8_t* data);
+    uint8_t* getPixels(uint8_t* data=NULL);
     /// 绑定fbo
     void activeBuffer(int layer=0);
     /// 设置活动纹理单元
@@ -76,6 +76,7 @@ public:
     /// 默认配置
     static gpu_frame_option_t defaultFrameOption();
     static gpu_frame_option_t* nearestFrameOption();
+    static gpu_frame_option_t* uintFrameOption();
 protected:
 
     void init(int width, int height, int depth, gpu_frame_option_t* option, bool only_texture = true);
@@ -90,6 +91,7 @@ public:
     int         m_width;
     int         m_height;
     int         m_depth;
+    uint8_t*    m_rgba;
     int         m_current_layer;    // 3D纹理当前的层
 
     // 被使用次数

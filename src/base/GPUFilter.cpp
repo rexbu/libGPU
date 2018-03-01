@@ -21,12 +21,12 @@ const char* GPUFilter::g_vertext30_shader = SHADER30_STRING(
     }
 );
 const char* GPUFilter::g_fragment30_shader = SHADER30_STRING(
-    varying vec2 textureCoordinate;
+    in vec2 textureCoordinate;
     uniform sampler2D inputImageTexture[1];
-
+    out vec4 out_color;
     void main()
     {
-        gl_FragColor = texture(inputImageTexture[0], textureCoordinate);
+        out_color = fract(texture(inputImageTexture[0], textureCoordinate));
     }
 );
 const char* GPUFilter::g_fragment_shader = SHADER_STRING(

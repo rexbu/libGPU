@@ -70,9 +70,9 @@ protected:
 
 public:
     static const char* g_vertext_shader[];
-    static const char* g_vertext30_shader;
     static const char* g_fragment_shader;
-    static const char* g_3dfragment_shader;
+    static const char* g_vertext30_shader;
+    static const char* g_fragment30_shader;
     static const GLfloat g_vertices[];
 
 ///	GPUFrameBuffer* m_firstbuffer;
@@ -82,15 +82,15 @@ protected:
     GLuint      m_position;
     GLuint      m_input_texture;
     GLuint      m_input_coordinate;
-    GLfloat     m_coordinates[8];   // 纹理贴图坐标
     
     std::vector<GLint> m_input_textures;
-    std::vector<GLint> m_input_coordinates;
 
-    std::vector<GPUVertexBuffer*> m_coordinate_buffers;
-
+    GPUVertexBuffer*    m_coordinate_buffer;    // 纹理坐标缓存
+    GPUVertexBuffer*    m_vertex_buffer;        // 顶点缓存
+    
     // 顶点，涉及裁剪
     std::vector<GLfloat> m_vertices;
+    std::vector<GLfloat> m_coordinates;   // 纹理贴图坐标
     // 填充方式
     gpu_fill_mode_t     m_fill_mode;
     

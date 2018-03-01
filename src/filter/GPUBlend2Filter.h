@@ -21,7 +21,6 @@ public:
     void setBlendImage(GPUPicture* image, gpu_rect_t rect, bool mirror);
     void setBlendImagePoints(GPUPicture* pic, gpu_point_t points[4], bool mirror);
     
-    virtual void render();
     virtual void setInputFrameBuffer(GPUFrameBuffer *buffer, int location=0);
 protected:
     

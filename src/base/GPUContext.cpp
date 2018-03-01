@@ -125,7 +125,7 @@ void GPUCheckGlError(const char* op, bool log, bool lock) {
     for (GLint error = glGetError(); error!=GL_NO_ERROR; error = glGetError()) {
         if (log)
         {
-            err_log("after %s() glError (%s)", op, errors[error-GL_INVALID_ENUM]);
+            err_log("after %s() glError (%x:%s)", op, error, errors[error-GL_INVALID_ENUM]);
         }
     }
     if (lock) {

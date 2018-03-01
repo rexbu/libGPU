@@ -38,6 +38,20 @@ static gpu_frame_option_t g_frame_near_option = {
     GL_DEPTH_COMPONENT16,// depth_internal_format
     GL_COLOR_ATTACHMENT0// attachment type
 };
+static gpu_frame_option_t g_frame_uint_option = {
+    GPU_TEXTURE_RGBA,   // 纹理类别
+    GL_TEXTURE_2D,      // 纹理维度
+    GL_NEAREST,          // min_filter
+    GL_NEAREST,          // max_filter, Mipmap只作用于min_filter, 设置mag_filter的Mipmap选项会导致无效操作，错误码为GL_INVALID_ENUM
+    GL_CLAMP_TO_EDGE,   // wrap_s
+    GL_CLAMP_TO_EDGE,   // wrap_t
+    GL_CLAMP_TO_EDGE,   // wrap_r
+    GL_RGBA32UI,           // color_internal_format
+    GL_RGBA_INTEGER,    // format
+    GL_UNSIGNED_INT,   // type
+    GL_DEPTH_COMPONENT16,// depth_internal_format
+    GL_COLOR_ATTACHMENT0// attachment type
+};
 
 #pragma --mark "GPUFrameBuffer"
 GPUFrameBuffer::GPUFrameBuffer(gpu_size_t size, bool only_texture)
@@ -56,7 +70,7 @@ GPUFrameBuffer::GPUFrameBuffer(int width, int height, int depth, gpu_frame_optio
     init(width, height, depth, option, only_texture);
 }
 
-GPUFrameBuffer::GPUFrameBuffer(int width, int height, GLuint texture):
+GPUFrameBuffer::GPUFrameBuffer(int width, int height, GLuint texture, gpu_frame_option_t* option):
 m_width(width),
 m_height(height){
     m_depth = 0;
@@ -66,13 +80,19 @@ m_height(height){
     m_renderbuffer = 0;
     m_referencecount = 0;
     m_is_reference = true;
-    m_option = GPUFrameBuffer::defaultFrameOption();
+    if (option==NULL) {
+        m_option = GPUFrameBuffer::defaultFrameOption();
+    }
+    else{
+        m_option = *option;
+    }
 }
 
 void GPUFrameBuffer::init(int width, int height, int depth, gpu_frame_option_t* option, bool only_texture){
     m_width = width;
     m_height = height;
     m_depth = depth;
+    m_rgba = NULL;
     m_current_layer = 0;
     m_referencecount = 0;
     memcpy(&m_option, option, sizeof(gpu_frame_option_t));
@@ -121,7 +141,6 @@ int GPUFrameBuffer::generateTexture(int width, int height, int depth, gpu_frame_
             return texture;
         }
         glTexImage3D(GL_TEXTURE_3D, 0, option->color_format, width, height, depth, 0, option->format, option->type, NULL);
-        GPUCheckGlError("generateTexture", true, false);
         glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, option->wrap_s);
         glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, option->wrap_t);
         glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, option->wrap_t);
@@ -200,15 +219,28 @@ void GPUFrameBuffer::setPixels(void *data){
     }
 }
 
-void GPUFrameBuffer::getPixels(uint8_t* data){
+uint8_t* GPUFrameBuffer::getPixels(uint8_t* data){
     // glReadPixels从显存中读取，必须先绑定到fbo
     glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
     glBindRenderbuffer(GL_RENDERBUFFER, m_renderbuffer);
     glActiveTexture(GL_TEXTURE0);
     // 3D纹理时候
     glBindTexture(GL_TEXTURE_2D, m_texture);
+    if (data==NULL) {
+        if (m_rgba==NULL) {
+            if (m_option.type == GL_RGBA_INTEGER || m_option.type == GL_FLOAT){
+                m_rgba = (uint8_t*)malloc(m_width*m_height*4*4);
+            }
+            else{
+                m_rgba = (uint8_t*)malloc(m_width*m_height*4);
+            }
+            assert(m_rgba!=NULL);
+        }
+        data = m_rgba;
+    }
     glReadPixels(0, 0, m_width, m_height, m_option.format, m_option.type, data);
     unactive();
+    return data;
 }
 
 void GPUFrameBuffer::activeTexture(GLuint texture_unit){
@@ -226,7 +258,9 @@ void GPUFrameBuffer::activeTexture(GLuint texture_unit){
 
 void GPUFrameBuffer::activeBuffer(int layer){
     glBindFramebuffer(GL_FRAMEBUFFER, m_framebuffer);
+    GPUCheckGlError("generateTexture", true, false);
     glBindRenderbuffer(GL_RENDERBUFFER, m_renderbuffer);
+    GPUCheckGlError("generateTexture", true, false);
     if (m_option.texture_dim==GL_TEXTURE_2D) {
         // glFramebufferTexture2D(GL_FRAMEBUFFER, m_option.attachment, GL_TEXTURE_2D, m_texture, 0);
         glBindTexture(GL_TEXTURE_2D, m_texture);
@@ -259,6 +293,9 @@ void GPUFrameBuffer::destroy(){
     if (!m_outtexture) {
         glDeleteTextures(1, &m_texture);
         m_texture = 0;
+    }
+    if (m_rgba!=NULL) {
+        free(m_rgba);
     }
 }
 
@@ -300,7 +337,9 @@ gpu_frame_option_t GPUFrameBuffer::defaultFrameOption(){
 gpu_frame_option_t* GPUFrameBuffer::nearestFrameOption(){
     return &g_frame_near_option;
 }
-
+gpu_frame_option_t* GPUFrameBuffer::uintFrameOption(){
+    return &g_frame_uint_option;
+}
 #pragma --mark "GPUBufferCache"
 GPUBufferCache* GPUBufferCache::m_instance = NULL;
 

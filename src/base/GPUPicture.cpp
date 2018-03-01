@@ -22,7 +22,12 @@ void GPUPicture::setPixel(uint8_t* pixels, uint32_t width, uint32_t height){
     m_image_size.width = width;
     m_image_size.height = height;
     
+    for (int i=0; i<4; i++) {
+        printf("%d,%d,%d,%d\t", pixels[4*i],pixels[4*i+1],pixels[4*i+2], pixels[4*i+3]);
+    }
+    printf("\n");
     GPUContext::shareInstance()->makeCurrent();
+    m_option = GPUFrameBuffer::defaultFrameOption();
     // 如果图片被循环利用，使用GPUBufferCache获取会导致图片内容被改
     m_outbuffer = new GPUFrameBuffer(width, height, &m_option, true);
     m_outbuffer->disableReference();

@@ -20,7 +20,6 @@ public:
     GPUBlendFilter(const char* vertex, const char* fragment, int inputs=2);
     
     virtual void newFrame();
-    virtual void render();
     
     // 设置第几个texture的四角坐标，顺序 lt/rt/lb/rb
     void setDrawRect(gpu_point_t points[4], int i);
