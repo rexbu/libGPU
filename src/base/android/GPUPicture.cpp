@@ -52,6 +52,7 @@ bool GPUPicture::load(uint8_t * data, uint32_t size)
 		return false;
 	}
 
+	m_option = GPUFrameBuffer::defaultFrameOption();
 	AndroidBitmap_lockPixels(env, bitmap, &pixels);
 	setPixel((uint8_t*)pixels, info.width, info.height);
 	AndroidBitmap_unlockPixels(env, bitmap);
@@ -88,7 +89,8 @@ bool GPUPicture::load(const char* path){
 		err_log("Bitmap format[%d] is not RGBA_8888!", info.format);
 		return false;
 	}
-	
+
+	m_option = GPUFrameBuffer::defaultFrameOption();
 	AndroidBitmap_lockPixels(env, bitmap, &pixels);
 	setPixel((uint8_t*)pixels, info.width, info.height);
 	AndroidBitmap_unlockPixels(env, bitmap);

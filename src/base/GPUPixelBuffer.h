@@ -18,7 +18,7 @@ public:
      * @size:   pbo大小，width*height, size*4为实际rgba容量
      * @sync:   为同步或者异步模式
      */
-	GPUPixelBuffer(int size, bool sync = true);
+	GPUPixelBuffer(int size, bool sync = true, int elem_size=1);
     ~GPUPixelBuffer();
     void* read(GPUFrameBuffer* framebuffer);
     void unactive();

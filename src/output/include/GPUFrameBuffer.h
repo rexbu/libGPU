@@ -77,6 +77,7 @@ public:
     static gpu_frame_option_t defaultFrameOption();
     static gpu_frame_option_t* nearestFrameOption();
     static gpu_frame_option_t* uintFrameOption();
+    static gpu_frame_option_t* floatFrameOption();
 protected:
 
     void init(int width, int height, int depth, gpu_frame_option_t* option, bool only_texture = true);
@@ -120,10 +121,9 @@ public:
     // 将不用的framebuffer释放
     void purge();
 
+    vector<GPUFrameBuffer*> m_bufferlist;
 protected:
     static GPUBufferCache* m_instance;
-    
-    vector<GPUFrameBuffer*> m_bufferlist;
 };
 
 #endif

@@ -52,6 +52,20 @@ static gpu_frame_option_t g_frame_uint_option = {
     GL_DEPTH_COMPONENT16,// depth_internal_format
     GL_COLOR_ATTACHMENT0// attachment type
 };
+static gpu_frame_option_t g_frame_float_option = {
+    GPU_TEXTURE_RGBA,   // 纹理类别
+    GL_TEXTURE_2D,      // 纹理维度
+    GL_NEAREST,          // min_filter
+    GL_NEAREST,          // max_filter, Mipmap只作用于min_filter, 设置mag_filter的Mipmap选项会导致无效操作，错误码为GL_INVALID_ENUM
+    GL_CLAMP_TO_EDGE,   // wrap_s
+    GL_CLAMP_TO_EDGE,   // wrap_t
+    GL_CLAMP_TO_EDGE,   // wrap_r
+    GL_RGBA32F,           // color_internal_format
+    GL_RGBA,            // format
+    GL_FLOAT,           // type
+    GL_DEPTH_COMPONENT16,// depth_internal_format
+    GL_COLOR_ATTACHMENT0// attachment type
+};
 
 #pragma --mark "GPUFrameBuffer"
 GPUFrameBuffer::GPUFrameBuffer(gpu_size_t size, bool only_texture)
@@ -228,7 +242,7 @@ uint8_t* GPUFrameBuffer::getPixels(uint8_t* data){
     glBindTexture(GL_TEXTURE_2D, m_texture);
     if (data==NULL) {
         if (m_rgba==NULL) {
-            if (m_option.type == GL_RGBA_INTEGER || m_option.type == GL_FLOAT){
+            if (m_option.type == GL_FLOAT || m_option.type==GL_UNSIGNED_INT || m_option.type == GL_INT){
                 m_rgba = (uint8_t*)malloc(m_width*m_height*4*4);
             }
             else{
@@ -339,6 +353,9 @@ gpu_frame_option_t* GPUFrameBuffer::nearestFrameOption(){
 }
 gpu_frame_option_t* GPUFrameBuffer::uintFrameOption(){
     return &g_frame_uint_option;
+}
+gpu_frame_option_t* GPUFrameBuffer::floatFrameOption(){
+    return &g_frame_float_option;
 }
 #pragma --mark "GPUBufferCache"
 GPUBufferCache* GPUBufferCache::m_instance = NULL;

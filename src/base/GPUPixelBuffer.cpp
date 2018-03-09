@@ -8,7 +8,7 @@
 
 #include "GPUPixelBuffer.h"
 
-GPUPixelBuffer::GPUPixelBuffer(int size, bool sync){
+GPUPixelBuffer::GPUPixelBuffer(int size, bool sync, int elem_size){
     m_sync = sync;
     m_size = size;
     m_first = true;
@@ -23,9 +23,9 @@ GPUPixelBuffer::GPUPixelBuffer(int size, bool sync){
      Dynamic-数据不仅需要时常更新,使用次数也很多.
      */
     glBindBuffer(GL_PIXEL_PACK_BUFFER, m_buffer[0]);
-    glBufferData(GL_PIXEL_PACK_BUFFER, size*4, 0, GL_STATIC_READ);
+    glBufferData(GL_PIXEL_PACK_BUFFER, size*4*elem_size, 0, GL_STATIC_READ);
     glBindBuffer(GL_PIXEL_PACK_BUFFER, m_buffer[1]);
-    glBufferData(GL_PIXEL_PACK_BUFFER, size*4, 0, GL_STATIC_READ);
+    glBufferData(GL_PIXEL_PACK_BUFFER, size*4*elem_size, 0, GL_STATIC_READ);
     glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 }
 
@@ -57,7 +57,16 @@ void* GPUPixelBuffer::read(GPUFrameBuffer* framebuffer){
         
         glBindBuffer(GL_PIXEL_PACK_BUFFER, m_buffer[m_map_index]);
     }
-    void* p = glMapBufferRange(GL_PIXEL_PACK_BUFFER, 0, framebuffer->m_width*framebuffer->m_height*4, GL_MAP_READ_BIT);
+    
+    int elem_size = 1;
+    if (framebuffer->m_option.type == GL_UNSIGNED_INT || framebuffer->m_option.type == GL_INT || framebuffer->m_option.type == GL_FLOAT) {
+        elem_size = 4;
+    }
+    else if(framebuffer->m_option.type==GL_SHORT || framebuffer->m_option.type==GL_UNSIGNED_SHORT){
+        elem_size = 2;
+    }
+    
+    void* p = glMapBufferRange(GL_PIXEL_PACK_BUFFER, 0, framebuffer->m_width*framebuffer->m_height*4*elem_size, GL_MAP_READ_BIT);
     m_frame_buffer->unactive();
     m_map_index = 1 - m_map_index;
     unactive();
