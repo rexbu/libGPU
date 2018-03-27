@@ -2,6 +2,10 @@
 一个类似GPUImage的跨平台图片、视频处理库
 
 有问题请联系QQ：80017290
+
+### History
+* 2018.3.27 适配opengles 3.0
+
 ### TODO:
 
 * 添加完整android/ios编译工程
