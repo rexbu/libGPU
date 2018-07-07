@@ -60,4 +60,10 @@ protected:
     int             m_size;
     bool            m_frame_get;
 };
+
+class GPUToGrayFilter: public GPUFilter{
+public:
+    GPUToGrayFilter();
+    virtual void setFrameSize(uint32_t width, uint32_t height);
+};
 #endif

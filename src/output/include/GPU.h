@@ -37,7 +37,6 @@
 #include "GPULuminanceFilter.h"     // 灰度
 #include "GPUSobelEdgeFilter.h"     // Sobel边缘检测
 #include "GPUBilateralBlurFilter.h" // 平滑滤波
-#include "GPUSmoothFilter.h"
 #include "GPUColorFilter.h"
 
 #include "GPUBezierFilter.h"        // 贝塞尔曲线
@@ -45,6 +44,8 @@
 
 #include "GPUBlendImageFilter.h"
 #include "GPUBlend2Filter.h"
+#include "GPUPixellateFilter.h"
+#include "GPUPixellatePositionFilter.h"
 
 #if !defined(MIN)
 #define MIN(A,B)	({ __typeof__(A) __a = (A); __typeof__(B) __b = (B); __a < __b ? __a : __b; })

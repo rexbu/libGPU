@@ -289,8 +289,10 @@ void GPUIOSView::setOutputRotation(gpu_rotation_t rotation){
 
 -(void)setInputFrameBuffer:(GPUIOSFrameBuffer*)frameBuffer{
     inputFramebufferForDisplay = frameBuffer;
-    inputImageSize = CGSizeMake(frameBuffer->m_width, frameBuffer->m_height);
-    [self recalculateViewGeometry];
+    if (inputImageSize.width!=frameBuffer->m_width || inputImageSize.height!=frameBuffer->m_height) {
+        inputImageSize = CGSizeMake(frameBuffer->m_width, frameBuffer->m_height);
+        [self recalculateViewGeometry];
+    }
 }
 
 #pragma mark -

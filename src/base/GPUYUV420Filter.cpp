@@ -104,6 +104,52 @@ static const char* g_toyuv420_narrow_fragment_shader = SHADER_STRING(
         }
     }
 );
+static const char* g_toyuv420_narrow_bgra_fragment_shader = SHADER_STRING(
+    varying vec2 textureCoordinate;
+    uniform sampler2D inputImageTexture;
+
+    uniform mediump float frameHStep;   // 1.0/(frameHeight-1)
+    uniform mediump float frameWStep;
+    uniform mediump float wStep;    // 1.0/(420width-1)
+    uniform mediump float hStep;    // 1.0/(420height-1)
+
+    const mediump float yh = 2.0/3.0;
+    const mediump float uh = 5.0/6.0;
+    const mediump float ystep = 1.0/4.0;
+    const mediump float ustep = 1.0/8.0;
+    void main()
+    {
+        if (textureCoordinate.y<yh)
+        {
+             // 在原纹理中第几行
+             mediump float oy = textureCoordinate.y*1.5;
+             mediump vec4 p0 = texture2D(inputImageTexture, vec2(textureCoordinate.x, oy));
+             mediump vec4 p1 = texture2D(inputImageTexture, vec2(textureCoordinate.x+frameWStep, oy));
+             mediump vec4 p2 = texture2D(inputImageTexture, vec2(textureCoordinate.x+2.0*frameWStep, oy));
+             mediump vec4 p3 = texture2D(inputImageTexture, vec2(textureCoordinate.x+3.0*frameWStep, oy));
+            gl_FragColor = vec4(p2.r, p1.r, p0.r, p3.r);
+        }
+        else if (textureCoordinate.y<uh)
+        {
+             mediump float x = 2.0*(textureCoordinate.x-0.5*floor(textureCoordinate.x*2.0));
+             mediump float y = 4.0*frameHStep*(textureCoordinate.y/hStep-yh/hStep) + 2.0*frameHStep*floor(textureCoordinate.x*2.0);
+             mediump vec4 p0 = texture2D(inputImageTexture, vec2(x, y));
+             mediump vec4 p1 = texture2D(inputImageTexture, vec2(x+2.0*frameWStep, y));
+             mediump vec4 p2 = texture2D(inputImageTexture, vec2(x+4.0*frameWStep, y));
+             mediump vec4 p3 = texture2D(inputImageTexture, vec2(x+6.0*frameWStep, y));
+            gl_FragColor = vec4(p2.g, p1.g, p0.g, p3.g);
+        }
+        else{
+             mediump float x = 2.0*(textureCoordinate.x-0.5*floor(textureCoordinate.x*2.0));
+             mediump float y = 4.0*frameHStep*(textureCoordinate.y/hStep-uh/hStep) + 2.0*frameHStep*floor(textureCoordinate.x*2.0);
+             mediump vec4 p0 = texture2D(inputImageTexture, vec2(x, y));
+             mediump vec4 p1 = texture2D(inputImageTexture, vec2(x+2.0*frameWStep, y));
+             mediump vec4 p2 = texture2D(inputImageTexture, vec2(x+4.0*frameWStep, y));
+             mediump vec4 p3 = texture2D(inputImageTexture, vec2(x+6.0*frameWStep, y));
+            gl_FragColor = vec4(p2.b, p1.b, p0.b, p3.b);
+        }
+    }
+);
 
 GPUToYUV420Filter::GPUToYUV420Filter():
 GPUFilter(g_toyuv420_narrow_fragment_shader){
@@ -238,6 +284,35 @@ void GPUToNV12Filter::setFrameSize(uint32_t width, uint32_t height){
     setFloat("hStep", 1.0/(m_frame_height*3/8-1));
 }
 
+#pragma --mark "GPUToGrayFilter"
+static const char* g_togray_fragment_shader = SHADER_STRING(
+    varying vec2 textureCoordinate;
+    uniform sampler2D inputImageTexture;
+
+    uniform mediump float wStep;
+    uniform mediump float hStep;
+    void main()
+    {
+        mediump vec4 out_color;
+        mediump vec4 color = texture2D(inputImageTexture, textureCoordinate + vec2(wStep*0.0, 0.0));
+        out_color.r = color.r;
+        color = texture2D(inputImageTexture, textureCoordinate + vec2(wStep*1.0, 0.0));
+        out_color.g = color.r;
+        color = texture2D(inputImageTexture, textureCoordinate + vec2(wStep*2.0, 0.0));
+        out_color.b = color.r;
+        color = texture2D(inputImageTexture, textureCoordinate + vec2(wStep*3.0, 0.0));
+        out_color.a = color.r;
+        gl_FragColor = out_color;
+    }
+);
+GPUToGrayFilter::GPUToGrayFilter():GPUFilter(g_togray_fragment_shader){
+}
+void GPUToGrayFilter::setFrameSize(uint32_t width, uint32_t height){
+    GPUFilter::setFrameSize(width, height);
+    setOutputSize(m_frame_width/4, m_frame_height);
+    
+    setFloat("wStep", 1.0/(m_frame_width-1));
+}
 ////////////////////////////////////////////////////////////
 //////////////////// GPUYUV420PreciseOutput /////////////////
 #pragma --mark "YUV420PreciseOutput"
