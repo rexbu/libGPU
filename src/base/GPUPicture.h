@@ -16,10 +16,13 @@
 
 class GPUPicture: public GPUOutput{
 public:
-    GPUPicture(){}
+    GPUPicture(){
+        m_option = GPUFrameBuffer::defaultFrameOption();
+    }
 	GPUPicture(const char* path);
     GPUPicture(uint8_t * data, uint32_t size);
     GPUPicture(uint8_t * data, int width, int height);
+    GPUPicture(uint8_t * data, int width, int height, gpu_frame_option_t* option);
 #if __IOS__
 	GPUPicture(void* cgImageRef);
     // pathForResource路径初始化
@@ -31,17 +34,17 @@ public:
     bool load(uint8_t * data, uint32_t size);
     virtual bool exist(){ return m_exist; }
     void processImage();
-    void setPixel(uint8_t* pixels, uint32_t width, uint32_t height, uint32_t format=GL_RGBA);
-
-    uint8_t*    m_pixels;
-    gpu_size_t  m_image_size;
+    void setPixel(uint8_t* pixels, uint32_t width, uint32_t height);
+    
+    gpu_frame_option_t  m_option;
+    uint8_t*            m_pixels;
+    gpu_size_t          m_image_size;
 protected:
 #if __IOS__
     void init(void* image);
 #endif
-
-    bool        hasProcessedImage;
     
+    bool        hasProcessedImage;
     bool        m_exist;
 };
 

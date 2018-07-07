@@ -12,13 +12,12 @@ const char* g_blend_fragment_shader = SHADER_STRING(
  varying mediump vec2 textureCoordinate;
  varying mediump vec2 textureCoordinate2;
 
- uniform sampler2D inputImageTexture;
- uniform sampler2D inputImageTexture2;
+ uniform sampler2D inputImageTexture[2];
 
  void main()
  {
-     mediump vec4 o1 = texture2D(inputImageTexture, textureCoordinate);
-     mediump vec4 o2 = texture2D(inputImageTexture2,textureCoordinate2);
+     mediump vec4 o1 = texture2D(inputImageTexture[0], textureCoordinate);
+     mediump vec4 o2 = texture2D(inputImageTexture[1],textureCoordinate2);
      
      mediump vec4 bk = (1.0-o2.a)*o1+o2.a*o2;
      gl_FragColor = bk;
@@ -109,54 +108,6 @@ void GPUBlend2Filter::setBlendImagePoints(GPUPicture* pic, gpu_point_t points[4]
     pic->addTarget(this, 1);
     context->glContextUnlock();
     enable();
-}
-
-void GPUBlend2Filter::render(){
-    GPUContext* context = GPUContext::shareInstance();
-    context->glContextLock();   // 加锁，防止此时设置参数
-    context->setActiveProgram(m_program);
-    
-    m_outbuffer = GPUBufferCache::shareInstance()->getFrameBuffer(sizeOfFBO(), false);
-    m_outbuffer->activeBuffer();
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-    glClear( GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-    
-    for (int i=0; i<m_inputs; i++) {
-        m_input_buffers[i]->activeTexture(GL_TEXTURE0+i);
-        glUniform1i(m_input_textures[i], 0+i);
-        
-        m_coordinate_buffers[i] = GPUVertexBufferCache::shareInstance()->getVertexBuffer();
-        if (i==0 && m_input_coordinates[i]>=0) {
-            m_coordinate_buffers[i]->activeBuffer(m_input_coordinates[i], GPUFilter::coordinatesRotation(m_rotation));
-        }
-        else if(i>0 && m_input_coordinates[i]>=0){
-            m_coordinate_buffers[i]->activeBuffer(m_input_coordinates[i], m_coordinates);
-        }
-    }
-    
-    // vbo
-    GPUVertexBuffer* vertex_buffer = GPUVertexBufferCache::shareInstance()->getVertexBuffer();
-    vertex_buffer->activeBuffer(m_position, &m_vertices[0]);
-    
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-    glFlush();
-    
-    vertex_buffer->disableBuffer(m_position);
-    for (int i = 0; i < m_inputs; ++i)
-    {
-        if (m_input_coordinates[i]>=0){
-            m_coordinate_buffers[i]->disableBuffer(m_input_coordinates[i]);
-        }
-        m_coordinate_buffers[i]->unLock();
-    }
-    
-    context->glContextUnlock();
-    vertex_buffer->unLock();
-    
-    // render后的回调
-    if (m_complete!=NULL) {
-        m_complete(this, m_para);
-    }
 }
 
 void GPUBlend2Filter::setInputFrameBuffer(GPUFrameBuffer *buffer, int location){

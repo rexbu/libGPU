@@ -130,6 +130,8 @@
 		CD0858BA1F793584007F1798 /* GPUPixellatePositionFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = CD0858B81F793556007F1798 /* GPUPixellatePositionFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CD0858C11F79F678007F1798 /* GPUPixellateFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CD0858BF1F79F678007F1798 /* GPUPixellateFilter.cpp */; };
 		CD0858C21F79F678007F1798 /* GPUPixellateFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = CD0858C01F79F678007F1798 /* GPUPixellateFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CD9F6FCB1FF9EE3F004F9C37 /* GPUPixelBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = CD9F6FC91FF9EE3E004F9C37 /* GPUPixelBuffer.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CD9F6FCC1FF9EE3F004F9C37 /* GPUPixelBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CD9F6FCA1FF9EE3E004F9C37 /* GPUPixelBuffer.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -269,6 +271,8 @@
 		CD0858B81F793556007F1798 /* GPUPixellatePositionFilter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GPUPixellatePositionFilter.h; path = filter/GPUPixellatePositionFilter.h; sourceTree = "<group>"; };
 		CD0858BF1F79F678007F1798 /* GPUPixellateFilter.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = GPUPixellateFilter.cpp; path = filter/GPUPixellateFilter.cpp; sourceTree = "<group>"; };
 		CD0858C01F79F678007F1798 /* GPUPixellateFilter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GPUPixellateFilter.h; path = filter/GPUPixellateFilter.h; sourceTree = "<group>"; };
+		CD9F6FC91FF9EE3E004F9C37 /* GPUPixelBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUPixelBuffer.h; path = base/GPUPixelBuffer.h; sourceTree = "<group>"; };
+		CD9F6FCA1FF9EE3E004F9C37 /* GPUPixelBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GPUPixelBuffer.cpp; path = base/GPUPixelBuffer.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -311,6 +315,8 @@
 		C8A0ACB11ECE9D250043ADE9 /* base */ = {
 			isa = PBXGroup;
 			children = (
+				CD9F6FCA1FF9EE3E004F9C37 /* GPUPixelBuffer.cpp */,
+				CD9F6FC91FF9EE3E004F9C37 /* GPUPixelBuffer.h */,
 				C8A0ACC71ECE9D410043ADE9 /* GL.h */,
 				C8A0ACC81ECE9D410043ADE9 /* GPU.h */,
 				C8A0ACB41ECE9D410043ADE9 /* GPUBlendFilter.cpp */,
@@ -512,6 +518,7 @@
 				C8A0AD8A1ECEBBC70043ADE9 /* GPUYUV420Filter.h in Headers */,
 				C8A0AD8B1ECEBBC70043ADE9 /* GPUYUVFilter.h in Headers */,
 				C8A0AD8C1ECEBBC70043ADE9 /* GPUZoomFilter.h in Headers */,
+				CD9F6FCB1FF9EE3F004F9C37 /* GPUPixelBuffer.h in Headers */,
 				C8A0AD8D1ECEBBC70043ADE9 /* GPUMedianFilter.h in Headers */,
 				C8A0AD8E1ECEBBC70043ADE9 /* GPUOutlineFilter.h in Headers */,
 				C8A0AD8F1ECEBBC70043ADE9 /* GPUSaturationFilter.h in Headers */,
@@ -587,9 +594,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				C8A0AD181ECE9DDD0043ADE9 /* GPUSampleBufferInput.mm in Sources */,
+				CD9F6FCC1FF9EE3F004F9C37 /* GPUPixelBuffer.cpp in Sources */,
 				C8A0ACEE1ECE9D420043ADE9 /* GPUVertexBuffer.cpp in Sources */,
 				C8A0AD161ECE9DDD0043ADE9 /* GPUIOSBuffer.mm in Sources */,
 				C8A0ACF01ECE9D420043ADE9 /* GPUYUVFilter.cpp in Sources */,
+				C8A0AD191ECE9DDD0043ADE9 /* GPUIOSView.mm in Sources */,
 				C8A0ACE11ECE9D420043ADE9 /* GPUFilter.cpp in Sources */,
 				C8A0ACE81ECE9D420043ADE9 /* GPUProgram.cpp in Sources */,
 				C8A0AD0A1ECE9DD00043ADE9 /* GPUBlend2Filter.cpp in Sources */,
@@ -621,7 +630,6 @@
 				C8A0ACEB1ECE9D420043ADE9 /* GPUTextureInput.cpp in Sources */,
 				C8A0AD0C1ECE9DD00043ADE9 /* GPUWhiteningFilter.cpp in Sources */,
 				C8A0ACED1ECE9D420043ADE9 /* GPUTwoPassFilter.cpp in Sources */,
-				C8A0AD191ECE9DDD0043ADE9 /* GPUIOSView.mm in Sources */,
 				C8A0AD5B1ECEA4E80043ADE9 /* bs_conf.c in Sources */,
 				C8A0AD661ECEA4E80043ADE9 /* bs_log.c in Sources */,
 				C8A0AD0B1ECE9DD00043ADE9 /* GPUBlendImageFilter.cpp in Sources */,
@@ -751,6 +759,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PUBLIC_HEADERS_FOLDER_PATH = /include;
 				SKIP_INSTALL = YES;
+				VALID_ARCHS = "arm64 armv7 armv7s x86_64 i386";
 			};
 			name = Debug;
 		};
@@ -763,6 +772,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PUBLIC_HEADERS_FOLDER_PATH = /include;
 				SKIP_INSTALL = YES;
+				VALID_ARCHS = "arm64 armv7 armv7s x86_64 i386";
 			};
 			name = Release;
 		};

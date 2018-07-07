@@ -19,7 +19,7 @@ class GPUIOSFrameBuffer: public GPUFrameBuffer{
 public:
     GPUIOSFrameBuffer(gpu_size_t size, bool only_texture = true);
     GPUIOSFrameBuffer(int width, int height, bool only_texture = true);
-    GPUIOSFrameBuffer(int width, int height, GPUTextureOption_t option, bool only_texture = true);
+    GPUIOSFrameBuffer(int width, int height, gpu_frame_option_t* option, bool only_texture = true);
     GPUIOSFrameBuffer(int width, int height, GLuint texture);
     
     virtual void generateFrameBuffer();
@@ -39,6 +39,6 @@ public:
     static GPUBufferCache* shareInstance();
 protected:
     
-    virtual GPUFrameBuffer* newFrameBuffer(int width, int height, GPUTextureOption_t option, bool only_texture=true);
+    virtual GPUFrameBuffer* newFrameBuffer(int width, int height, gpu_frame_option_t* option, bool only_texture=true);
 };
 #endif

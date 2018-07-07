@@ -29,9 +29,7 @@ void GPURawOutput::newFrame(){
     if (m_direct)
     {
         glPixelStorei(GL_PACK_ALIGNMENT, 1);
-        glActiveTexture(GL_TEXTURE2);
-        glBindTexture(GL_TEXTURE_2D, m_firstbuffer->m_texture);
-        glReadPixels(0, 0, m_firstbuffer->m_width, m_firstbuffer->m_height, GL_RGBA, GL_UNSIGNED_BYTE, m_bytebuffer);
+        m_firstbuffer->getPixels(m_bytebuffer);
         glFinish();
         m_firstbuffer->unlock();
         // 标记已经读取
@@ -50,11 +48,9 @@ unsigned char* GPURawOutput::getBuffer(unsigned char* buffer, uint32_t size){
             if (m_firstbuffer == NULL) {
                 return NULL;
             }
-            
             glPixelStorei(GL_PACK_ALIGNMENT, 1);
-            glBindTexture(GL_TEXTURE_2D, m_firstbuffer->m_texture);
+            m_firstbuffer->getPixels(m_bytebuffer);
             glFinish();
-            glReadPixels(0, 0, m_firstbuffer->m_width, m_firstbuffer->m_height, GL_RGBA, GL_UNSIGNED_BYTE, m_bytebuffer);
             m_firstbuffer->unlock();
             // 标记已经读取
             m_frame_get = true;
@@ -62,9 +58,8 @@ unsigned char* GPURawOutput::getBuffer(unsigned char* buffer, uint32_t size){
         }
         else{
             glPixelStorei(GL_PACK_ALIGNMENT, 1);
-            glBindTexture(GL_TEXTURE_2D, m_firstbuffer->m_texture);
+            m_firstbuffer->getPixels(buffer);
             glFinish();
-            glReadPixels(0, 0, m_firstbuffer->m_width, m_firstbuffer->m_height, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
             m_firstbuffer->unlock();
             // 标记已经读取
             m_frame_get = true;
@@ -109,4 +104,5 @@ void GPURawOutput::setInputFrameBuffer(GPUFrameBuffer* buffer, int location){
         m_bytebuffer = new unsigned char[m_size];
         err_log("RawOutput realloc buffer[%d]", m_size);
     }
+    memset(m_bytebuffer, 0, m_size);
 }

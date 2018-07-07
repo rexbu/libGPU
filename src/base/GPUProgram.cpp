@@ -147,6 +147,7 @@ GLint GPUProgram::attributeIndex(const char* name){
         //err_log("vertex: %s", m_vertex_str);
         GPUCheckGlError("glGetAttribLocation", true, false);
 	}
+    GPUCheckGlError("glGetAttribLocation", true, false);
 	return index;
 }
 
@@ -160,6 +161,17 @@ GLint GPUProgram::uniformIndex(const char* name){
 	return index;
 }
 
+void GPUProgram::setUniformsIndex(const char* name, GLint* index, uint32_t size){
+    GLint location = uniformIndex(name);
+    for (int i=0; i<size; i++) {
+        index[i] = location+i;
+    }
+    if (location>=0) {
+        glUniform1iv(location, size, index);
+    }
+    GPUCheckGlError("setUniformsIndex", true, false);
+}
+
 void GPUProgram::setInteger(const char *name, int val){
     GPUContext* context = GPUContext::shareInstance();
     context->glContextLock();
@@ -169,6 +181,26 @@ void GPUProgram::setInteger(const char *name, int val){
 		glUniform1i(index, val);
 
 	context->glContextUnlock();
+}
+
+void GPUProgram::setIntegerv(const char *name, int* val, int num){
+    GPUContext* context = GPUContext::shareInstance();
+    context->glContextLock();
+    context->setActiveProgram(this);
+    GLint index = uniformIndex(name);
+    glUniform1iv(index, num, val);
+    
+    context->glContextUnlock();
+}
+
+void GPUProgram::setUIntegerv(const char *name, uint32_t* val, int num){
+    GPUContext* context = GPUContext::shareInstance();
+    context->glContextLock();
+    context->setActiveProgram(this);
+    GLint index = uniformIndex(name);
+    glUniform1uiv(index, num, val);
+    
+    context->glContextUnlock();
 }
 
 void GPUProgram::setFloat(const char* name, GLfloat val){

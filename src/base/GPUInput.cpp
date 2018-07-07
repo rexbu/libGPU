@@ -86,6 +86,10 @@ void GPUInput::setInputFrameBuffer(GPUFrameBuffer* buffer, int location)
 		err_log("GPUInput::setInputFrameBuffer(%d) overflow!", location);
 		return;
 	}
+    if (buffer==NULL) {
+        err_log("setInputFrameBuffer NULL!");
+        return;
+    }
     
     m_input_buffers[location] = buffer;
 	buffer->lock();
@@ -108,6 +112,10 @@ void GPUInput::setFrameSize(uint32_t width, uint32_t height){
 void GPUInput::unlockInputFrameBuffers()
 {
     for (int i=0; i<m_inputs; i++) {
+        if (m_input_buffers[i]==NULL) {
+            err_log("Visionin: input framebuffer[%d] is NULL!", i);
+            continue;
+        }
         m_input_buffers[i]->unlock();
     }
     
