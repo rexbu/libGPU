@@ -1,4 +1,4 @@
-package com.rex.libgpu;
+package com.rex.gpu;
 
 import android.util.Log;
 

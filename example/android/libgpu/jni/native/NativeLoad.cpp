@@ -34,12 +34,6 @@ jint JNI_OnLoad(JavaVM *vm, void *reserved) {
 
     FILE* fp = fopen("/proc/self/cmdline", "r");
     fread(g_package_name, sizeof(g_package_name), 1, fp);
-    /*
-    if (strcmp(g_package_name, "com.visionin.demo")!=0)
-    {
-        return -1;
-    }
-    */
     fclose(fp);
 
     g_jvm = vm;

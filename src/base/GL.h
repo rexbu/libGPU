@@ -45,6 +45,11 @@ typedef enum{
     GPU_CLOCKWISE_270,
 }gpu_orientation_t;
 
+typedef enum{
+    GPU_CAMERA_FRONT,
+    GPU_CAMERA_BACK
+}gpu_camera_position_t;
+
 // 指定输出texture的旋转方向
 typedef enum{
     GPUNoRotation = 0,

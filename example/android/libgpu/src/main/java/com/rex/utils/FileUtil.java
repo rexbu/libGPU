@@ -87,27 +87,6 @@ public class FileUtil {
         return true;
     }
 
-    public static boolean write(OutputStream os, InputStream is, TimerIOCallback callback){
-        byte buf[] = new byte[1024];
-        int len = -1;
-        int total = 0;
-        try {
-            while((len = is.read(buf)) != -1){
-                os.write(buf, 0, len);
-                total += len;
-                callback.setParam(total * 100 / callback.length);
-            }
-            is.close();
-            os.close();
-            callback.onSuccess();
-        } catch (IOException e) {
-            e.printStackTrace();
-            callback.onFailure(e);
-        }
-
-        return true;
-    }
-
     public static boolean exists(String pathString){
         File f = new File(pathString);
         if(!f.exists()){

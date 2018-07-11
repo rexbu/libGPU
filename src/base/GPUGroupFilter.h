@@ -19,6 +19,10 @@ public:
     virtual void setInputFrameBuffer(GPUFrameBuffer* buffer, int location=0);
     
     inline void setFirstFilter(GPUFilter* f){
+        if (m_input != NULL) {
+            f->addTarget(m_input);
+        }
+        
         m_input = f;
     }
     inline void setLastFilter(GPUFilter* f){
