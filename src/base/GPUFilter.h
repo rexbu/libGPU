@@ -69,7 +69,8 @@ protected:
     static const GLfloat* coordinatesRotation(gpu_rotation_t mode);
 
 public:
-    static const char* g_vertext_shader[];
+    static const char* g_vertex_shaders[];
+    static const char* g_vertex_shader;
     static const char* g_fragment_shader;
     static const char* g_vertext30_shader;
     static const char* g_fragment30_shader;

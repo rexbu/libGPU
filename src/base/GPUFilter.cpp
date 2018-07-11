@@ -29,6 +29,17 @@ const char* GPUFilter::g_fragment30_shader = SHADER30_STRING(
         out_color = fract(texture(inputImageTexture[0], textureCoordinate));
     }
 );
+
+const char* GPUFilter::g_vertex_shader = SHADER_STRING(
+        attribute vec4 position;
+        attribute vec4 inputTextureCoordinate;
+        varying vec2 textureCoordinate;
+        void main()
+        {
+            gl_Position = position;
+            textureCoordinate = inputTextureCoordinate.xy;
+        }
+);
 const char* GPUFilter::g_fragment_shader = SHADER_STRING(
   varying vec2 textureCoordinate;
   uniform sampler2D inputImageTexture[1];
@@ -56,7 +67,7 @@ GPUFilter::GPUFilter(bool compile, const char* name){
     }
 
     if (compile) {
-        m_program = new GPUProgram(g_vertext_shader[0], g_fragment_shader, m_filter_name.c_str());
+        m_program = new GPUProgram(g_vertex_shader, g_fragment_shader, m_filter_name.c_str());
         init();
     }
     else{
@@ -74,7 +85,7 @@ GPUInput(inputs){
         m_filter_name = name;
     }
 
-	m_program = new GPUProgram(g_vertext_shader[inputs-1], fragment, m_filter_name.c_str());
+	m_program = new GPUProgram(g_vertex_shaders[inputs-1], fragment, m_filter_name.c_str());
     init();
 }
 
@@ -105,7 +116,7 @@ void GPUFilter::changeShader(const char* fragment, const char* vertex){
     }
     const char* ver = vertex;
     if (ver==NULL) {
-        ver = g_vertext_shader[0];
+        ver = g_vertex_shader;
     }
     
     GPUContext* context = GPUContext::shareInstance();
@@ -487,7 +498,7 @@ void GPUFilter::setInteger(const char* name, int i){
     m_program->setInteger(name, i);
 }
 
-const char* GPUFilter::g_vertext_shader[] = {
+const char* GPUFilter::g_vertex_shaders[] = {
 SHADER_STRING(
     attribute vec4 position;
     attribute vec4 inputTextureCoordinate;

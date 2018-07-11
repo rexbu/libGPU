@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">GPUDemo</string>
+    <array name="filter_name">
+        <item>鱼眼</item>
+        <item>天空</item>
+    </array>
 </resources>

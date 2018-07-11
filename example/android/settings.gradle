@@ -1,1 +1,1 @@
-include ':app', ':libgpu'
+include ':app'

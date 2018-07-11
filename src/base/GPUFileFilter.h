@@ -22,8 +22,7 @@ public:
     ~GPUFileFilter();
     
     virtual void setInputFrameBuffer(GPUFrameBuffer* buffer, int location=0);
-    
-    static std::string g_folder_path;
+
 protected:
     //用于查表的图片
     std::vector<GPUPicture*>    m_images;

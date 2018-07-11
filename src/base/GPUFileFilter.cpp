@@ -9,41 +9,34 @@
 #include "GPUFileFilter.h"
 #include "GPUProgram.h"
 
-using namespace mc;
-std::string GPUFileFilter::g_folder_path;
+GPUFileFilter::GPUFileFilter(const char* fragment, const char* image){
+    m_filter_name = "FileFilter";
 
-GPUFileFilter::GPUFileFilter(const char* index):
-GPUFilter(false){
-    m_filter_name = "FileFilter_";
-    m_filter_name.append(index);
+    char byte[10240];
+    int fd = open(fragment, O_RDONLY);
+    if (fd < 0){
+        return;
+    }
 
-    char path[1024];
-    sprintf(path, "%s/%s", g_folder_path.c_str(), index);
-    mc::Folder folder(path);
-    
-    // 读dat文件
-    const char* data_path = folder.type("dat");
-    File data(data_path);
-    byte* data_buffer = data.read();
-    // 读idx文件
-    const char* idx_path = folder.type("idx");
-    FILE* idx_file = fopen(idx_path, "rb");
-    char image[256];
-    char start[16], length[16];
-    while(fscanf(idx_file, "%[^:]:%[^:]:%[^;];", image, start, length)>0){
-//        char image_path[1024];
-//        sprintf(image_path, "%s/%s", path, image);
-        GPUPicture* picture = new GPUPicture(&data_buffer[atoi(start)], atoi(length));
+    long s = read(fd, byte, 10240);
+    close(fd);
+
+    GPUPicture* picture = new GPUPicture(image);
+    m_images.push_back(picture);
+    picture->addTarget(this, (int)m_images.size());
+
+    // 初始化filter
+    setInputs((int)(m_images.size()+1));
+
+    m_program = new GPUProgram(g_vertex_shader, (const char*)byte, m_filter_name.c_str());
+    init();
+}
+GPUFileFilter::GPUFileFilter(const char* fragment, const char* image[], int size){
+    for (int i = 0; i < size; ++i) {
+        GPUPicture* picture = new GPUPicture(image[i]);
         m_images.push_back(picture);
         picture->addTarget(this, (int)m_images.size());
     }
-    fclose(idx_file);
-    
-    // 初始化filter
-    setInputs((int)(m_images.size()+1));
-    File gl_file(folder.name("glsl"));
-    m_program = new GPUProgram(g_vertext_shader[m_inputs-1], (const char*)gl_file.read(), m_filter_name.c_str());
-    init();
 }
 
 void GPUFileFilter::setInputFrameBuffer(GPUFrameBuffer* buffer, int location){
