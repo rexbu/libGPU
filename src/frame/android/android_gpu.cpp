@@ -57,7 +57,7 @@ static GPURawInput*      g_raw_input = NULL;
 static GPUView*          g_view = NULL;
 
 // 创建Android NV21 Texture
-jint createTextureOES(JNIEnv * env, jclass jc){
+jint createTexture(JNIEnv * env, jclass jc){
 	GLuint texture;
 	GPUContext::shareInstance()->makeCurrent();
 	glPixelStorei(GL_UNPACK_ALIGNMENT,1);

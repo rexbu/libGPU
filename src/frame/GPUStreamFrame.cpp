@@ -99,14 +99,9 @@ void GPUStreamFrame::setInputFilter(GPUFilter* input){
     }
 
     m_outer_input = true;
-    // 重新设置输入格式
-    if (m_input!=NULL)
-    {
-        m_input->removeAllTargets();
-        delete m_input;
-    }
-
     input->addTarget(m_input);
+    input->setOutputRotation(m_input->getOutputRotation());
+
     m_input = input;
 }
 

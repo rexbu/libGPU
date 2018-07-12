@@ -46,8 +46,8 @@ typedef enum{
 }gpu_orientation_t;
 
 typedef enum{
-    GPU_CAMERA_FRONT,
-    GPU_CAMERA_BACK
+    GPU_CAMERA_BACK,
+    GPU_CAMERA_FRONT
 }gpu_camera_position_t;
 
 // 指定输出texture的旋转方向

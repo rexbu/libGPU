@@ -23,7 +23,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".TextureActivity" />
-        <activity android:name=".BytesActivity"></activity>
     </application>
 
 </manifest>

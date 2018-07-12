@@ -4,14 +4,12 @@ import android.content.res.Configuration;
 import android.graphics.SurfaceTexture;
 import android.util.Log;
 import android.view.Surface;
-import com.visionin.Visionin;
-import com.visionin.gpu.GPU;
 import android.content.res.AssetManager;
 
 /**
  * Created by Visionin on 16/7/18.
  */
-public class VSVideoFrame extends GPU implements SurfaceTexture.OnFrameAvailableListener {
+public class GPUVideoFrame extends GPU implements SurfaceTexture.OnFrameAvailableListener {
 //    public static VSVideoFrame  shareInstance;
 
     public final static int CAMERA_FACING_BACK = 0;
@@ -49,7 +47,7 @@ public class VSVideoFrame extends GPU implements SurfaceTexture.OnFrameAvailable
      * 不创建渲染view，一般用于直播云的中间组件
      * @param glcontext 是否创建glcontext，如果外部已经创建，此处设置为false
      */
-    public VSVideoFrame(boolean glcontext){
+    public GPUVideoFrame(boolean glcontext){
         super(glcontext);
     }
 
@@ -58,7 +56,7 @@ public class VSVideoFrame extends GPU implements SurfaceTexture.OnFrameAvailable
      * @param surface 可以从surfaceview或者mediacodec来
      * @throws Exception
      */
-    public VSVideoFrame(Surface surface) throws Exception {
+    public GPUVideoFrame(Surface surface) throws Exception {
         super(surface);
     }
 
@@ -68,7 +66,7 @@ public class VSVideoFrame extends GPU implements SurfaceTexture.OnFrameAvailable
      */
     public boolean start(/*AssetManager assetManager*/) {
         if (running){
-            Log.e(Visionin.TAG, "Visionin Process is Running!");
+            Log.e("GPU", "Visionin Process is Running!");
             return false;
         }else{
             running = true;
@@ -82,7 +80,7 @@ public class VSVideoFrame extends GPU implements SurfaceTexture.OnFrameAvailable
      */
     public boolean stop(){
         if (!running){
-            Log.e(Visionin.TAG, "Visionin Process isn't Running!");
+            Log.e("GPU", "Visionin Process isn't Running!");
             return false;
         }
         running = false;
@@ -99,7 +97,7 @@ public class VSVideoFrame extends GPU implements SurfaceTexture.OnFrameAvailable
 
     public void processBytes(byte[] bytes, int width, int height, int format){
         if (!running){
-            Log.e(Visionin.TAG, "Visionin Process is not Running! Please call start first");
+            Log.e("GPU", "Visionin Process is not Running! Please call start first");
             return;
         }
         if(isProcessingByte){

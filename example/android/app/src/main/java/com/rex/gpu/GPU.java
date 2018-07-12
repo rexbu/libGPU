@@ -5,44 +5,42 @@ import com.rex.load.NativeLoad;
 
 public class GPU {
 	static {
-		long so = NativeLoad.loadSo("libvisionin.so");
+		long so = NativeLoad.loadSo("libGPU.so");
 
-        NativeLoad.registJNIMethod(so, "com/visionin/gpu/GPU", "createTexture", "()I");
-        NativeLoad.registJNIMethod(so, "com/visionin/gpu/GPU", "destroyTexture", "(I)V");
+        NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "createTexture", "()I");
+        NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "destroyTexture", "(I)V");
 
-        NativeLoad.registJNIMethod(so, "com/visionin/gpu/GPU", "eglContext", "(Z)J");
-        NativeLoad.registJNIMethod(so, "com/visionin/gpu/GPU", "setRenderSurface", "(Landroid/view/Surface;)V");
-        NativeLoad.registJNIMethod(so, "com/visionin/gpu/GPU", "makeCurrent", "(J)V");
-        NativeLoad.registJNIMethod(so, "com/visionin/gpu/GPU", "destroyEGL", "(J)V");
+        NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "eglContext", "(Z)J");
+        NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setRenderSurface", "(Landroid/view/Surface;)V");
+        NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "makeCurrent", "(J)V");
+        NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "destroyEGL", "(J)V");
 
-        NativeLoad.registJNIMethod(so, "com/visionin/gpu/GPU", "processTexture", "(II)V");
-        NativeLoad.registJNIMethod(so, "com/visionin/gpu/GPU", "processBytes", "([BIII)V");
-        NativeLoad.registJNIMethod(so, "com/visionin/gpu/GPU", "getBytes", "([B)V");
-        NativeLoad.registJNIMethod(so, "com/visionin/gpu/GPU", "getTexture", "()I");
+        NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "processTexture", "(II)V");
+        NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "processBytes", "([BIII)V");
+        NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "getBytes", "([B)V");
+        NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "getTexture", "()I");
 
-        NativeLoad.registJNIMethod(so, "com/visionin/gpu/GPU", "setOutputSize", "(II)V");
-        NativeLoad.registJNIMethod(so, "com/visionin/gpu/GPU", "setOutputFormat", "(I)V");
+        NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setOutputSize", "(II)V");
+        NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setOutputFormat", "(I)V");
 
-        NativeLoad.registJNIMethod(so, "com/visionin/gpu/GPU", "setInputSize", "(II)V");
-        NativeLoad.registJNIMethod(so, "com/visionin/gpu/GPU", "setInputRotation", "(I)V");
+        NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setInputSize", "(II)V");
+        NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setInputRotation", "(I)V");
 
-        NativeLoad.registJNIMethod(so, "com/visionin/gpu/GPU", "setPreviewMirror", "(Z)V");
-        NativeLoad.registJNIMethod(so, "com/visionin/gpu/GPU", "setOutputMirror", "(Z)V");
-        NativeLoad.registJNIMethod(so, "com/visionin/gpu/GPU", "setOutputRotation", "(I)V");
+        NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setPreviewMirror", "(Z)V");
+        NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setOutputMirror", "(Z)V");
+        NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setOutputRotation", "(I)V");
 
-        NativeLoad.registJNIMethod(so, "com/visionin/gpu/GPU", "setSmoothStrength", "(F)V");
-        NativeLoad.registJNIMethod(so, "com/visionin/gpu/GPU", "setBrightenLevel", "(F)V");
-        NativeLoad.registJNIMethod(so, "com/visionin/gpu/GPU", "setToningLevel", "(F)V");
+        NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setSmoothStrength", "(F)V");
 
-        NativeLoad.registJNIMethod(so, "com/visionin/gpu/GPU", "setExtraFilter", "(Ljava/lang/String;)V");
-        NativeLoad.registJNIMethod(so, "com/visionin/gpu/GPU", "closeExtraFilter", "()V");
-        NativeLoad.registJNIMethod(so, "com/visionin/gpu/GPU", "setExtraParameter", "(F)V");
+        NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setExtraFilter", "(Ljava/lang/String;)V");
+        NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "closeExtraFilter", "()V");
+        NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setExtraParameter", "(F)V");
 
-        NativeLoad.registJNIMethod(so, "com/visionin/gpu/GPU", "setOutputView", "()V");
-        NativeLoad.registJNIMethod(so, "com/visionin/gpu/GPU", "removeOutputView", "()V");
+        NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setOutputView", "()V");
+        NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "removeOutputView", "()V");
 
-        NativeLoad.registJNIMethod(so, "com/visionin/gpu/GPU", "setPreviewBlend", "(Ljava/lang/String;FFFFZ)V");
-        NativeLoad.registJNIMethod(so, "com/visionin/gpu/GPU", "setVideoBlend", "(Ljava/lang/String;FFFFZ)V");
+        NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setPreviewBlend", "(Ljava/lang/String;FFFFZ)V");
+        NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setVideoBlend", "(Ljava/lang/String;FFFFZ)V");
 	}
 
     // processTexture函数要处理的texture类型，如果是surfaceTexture，则应该为OES类型
@@ -76,10 +74,6 @@ public class GPU {
 
     /// 美颜
     public native void setSmoothStrength(float level);
-    @Deprecated
-    public native void setBrightenLevel(float level);
-    @Deprecated
-    public native void setToningLevel(float level);
     /// 滤镜
     public native void setExtraFilter(String filter);
     public native void closeExtraFilter();
