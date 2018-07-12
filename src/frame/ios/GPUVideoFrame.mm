@@ -17,7 +17,7 @@
 
 // 如果作为VSVideoFrame成员变量，在VSVideoFrame销毁时需要释放，可能此时正在访问http，会引起崩溃
 
-@interface VSVideoFrame(){
+@interface GPUVideoFrame(){
     GPUSampleBufferInput*   bufferInput;
     GPUIOSView*             playView;
     GPUPicture*             background;
@@ -35,7 +35,7 @@
 
 @end
 
-@implementation VSVideoFrame
+@implementation GPUVideoFrame
 
 #pragma -mark "初始化"
 -(id)initWithPosition:(AVCaptureDevicePosition)position pixelFormat:(OSType)format view:(UIView*)view{

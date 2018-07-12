@@ -27,10 +27,10 @@
 @implementation GPUVideoCamera
 //@synthesize camera = camera;
 
-VSVideoCamera* shareInstance = nil;
-+(VSVideoCamera*)shareInstance{
+GPUVideoCamera* shareInstance = nil;
++(GPUVideoCamera*)shareInstance{
     if (shareInstance==nil) {
-        shareInstance = [[VSVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 position:AVCaptureDevicePositionFront view:nil];
+        shareInstance = [[GPUVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPreset640x480 position:AVCaptureDevicePositionFront view:nil];
     }
     
     return shareInstance;

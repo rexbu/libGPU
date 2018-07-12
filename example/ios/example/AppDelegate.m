@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import "EdgeViewController.h"
+#import "ViewController.h"
 
 @interface AppDelegate ()
 
@@ -22,7 +23,7 @@
     self.window.backgroundColor = [UIColor whiteColor];
     
     //((__bridge UIView*)f->rootUIView()).backgroundColor = [UIColor orangeColor];
-    self.window.rootViewController = [[EdgeViewController alloc] init];
+    self.window.rootViewController = [[ViewController alloc] init];
     
     [self.window makeKeyAndVisible];
     return YES;

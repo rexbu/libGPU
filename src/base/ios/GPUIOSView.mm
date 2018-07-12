@@ -115,7 +115,7 @@ void GPUIOSView::setOutputRotation(gpu_rotation_t rotation){
     }
 
     GPUCheckGlError("IOSView init");
-    displayProgram = new GPUProgram(GPUFilter::g_vertext_shader[0], GPUFilter::g_fragment_shader);
+    displayProgram = new GPUProgram(GPUFilter::g_vertex_shader, GPUFilter::g_fragment_shader);
     _rotation = GPUNoRotation;
     displayPositionAttribute = displayProgram->attributeIndex("position");
     displayTextureCoordinateAttribute = displayProgram->attributeIndex("inputTextureCoordinate");

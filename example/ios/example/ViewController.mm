@@ -24,7 +24,7 @@
     // Do any additional setup after loading the view, typically from a nib.
     bs_log_init("stdout");
     
-    NSString* path = [[NSBundle mainBundle] pathForResource:@"kaiwen2" ofType:@"png"];
+    NSString* path = [[NSBundle mainBundle] pathForResource:@"z1" ofType:@"jpeg"];
     GPUPicture* pic = new GPUPicture(path.UTF8String);
     GPUFilter* filter = new GPUFilter();
     

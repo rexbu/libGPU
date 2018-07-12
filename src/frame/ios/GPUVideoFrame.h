@@ -11,7 +11,7 @@
 #import <UIKit/UIKit.h>
 
 #pragma mark - "VSVideoFrame"
-@interface VSVideoFrame : NSObject
+@interface GPUVideoFrame : NSObject
 @property(readonly, assign) UIView* preview;   // 预览view
 @property(nonatomic, assign) CGSize videoSize;  // 视频流尺寸
 @property(nonatomic, assign) CGSize outputSize; // 输出视频流尺寸，默认(0,0)，表示不裁剪不压缩

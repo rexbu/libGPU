@@ -132,12 +132,12 @@
 		CD0858C21F79F678007F1798 /* GPUPixellateFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = CD0858C01F79F678007F1798 /* GPUPixellateFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CD1493BE20F5DC26005095D5 /* GPUFileFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CD1493BC20F5DC26005095D5 /* GPUFileFilter.cpp */; };
 		CD1493BF20F5DC26005095D5 /* GPUFileFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = CD1493BD20F5DC26005095D5 /* GPUFileFilter.h */; };
-		CD3E93CF20F4E83700DA9398 /* GPUStreamFrame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CD3E93CD20F4E83600DA9398 /* GPUStreamFrame.cpp */; };
-		CD3E93D020F4E83700DA9398 /* GPUStreamFrame.h in Headers */ = {isa = PBXBuildFile; fileRef = CD3E93CE20F4E83700DA9398 /* GPUStreamFrame.h */; };
-		CD3E93D520F4E8F300DA9398 /* GPUVideoFrame.mm in Sources */ = {isa = PBXBuildFile; fileRef = CD3E93D120F4E8F200DA9398 /* GPUVideoFrame.mm */; };
-		CD3E93D620F4E8F300DA9398 /* GPUVideoFrame.h in Headers */ = {isa = PBXBuildFile; fileRef = CD3E93D220F4E8F300DA9398 /* GPUVideoFrame.h */; };
-		CD3E93D720F4E8F300DA9398 /* GPUVideoCamera.h in Headers */ = {isa = PBXBuildFile; fileRef = CD3E93D320F4E8F300DA9398 /* GPUVideoCamera.h */; };
-		CD3E93D820F4E8F300DA9398 /* GPUVideoCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = CD3E93D420F4E8F300DA9398 /* GPUVideoCamera.m */; };
+		CD2747F320F6F2FC009EEA35 /* GPUStreamFrame.h in Headers */ = {isa = PBXBuildFile; fileRef = CD2747F120F6F2FC009EEA35 /* GPUStreamFrame.h */; };
+		CD2747F420F6F2FC009EEA35 /* GPUStreamFrame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CD2747F220F6F2FC009EEA35 /* GPUStreamFrame.cpp */; };
+		CD2747F920F6F307009EEA35 /* GPUVideoFrame.mm in Sources */ = {isa = PBXBuildFile; fileRef = CD2747F520F6F306009EEA35 /* GPUVideoFrame.mm */; };
+		CD2747FA20F6F307009EEA35 /* GPUVideoFrame.h in Headers */ = {isa = PBXBuildFile; fileRef = CD2747F620F6F306009EEA35 /* GPUVideoFrame.h */; };
+		CD2747FB20F6F307009EEA35 /* GPUVideoCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = CD2747F720F6F307009EEA35 /* GPUVideoCamera.m */; };
+		CD2747FC20F6F307009EEA35 /* GPUVideoCamera.h in Headers */ = {isa = PBXBuildFile; fileRef = CD2747F820F6F307009EEA35 /* GPUVideoCamera.h */; };
 		CD9F6FCB1FF9EE3F004F9C37 /* GPUPixelBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = CD9F6FC91FF9EE3E004F9C37 /* GPUPixelBuffer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CD9F6FCC1FF9EE3F004F9C37 /* GPUPixelBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CD9F6FCA1FF9EE3E004F9C37 /* GPUPixelBuffer.cpp */; };
 /* End PBXBuildFile section */
@@ -281,12 +281,12 @@
 		CD0858C01F79F678007F1798 /* GPUPixellateFilter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GPUPixellateFilter.h; path = filter/GPUPixellateFilter.h; sourceTree = "<group>"; };
 		CD1493BC20F5DC26005095D5 /* GPUFileFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GPUFileFilter.cpp; path = base/GPUFileFilter.cpp; sourceTree = "<group>"; };
 		CD1493BD20F5DC26005095D5 /* GPUFileFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUFileFilter.h; path = base/GPUFileFilter.h; sourceTree = "<group>"; };
-		CD3E93CD20F4E83600DA9398 /* GPUStreamFrame.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GPUStreamFrame.cpp; path = base/GPUStreamFrame.cpp; sourceTree = "<group>"; };
-		CD3E93CE20F4E83700DA9398 /* GPUStreamFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUStreamFrame.h; path = base/GPUStreamFrame.h; sourceTree = "<group>"; };
-		CD3E93D120F4E8F200DA9398 /* GPUVideoFrame.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = GPUVideoFrame.mm; path = base/ios/GPUVideoFrame.mm; sourceTree = "<group>"; };
-		CD3E93D220F4E8F300DA9398 /* GPUVideoFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUVideoFrame.h; path = base/ios/GPUVideoFrame.h; sourceTree = "<group>"; };
-		CD3E93D320F4E8F300DA9398 /* GPUVideoCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUVideoCamera.h; path = base/ios/GPUVideoCamera.h; sourceTree = "<group>"; };
-		CD3E93D420F4E8F300DA9398 /* GPUVideoCamera.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUVideoCamera.m; path = base/ios/GPUVideoCamera.m; sourceTree = "<group>"; };
+		CD2747F120F6F2FC009EEA35 /* GPUStreamFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUStreamFrame.h; path = frame/GPUStreamFrame.h; sourceTree = "<group>"; };
+		CD2747F220F6F2FC009EEA35 /* GPUStreamFrame.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GPUStreamFrame.cpp; path = frame/GPUStreamFrame.cpp; sourceTree = "<group>"; };
+		CD2747F520F6F306009EEA35 /* GPUVideoFrame.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = GPUVideoFrame.mm; path = frame/ios/GPUVideoFrame.mm; sourceTree = "<group>"; };
+		CD2747F620F6F306009EEA35 /* GPUVideoFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUVideoFrame.h; path = frame/ios/GPUVideoFrame.h; sourceTree = "<group>"; };
+		CD2747F720F6F307009EEA35 /* GPUVideoCamera.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUVideoCamera.m; path = frame/ios/GPUVideoCamera.m; sourceTree = "<group>"; };
+		CD2747F820F6F307009EEA35 /* GPUVideoCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUVideoCamera.h; path = frame/ios/GPUVideoCamera.h; sourceTree = "<group>"; };
 		CD9F6FC91FF9EE3E004F9C37 /* GPUPixelBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUPixelBuffer.h; path = base/GPUPixelBuffer.h; sourceTree = "<group>"; };
 		CD9F6FCA1FF9EE3E004F9C37 /* GPUPixelBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GPUPixelBuffer.cpp; path = base/GPUPixelBuffer.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -321,6 +321,7 @@
 		C8A0ACB01ECE9D1C0043ADE9 /* libGPU */ = {
 			isa = PBXGroup;
 			children = (
+				CD2747F020F6F2D9009EEA35 /* frame */,
 				C8A0AD1F1ECEA4CD0043ADE9 /* bs */,
 				C8A0ACB11ECE9D250043ADE9 /* base */,
 				C8A0ACB21ECE9D2D0043ADE9 /* filter */,
@@ -333,12 +334,6 @@
 			children = (
 				CD1493BC20F5DC26005095D5 /* GPUFileFilter.cpp */,
 				CD1493BD20F5DC26005095D5 /* GPUFileFilter.h */,
-				CD3E93D320F4E8F300DA9398 /* GPUVideoCamera.h */,
-				CD3E93D420F4E8F300DA9398 /* GPUVideoCamera.m */,
-				CD3E93D220F4E8F300DA9398 /* GPUVideoFrame.h */,
-				CD3E93D120F4E8F200DA9398 /* GPUVideoFrame.mm */,
-				CD3E93CD20F4E83600DA9398 /* GPUStreamFrame.cpp */,
-				CD3E93CE20F4E83700DA9398 /* GPUStreamFrame.h */,
 				CD9F6FCA1FF9EE3E004F9C37 /* GPUPixelBuffer.cpp */,
 				CD9F6FC91FF9EE3E004F9C37 /* GPUPixelBuffer.h */,
 				C8A0ACC71ECE9D410043ADE9 /* GL.h */,
@@ -482,6 +477,19 @@
 			name = bs;
 			sourceTree = "<group>";
 		};
+		CD2747F020F6F2D9009EEA35 /* frame */ = {
+			isa = PBXGroup;
+			children = (
+				CD2747F820F6F307009EEA35 /* GPUVideoCamera.h */,
+				CD2747F720F6F307009EEA35 /* GPUVideoCamera.m */,
+				CD2747F620F6F306009EEA35 /* GPUVideoFrame.h */,
+				CD2747F520F6F306009EEA35 /* GPUVideoFrame.mm */,
+				CD2747F220F6F2FC009EEA35 /* GPUStreamFrame.cpp */,
+				CD2747F120F6F2FC009EEA35 /* GPUStreamFrame.h */,
+			);
+			name = frame;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -490,6 +498,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C8A0AD521ECEA4E80043ADE9 /* bs_object.h in Headers */,
+				CD2747FA20F6F307009EEA35 /* GPUVideoFrame.h in Headers */,
 				C8A0AD5E1ECEA4E80043ADE9 /* bs_cqueue.h in Headers */,
 				C8A0AD6E1ECEA4E80043ADE9 /* bs_struct.h in Headers */,
 				C8A0AD691ECEA4E80043ADE9 /* bs_mmap.h in Headers */,
@@ -498,6 +507,7 @@
 				C8A0AD571ECEA4E80043ADE9 /* bs_socket.h in Headers */,
 				C8A0AD4B1ECEA4E80043ADE9 /* bs_url.h in Headers */,
 				C8A0AD731ECEA4E80043ADE9 /* bs_vector.h in Headers */,
+				CD2747F320F6F2FC009EEA35 /* GPUStreamFrame.h in Headers */,
 				C8A0AD611ECEA4E80043ADE9 /* bs_hashmap.h in Headers */,
 				C8A0AD4F1ECEA4E80043ADE9 /* bs_common.h in Headers */,
 				C8A0AD561ECEA4E80043ADE9 /* bs_string.h in Headers */,
@@ -528,11 +538,9 @@
 				C8A0AD801ECEBBC70043ADE9 /* GPUPicture.h in Headers */,
 				C8A0ADD31ECED4520043ADE9 /* GPULineFilter.h in Headers */,
 				C8A0AD811ECEBBC70043ADE9 /* GPUProgram.h in Headers */,
-				CD3E93D620F4E8F300DA9398 /* GPUVideoFrame.h in Headers */,
 				C8A0AD821ECEBBC70043ADE9 /* GPURawInput.h in Headers */,
 				C8A0AD831ECEBBC70043ADE9 /* GPURawOutput.h in Headers */,
 				C8EB52D81ED7CBDB000EA55C /* GPUBilateralBlurFilter.h in Headers */,
-				CD3E93D720F4E8F300DA9398 /* GPUVideoCamera.h in Headers */,
 				C8A0AD841ECEBBC70043ADE9 /* GPUSampleBufferInput.h in Headers */,
 				C8B0553F1ED2DDF2003ABF3C /* GPUBezierFilter.h in Headers */,
 				C8A0AD851ECEBBC70043ADE9 /* GPUTextureInput.h in Headers */,
@@ -549,9 +557,9 @@
 				C8A0AD8D1ECEBBC70043ADE9 /* GPUMedianFilter.h in Headers */,
 				C8A0AD8E1ECEBBC70043ADE9 /* GPUOutlineFilter.h in Headers */,
 				C8A0AD8F1ECEBBC70043ADE9 /* GPUSaturationFilter.h in Headers */,
-				CD3E93D020F4E83700DA9398 /* GPUStreamFrame.h in Headers */,
 				C8EB52E11ED7E306000EA55C /* GPUColorFilter.h in Headers */,
 				C8A0AD901ECEBBC70043ADE9 /* GPUSobelEdgeFilter.h in Headers */,
+				CD2747FC20F6F307009EEA35 /* GPUVideoCamera.h in Headers */,
 				C8A0AD911ECEBBC70043ADE9 /* GPUGaussianBlurFilter.h in Headers */,
 				C8A0AD921ECEBBC70043ADE9 /* GPULuminanceFilter.h in Headers */,
 				C8A0AD931ECEBBC70043ADE9 /* GPUBlend2Filter.h in Headers */,
@@ -621,8 +629,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CD3E93D520F4E8F300DA9398 /* GPUVideoFrame.mm in Sources */,
-				CD3E93D820F4E8F300DA9398 /* GPUVideoCamera.m in Sources */,
+				CD2747FB20F6F307009EEA35 /* GPUVideoCamera.m in Sources */,
 				C8A0AD181ECE9DDD0043ADE9 /* GPUSampleBufferInput.mm in Sources */,
 				CD9F6FCC1FF9EE3F004F9C37 /* GPUPixelBuffer.cpp in Sources */,
 				C8A0ACEE1ECE9D420043ADE9 /* GPUVertexBuffer.cpp in Sources */,
@@ -633,6 +640,7 @@
 				C8A0ACE81ECE9D420043ADE9 /* GPUProgram.cpp in Sources */,
 				C8A0AD0A1ECE9DD00043ADE9 /* GPUBlend2Filter.cpp in Sources */,
 				C8A0AD171ECE9DDD0043ADE9 /* GPUContext.mm in Sources */,
+				CD2747F920F6F307009EEA35 /* GPUVideoFrame.mm in Sources */,
 				C8A0ACE31ECE9D420043ADE9 /* GPUInput.cpp in Sources */,
 				C8A0AD5A1ECEA4E80043ADE9 /* bs_string.c in Sources */,
 				C8A0ACF11ECE9D420043ADE9 /* GPUZoomFilter.cpp in Sources */,
@@ -640,6 +648,7 @@
 				C8A0AD601ECEA4E80043ADE9 /* bs_hashmap.c in Sources */,
 				CD0858C11F79F678007F1798 /* GPUPixellateFilter.cpp in Sources */,
 				C8EB52D71ED7CBDB000EA55C /* GPUBilateralBlurFilter.cpp in Sources */,
+				CD2747F420F6F2FC009EEA35 /* GPUStreamFrame.cpp in Sources */,
 				C8A0AD641ECEA4E80043ADE9 /* bs_lock.c in Sources */,
 				C8A0AD6F1ECEA4E80043ADE9 /* bs_timer.c in Sources */,
 				C8A0ACEF1ECE9D420043ADE9 /* GPUYUV420Filter.cpp in Sources */,
@@ -653,7 +662,6 @@
 				C8A0AD081ECE9DD00043ADE9 /* GPUGaussianBlurFilter.cpp in Sources */,
 				C8A0AD511ECEA4E80043ADE9 /* bs_socket.c in Sources */,
 				C8A0AD6C1ECEA4E80043ADE9 /* bs_sign.c in Sources */,
-				CD3E93CF20F4E83700DA9398 /* GPUStreamFrame.cpp in Sources */,
 				C8A0ACDE1ECE9D420043ADE9 /* GPUFrameBuffer.cpp in Sources */,
 				C8A0AD061ECE9DD00043ADE9 /* GPUSaturationFilter.cpp in Sources */,
 				C8A0ACE91ECE9D420043ADE9 /* GPURawInput.cpp in Sources */,
