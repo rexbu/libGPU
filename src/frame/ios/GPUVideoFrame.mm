@@ -226,13 +226,13 @@
     _presentTimeStamp = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
     bufferInput->processSampleBuffer(sampleBuffer);
     if (_bgraPixelBlock!=nil) {
-        if ((GPUIOSFrameBuffer*)streamFrame->m_zoom_filter->m_outbuffer==NULL) {
+        GPUIOSFrameBuffer* outbuffer = (GPUIOSFrameBuffer*)streamFrame->m_zoom_filter->m_outbuffer;
+        if(outbuffer == NULL){
             err_log("Visionin Error: ZoomFilter not run!");
             isProcessing = FALSE;
             return FALSE;
         }
-        GPUIOSFrameBuffer* outbuffer = (GPUIOSFrameBuffer*)streamFrame->m_zoom_filter->m_outbuffer;
-        if (outbuffer!=NULL) {
+        else {
             glFinish();
             CVPixelBufferRef pixel = outbuffer->getPixelBuffer();
             _bgraPixelBlock(pixel, _presentTimeStamp);

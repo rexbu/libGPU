@@ -29,6 +29,11 @@
     [videoCamera setMirrorFrontPreview:TRUE];
     [videoCamera setOutputSize:CGSizeMake(480, 640)];
     [videoCamera setOutputImageOrientation:UIInterfaceOrientationPortrait];
+    videoCamera.bgraPixelBlock = ^(CVPixelBufferRef buffer, CMTime time){
+        int w = CVPixelBufferGetWidth(buffer);
+        int h = CVPixelBufferGetHeight(buffer);
+        NSLog(@"size: %d / %d", w, h);
+    };
     [videoCamera startCameraCapture];
 }
 

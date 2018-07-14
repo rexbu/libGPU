@@ -114,7 +114,7 @@ public:
     GPUFrameBuffer* getFrameBuffer(int width, int height, int depth, gpu_frame_option_t* option, bool only_texture = true);
     
     // 新建FrameBuffer，子函数可能复写，在IOS中创建方式不一样
-    virtual GPUFrameBuffer* newFrameBuffer(int width, int height, int depth, gpu_frame_option_t* option, bool only_texture=true);
+    virtual GPUFrameBuffer* newFrameBuffer(int width, int height, gpu_frame_option_t* option, bool only_texture=true);
     bool setFrameBuffer(GPUFrameBuffer* frame);
     // 清空framebuffer
     void clear();
