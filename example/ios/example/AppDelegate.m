@@ -7,7 +7,6 @@
 //
 
 #import "AppDelegate.h"
-#import "EdgeViewController.h"
 #import "ViewController.h"
 
 @interface AppDelegate ()

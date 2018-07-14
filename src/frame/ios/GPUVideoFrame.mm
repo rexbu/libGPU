@@ -75,8 +75,8 @@
     _backVideoOrientation = AVCaptureVideoOrientationLandscapeRight;
     
     streamFrame = GPUStreamFrame::shareInstance();
-    streamFrame->setFirstFilter(bufferInput);
-    //bufferInput->addTarget(streamFrame);
+    streamFrame->setInputFormat(GPU_RGBA);
+    bufferInput->addTarget(streamFrame);
     
     if(view != nil){
         [self setPlayView:view];

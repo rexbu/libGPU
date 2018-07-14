@@ -28,7 +28,6 @@
 		C8A0ADF01ECFE5A10043ADE9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C8A0ADEE1ECFE5A10043ADE9 /* LaunchScreen.storyboard */; };
 		C8B610421EE9850A00CF9D57 /* z1.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = C8B6103F1EE9850A00CF9D57 /* z1.jpeg */; };
 		C8DACD2E1ED4684A001F607A /* facepoints.json in Resources */ = {isa = PBXBuildFile; fileRef = C8DACD2B1ED4684A001F607A /* facepoints.json */; };
-		C8EB12CE1ED70B5000D72F8F /* EdgeViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = C8EB12CD1ED70B5000D72F8F /* EdgeViewController.mm */; };
 		CD0661301F21CC5B00098365 /* liblibGPU.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CD06612D1F21CC4C00098365 /* liblibGPU.a */; };
 /* End PBXBuildFile section */
 
@@ -75,8 +74,6 @@
 		C8A0ADF11ECFE5A10043ADE9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C8B6103F1EE9850A00CF9D57 /* z1.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = z1.jpeg; sourceTree = "<group>"; };
 		C8DACD2B1ED4684A001F607A /* facepoints.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = facepoints.json; sourceTree = "<group>"; };
-		C8EB12CC1ED70B5000D72F8F /* EdgeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EdgeViewController.h; sourceTree = "<group>"; };
-		C8EB12CD1ED70B5000D72F8F /* EdgeViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EdgeViewController.mm; sourceTree = "<group>"; };
 		CD0661281F21CC4C00098365 /* libGPU.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = libGPU.xcodeproj; path = ../../src/libGPU.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -149,16 +146,14 @@
 				C8B6103F1EE9850A00CF9D57 /* z1.jpeg */,
 				C8A0ADE31ECFE5A10043ADE9 /* AppDelegate.h */,
 				C8A0ADE41ECFE5A10043ADE9 /* AppDelegate.m */,
+				C8A0ADE61ECFE5A10043ADE9 /* ViewController.h */,
+				C8A0ADE71ECFE5A10043ADE9 /* ViewController.mm */,
 				C8A0ADEC1ECFE5A10043ADE9 /* Assets.xcassets */,
-				C8EB12CC1ED70B5000D72F8F /* EdgeViewController.h */,
-				C8EB12CD1ED70B5000D72F8F /* EdgeViewController.mm */,
 				C8DACD2B1ED4684A001F607A /* facepoints.json */,
 				C8A0ADF11ECFE5A10043ADE9 /* Info.plist */,
 				C8A0ADEE1ECFE5A10043ADE9 /* LaunchScreen.storyboard */,
 				C8A0ADE91ECFE5A10043ADE9 /* Main.storyboard */,
 				C8A0ADE01ECFE5A10043ADE9 /* Supporting Files */,
-				C8A0ADE61ECFE5A10043ADE9 /* ViewController.h */,
-				C8A0ADE71ECFE5A10043ADE9 /* ViewController.mm */,
 			);
 			path = example;
 			sourceTree = "<group>";
@@ -273,7 +268,6 @@
 				C8A0ADE81ECFE5A10043ADE9 /* ViewController.mm in Sources */,
 				C8A0ADE51ECFE5A10043ADE9 /* AppDelegate.m in Sources */,
 				C8A0ADE21ECFE5A10043ADE9 /* main.m in Sources */,
-				C8EB12CE1ED70B5000D72F8F /* EdgeViewController.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

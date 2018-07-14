@@ -70,6 +70,7 @@ void GPUSampleBufferInput::processSampleBuffer(CMSampleBufferRef sampleBuffer){
         CVPixelBufferUnlockBaseAddress(cameraFrame, 0);
         if (m_input == NULL) {
             m_input = new GPUNV12ToRGBFilter();
+            m_input->setOutputRotation(m_rotation);
             m_output = m_input;
         }
         
@@ -100,6 +101,7 @@ void GPUSampleBufferInput::processSampleBuffer(CMSampleBufferRef sampleBuffer){
         
         if (m_input==NULL) {
             m_input = new GPUFilter();
+            m_input->setOutputRotation(m_rotation);
             m_output = m_input;
         }
         setInputFrameBuffer(outbuffer);

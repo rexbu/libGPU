@@ -94,6 +94,7 @@ m_height(height){
     m_renderbuffer = 0;
     m_referencecount = 0;
     m_is_reference = true;
+    m_rgba = NULL;
     if (option==NULL) {
         m_option = GPUFrameBuffer::defaultFrameOption();
     }

@@ -131,13 +131,13 @@
 		CD0858C11F79F678007F1798 /* GPUPixellateFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CD0858BF1F79F678007F1798 /* GPUPixellateFilter.cpp */; };
 		CD0858C21F79F678007F1798 /* GPUPixellateFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = CD0858C01F79F678007F1798 /* GPUPixellateFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CD1493BE20F5DC26005095D5 /* GPUFileFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CD1493BC20F5DC26005095D5 /* GPUFileFilter.cpp */; };
-		CD1493BF20F5DC26005095D5 /* GPUFileFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = CD1493BD20F5DC26005095D5 /* GPUFileFilter.h */; };
-		CD2747F320F6F2FC009EEA35 /* GPUStreamFrame.h in Headers */ = {isa = PBXBuildFile; fileRef = CD2747F120F6F2FC009EEA35 /* GPUStreamFrame.h */; };
+		CD1493BF20F5DC26005095D5 /* GPUFileFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = CD1493BD20F5DC26005095D5 /* GPUFileFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CD2747F320F6F2FC009EEA35 /* GPUStreamFrame.h in Headers */ = {isa = PBXBuildFile; fileRef = CD2747F120F6F2FC009EEA35 /* GPUStreamFrame.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CD2747F420F6F2FC009EEA35 /* GPUStreamFrame.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CD2747F220F6F2FC009EEA35 /* GPUStreamFrame.cpp */; };
 		CD2747F920F6F307009EEA35 /* GPUVideoFrame.mm in Sources */ = {isa = PBXBuildFile; fileRef = CD2747F520F6F306009EEA35 /* GPUVideoFrame.mm */; };
-		CD2747FA20F6F307009EEA35 /* GPUVideoFrame.h in Headers */ = {isa = PBXBuildFile; fileRef = CD2747F620F6F306009EEA35 /* GPUVideoFrame.h */; };
+		CD2747FA20F6F307009EEA35 /* GPUVideoFrame.h in Headers */ = {isa = PBXBuildFile; fileRef = CD2747F620F6F306009EEA35 /* GPUVideoFrame.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CD2747FB20F6F307009EEA35 /* GPUVideoCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = CD2747F720F6F307009EEA35 /* GPUVideoCamera.m */; };
-		CD2747FC20F6F307009EEA35 /* GPUVideoCamera.h in Headers */ = {isa = PBXBuildFile; fileRef = CD2747F820F6F307009EEA35 /* GPUVideoCamera.h */; };
+		CD2747FC20F6F307009EEA35 /* GPUVideoCamera.h in Headers */ = {isa = PBXBuildFile; fileRef = CD2747F820F6F307009EEA35 /* GPUVideoCamera.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CD9F6FCB1FF9EE3F004F9C37 /* GPUPixelBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = CD9F6FC91FF9EE3E004F9C37 /* GPUPixelBuffer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CD9F6FCC1FF9EE3F004F9C37 /* GPUPixelBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CD9F6FCA1FF9EE3E004F9C37 /* GPUPixelBuffer.cpp */; };
 /* End PBXBuildFile section */
@@ -498,7 +498,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				C8A0AD521ECEA4E80043ADE9 /* bs_object.h in Headers */,
-				CD2747FA20F6F307009EEA35 /* GPUVideoFrame.h in Headers */,
 				C8A0AD5E1ECEA4E80043ADE9 /* bs_cqueue.h in Headers */,
 				C8A0AD6E1ECEA4E80043ADE9 /* bs_struct.h in Headers */,
 				C8A0AD691ECEA4E80043ADE9 /* bs_mmap.h in Headers */,
@@ -507,7 +506,6 @@
 				C8A0AD571ECEA4E80043ADE9 /* bs_socket.h in Headers */,
 				C8A0AD4B1ECEA4E80043ADE9 /* bs_url.h in Headers */,
 				C8A0AD731ECEA4E80043ADE9 /* bs_vector.h in Headers */,
-				CD2747F320F6F2FC009EEA35 /* GPUStreamFrame.h in Headers */,
 				C8A0AD611ECEA4E80043ADE9 /* bs_hashmap.h in Headers */,
 				C8A0AD4F1ECEA4E80043ADE9 /* bs_common.h in Headers */,
 				C8A0AD561ECEA4E80043ADE9 /* bs_string.h in Headers */,
@@ -548,7 +546,6 @@
 				C8A0AD871ECEBBC70043ADE9 /* GPUTwoPassFilter.h in Headers */,
 				C88D0AFF1ED3FF5F0084AF89 /* GPUPaintFilter.h in Headers */,
 				C8A0AD881ECEBBC70043ADE9 /* GPUVertexBuffer.h in Headers */,
-				CD1493BF20F5DC26005095D5 /* GPUFileFilter.h in Headers */,
 				C8A0AD891ECEBBC70043ADE9 /* GPUView.h in Headers */,
 				C8A0AD8A1ECEBBC70043ADE9 /* GPUYUV420Filter.h in Headers */,
 				C8A0AD8B1ECEBBC70043ADE9 /* GPUYUVFilter.h in Headers */,
@@ -559,14 +556,17 @@
 				C8A0AD8F1ECEBBC70043ADE9 /* GPUSaturationFilter.h in Headers */,
 				C8EB52E11ED7E306000EA55C /* GPUColorFilter.h in Headers */,
 				C8A0AD901ECEBBC70043ADE9 /* GPUSobelEdgeFilter.h in Headers */,
-				CD2747FC20F6F307009EEA35 /* GPUVideoCamera.h in Headers */,
 				C8A0AD911ECEBBC70043ADE9 /* GPUGaussianBlurFilter.h in Headers */,
 				C8A0AD921ECEBBC70043ADE9 /* GPULuminanceFilter.h in Headers */,
 				C8A0AD931ECEBBC70043ADE9 /* GPUBlend2Filter.h in Headers */,
+				CD1493BF20F5DC26005095D5 /* GPUFileFilter.h in Headers */,
 				C8A0AD941ECEBBC70043ADE9 /* GPUBlendImageFilter.h in Headers */,
 				C8A0AD951ECEBBC70043ADE9 /* GPUWhiteningFilter.h in Headers */,
 				CD0858C21F79F678007F1798 /* GPUPixellateFilter.h in Headers */,
 				CD0858BA1F793584007F1798 /* GPUPixellatePositionFilter.h in Headers */,
+				CD2747FC20F6F307009EEA35 /* GPUVideoCamera.h in Headers */,
+				CD2747FA20F6F307009EEA35 /* GPUVideoFrame.h in Headers */,
+				CD2747F320F6F2FC009EEA35 /* GPUStreamFrame.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
