@@ -34,6 +34,7 @@
         int h = CVPixelBufferGetHeight(buffer);
         NSLog(@"size: %d / %d", w, h);
     };
+    [videoCamera setExtraFilter:@"filter0"];
     [videoCamera startCameraCapture];
 }
 
