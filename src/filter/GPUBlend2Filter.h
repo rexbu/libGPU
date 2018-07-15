@@ -22,10 +22,13 @@ public:
     void setBlendImagePoints(GPUPicture* pic, gpu_point_t points[4], bool mirror);
     
     virtual void setInputFrameBuffer(GPUFrameBuffer *buffer, int location=0);
+    virtual void render();
 protected:
     
-    float       m_coordinates[8];  // texture坐标
-    GPUPicture* m_blend_pic;
+    float           m_blend_coors[8];  // texture坐标
+    GLuint          m_blend_coor;
+    GPUVertexBuffer m_blend_buffer;
+    GPUPicture*     m_blend_pic;
 };
 
 #endif

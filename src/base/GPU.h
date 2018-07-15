@@ -33,6 +33,7 @@
 #include "GPUBlendFilter.h"
 #include "GPULineFilter.h"
 
+#include "GPULookupFilter.h"
 #include "GPUMedianFilter.h"        // 中值滤波
 #include "GPUGaussianBlurFilter.h"  // 高斯滤波
 #include "GPULuminanceFilter.h"     // 灰度

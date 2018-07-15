@@ -611,8 +611,10 @@
 
 #pragma -mark 额外滤镜
 -(void)setExtraFilter:(NSString*)filterName{
-    streamFrame->setExtraFilter([filterName UTF8String], NULL);
+    NSString* path = [[NSBundle mainBundle] pathForResource:filterName ofType:@"png"];
+    streamFrame->setExtraFilter([path UTF8String]);
 }
+
 -(void)closeExtraFilter{
     streamFrame->removeExtraFilter();
 }

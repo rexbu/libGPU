@@ -15,17 +15,15 @@
 /////////////////// NV21转YUV ///////////////////////
 static const char* g_nv21toyuv_fragment_shader = SHADER_STRING(
 	varying mediump vec2 textureCoordinate;
-    varying mediump vec2 textureCoordinate2;
-    uniform sampler2D inputImageTexture;
-    uniform sampler2D inputImageTexture2;
+    uniform sampler2D inputImageTexture[2];
 
 	void main()
 	{
         mediump vec3 yuv;
         mediump vec3 rgb;
          
-        yuv.x = texture2D(inputImageTexture, textureCoordinate).r;
-        yuv.zy = texture2D(inputImageTexture2, textureCoordinate).ra;
+        yuv.x = texture2D(inputImageTexture[0], textureCoordinate).r;
+        yuv.zy = texture2D(inputImageTexture[1], textureCoordinate).ra;
          
         gl_FragColor = vec4(yuv, 1.0);
 	}
@@ -43,9 +41,7 @@ GPUNV21ToYUVFilter::GPUNV21ToYUVFilter(const char* fragment):GPUFilter(fragment,
 static const char* g_nv212yuv_eq_fragment = SHADER_STRING
 (
  varying mediump vec2 textureCoordinate;
- varying mediump vec2 textureCoordinate2;
- uniform sampler2D inputImageTexture;
- uniform sampler2D inputImageTexture2;
+ uniform sampler2D inputImageTexture[2];
  
  uniform mediump vec4 threshold;    /// luma equalization thresholds
  uniform mediump vec4 slope;        /// luma equalization slopes
@@ -57,8 +53,8 @@ static const char* g_nv212yuv_eq_fragment = SHADER_STRING
  {
      mediump vec3 yuv;
      
-     yuv.x = texture2D(inputImageTexture, textureCoordinate).r;
-     yuv.zy = texture2D(inputImageTexture2, textureCoordinate).ra;
+     yuv.x = texture2D(inputImageTexture[0], textureCoordinate).r;
+     yuv.zy = texture2D(inputImageTexture[1], textureCoordinate).ra;
 
      mediump float luma = yuv.r;
      mediump float u = yuv.g;
@@ -165,17 +161,15 @@ void GPUNV21ToYUVFilter::setStrength(float s){
 /////////////////// NV12转YUV ///////////////////////
 static const char* g_nv12toyuv_fragment_shader = SHADER_STRING(
     varying mediump vec2 textureCoordinate;
-    varying mediump vec2 textureCoordinate2;
-    uniform sampler2D inputImageTexture;
-    uniform sampler2D inputImageTexture2;
+    uniform sampler2D inputImageTexture[2];
 
     void main()
     {
         mediump vec3 yuv;
         mediump vec3 rgb;
          
-        yuv.x = texture2D(inputImageTexture, textureCoordinate).r;
-        yuv.yz = texture2D(inputImageTexture2, textureCoordinate).ra;         
+        yuv.x = texture2D(inputImageTexture[0], textureCoordinate).r;
+        yuv.yz = texture2D(inputImageTexture[1], textureCoordinate).ra;
         gl_FragColor = vec4(yuv, 1.0);
     }
 );
@@ -183,9 +177,7 @@ static const char* g_nv12toyuv_fragment_shader = SHADER_STRING(
 static const char* g_nv122yuv_eq_fragment = SHADER_STRING
 (
  varying mediump vec2 textureCoordinate;
- varying mediump vec2 textureCoordinate2;
- uniform sampler2D inputImageTexture;
- uniform sampler2D inputImageTexture2;
+ uniform sampler2D inputImageTexture[2];
  
  uniform mediump vec4 threshold;    /// luma equalization thresholds
  uniform mediump vec4 slope;        /// luma equalization slopes
@@ -197,8 +189,8 @@ static const char* g_nv122yuv_eq_fragment = SHADER_STRING
  {
      mediump vec3 yuv;
      
-     yuv.x = texture2D(inputImageTexture, textureCoordinate).r;
-     yuv.yz = texture2D(inputImageTexture2, textureCoordinate).ra;
+     yuv.x = texture2D(inputImageTexture[0], textureCoordinate).r;
+     yuv.yz = texture2D(inputImageTexture[1], textureCoordinate).ra;
 
      mediump float luma = yuv.r;
      mediump float u = yuv.g;
@@ -252,14 +244,11 @@ GPUNV12ToYUVFilter::GPUNV12ToYUVFilter(float s, int cc):GPUNV21ToYUVFilter(g_nv1
 static const char* g_nv21torgb_vertex_shader = SHADER_STRING(
     attribute vec4 position;
     attribute vec4 inputTextureCoordinate;
-    attribute vec4 inputTextureCoordinate2;
     varying vec2 textureCoordinate;
-    varying vec2 textureCoordinate2;
     void main()
     {
         gl_Position = position;
         textureCoordinate = inputTextureCoordinate.xy;
-        textureCoordinate2 = inputTextureCoordinate2.xy;
     }
 );
 
@@ -288,9 +277,7 @@ GPUFilter(g_nv21torgb_vertex_shader, g_nv21torgb_fragment_shader, 2){
 #pragma --mark "NV12转RGB"
 static const char* g_nv12torgb_fragment_shader = SHADER_STRING(
    varying mediump vec2 textureCoordinate;
-   varying mediump vec2 textureCoordinate2;
-   uniform sampler2D inputImageTexture;
-   uniform sampler2D inputImageTexture2;
+   uniform sampler2D inputImageTexture[2];
    mediump mat3 colorConversionMatrix = mat3(1.0, 1.0, 1.0, 0.0, -0.343, 1.765, 1.4, -0.711, 0.0);
    
    void main()
@@ -298,8 +285,8 @@ static const char* g_nv12torgb_fragment_shader = SHADER_STRING(
        mediump vec3 yuv;
        mediump vec3 rgb;
        
-       yuv.x = texture2D(inputImageTexture, textureCoordinate).r;
-       yuv.yz = texture2D(inputImageTexture2, textureCoordinate).ra - vec2(0.5, 0.5);
+       yuv.x = texture2D(inputImageTexture[0], textureCoordinate).r;
+       yuv.yz = texture2D(inputImageTexture[1], textureCoordinate).ra - vec2(0.5, 0.5);
        rgb = colorConversionMatrix * yuv;
        
        gl_FragColor = vec4(rgb, 1.0);
@@ -313,11 +300,7 @@ GPUFilter(g_nv12torgb_fragment_shader, 2, "NV12ToRGBFilter"){
 #pragma --mark "I420转RGB"
 static const char* g_i420torgb_fragment_shader = SHADER_STRING(
    varying mediump vec2 textureCoordinate;
-   varying mediump vec2 textureCoordinate2;
-   varying mediump vec2 textureCoordinate3;
-   uniform sampler2D inputImageTexture;
-   uniform sampler2D inputImageTexture2;
-   uniform sampler2D inputImageTexture3;
+   uniform sampler2D inputImageTexture[3];
    mediump mat3 colorConversionMatrix = mat3(1.0, 1.0, 1.0, 0.0, -0.343, 1.765, 1.4, -0.711, 0.0);
    
    void main()
@@ -325,9 +308,9 @@ static const char* g_i420torgb_fragment_shader = SHADER_STRING(
        mediump vec3 yuv;
        mediump vec3 rgb;
        
-       yuv.x = texture2D(inputImageTexture, textureCoordinate).r;
-       yuv.y = texture2D(inputImageTexture2, textureCoordinate).r - 0.5;
-       yuv.z = texture2D(inputImageTexture3, textureCoordinate).r - 0.5;
+       yuv.x = texture2D(inputImageTexture[0], textureCoordinate).r;
+       yuv.y = texture2D(inputImageTexture[1], textureCoordinate).r - 0.5;
+       yuv.z = texture2D(inputImageTexture[2], textureCoordinate).r - 0.5;
        rgb = colorConversionMatrix * yuv;
        
        gl_FragColor = vec4(rgb, 1.0);
@@ -340,12 +323,12 @@ GPUFilter(g_i420torgb_fragment_shader, 3, "GPUI420ToRGBFilter"){
 static const char* g_yuv2rgb_fragment = SHADER_STRING
 (
  varying mediump vec2 textureCoordinate;
- uniform sampler2D inputImageTexture;
+ uniform sampler2D inputImageTexture[1];
  /// const mediump mat3 RGBtoYCbCr = mat3(0.2984, -0.1690, 0.5012, 0.5875, -0.3328, -0.4196, 0.1142, 0.5019, -0.0815);
  const mediump mat3 YCbCrtoRGB = mat3(1.0, 1.0, 1.0, 0.0, -0.343, 1.765, 1.4, -0.711, 0.0);
  void main()
  {
-    mediump vec4 color = texture2D(inputImageTexture, textureCoordinate);    
+    mediump vec4 color = texture2D(inputImageTexture[0], textureCoordinate);
     gl_FragColor = vec4(YCbCrtoRGB * (color.rgb-vec3(0.0, 0.5, 0.5)), color.a);
  }
  );
@@ -359,13 +342,13 @@ GPUFilter(g_yuv2rgb_fragment){
 static const char* g_rgb2yuv_fragment = SHADER_STRING
 (
  varying mediump vec2 textureCoordinate;
- uniform sampler2D inputImageTexture;
+ uniform sampler2D inputImageTexture[1];
  const mediump mat3 RGB2YUV = mat3(0.2984, -0.1690, 0.5012, 0.5875, -0.3328, -0.4196, 0.1142, 0.5019, -0.0815);
  const mediump mat3 I = mat3(0.5 ,0.0 , 0.0 ,   0.0, 0.5, 0.0,   0.0, 0.0, 0.5);
  /// const mediump mat3 YUV2RGB = mat3(1.0, 1.0, 1.0, 0.0, -0.343, 1.765, 1.4, -0.711, 0.0);
  void main()
  {
-    mediump vec4 color = texture2D(inputImageTexture, textureCoordinate);
+    mediump vec4 color = texture2D(inputImageTexture[0], textureCoordinate);
     gl_FragColor = vec4(RGB2YUV * color.rgb+vec3(0.0, 0.5, 0.5), color.a);
  }
  );
@@ -374,7 +357,7 @@ static const char* g_rgb2yuv_eq_fragment = SHADER_STRING
 (
  varying mediump vec2 textureCoordinate;
  
- uniform sampler2D inputImageTexture;
+ uniform sampler2D inputImageTexture[1];
  uniform mediump vec4 threshold;    /// luma equalization thresholds
  uniform mediump vec4 slope;        /// luma equalization slopes
  
@@ -383,7 +366,7 @@ static const char* g_rgb2yuv_eq_fragment = SHADER_STRING
  
  void main()
  {
-     mediump vec4 color = texture2D(inputImageTexture, textureCoordinate);
+     mediump vec4 color = texture2D(inputImageTexture[0], textureCoordinate);
      mediump vec3 yuv = rgb2yuv*color.rgb+off2yuv;
      
      mediump float luma = yuv.r;

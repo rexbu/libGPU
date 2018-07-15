@@ -55,39 +55,3 @@ GPUFileFilter::~GPUFileFilter(){
     }
     m_images.clear();
 }
-
-const char* g_file_filter_map[] = {
-    "origin",   "10000_3",
-    "valencia", "10001_2",
-    "vintage", "10003_2",
-    "brannan",  "10004_2",
-    "inkwell",  "10005_2",
-    "pink",     "10014_4",
-    "walden",  "10015_3",
-    "grass",  "10020_5",
-    "beach",  "10021_4",
-    "sweety",  "10023_8",
-    "nature",  "10024_8",
-    "clean",  "10026_8",
-    "fresh",  "10028_3",
-    "coral",  "10029_3",
-    "sunset",  "10030_5",
-    "vivid",  "10031_2",
-    "lolita",  "10032_3",
-    "crisp",  "10033_2",
-    "rosy",  "10034_2",
-    "urban",  "10035_1",
-    "vintage",  "10036_1",
-    "smooth0",  "20000_1",
-    "smooth1",  "20001_5",
-    "smooth2",  "20002_5",
-    "smooth3",  "20003_5",
-    "smooth4",  "20004_5",
-    "smooth5",  "20005_5",
-    "no_face_eye",      "30001_2",
-    "slimface",         "30002_2",
-    "bigeye",           "30003_2",
-    "slimfacebigeye",   "30004_2",
-};
-
-int g_file_filter_num = (sizeof(g_file_filter_map)/sizeof(const char*))/2;

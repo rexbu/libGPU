@@ -127,6 +127,16 @@ void* changeExtraFilter(void* para){
     stream->m_extra_group.enable();
     return NULL;
 }
+
+void GPUStreamFrame::setExtraFilter(const char* image){
+    GPULookupFilter* extra_filter = new GPULookupFilter();
+    extra_filter->setLookupImage(image);
+    if (extra_filter==NULL) {
+        return;
+    }
+    
+    GPUContext::shareInstance()->pushAsyncTask(changeExtraFilter, extra_filter);
+}
 void GPUStreamFrame::setExtraFilter(const char* file, const char* image){
 
     GPUFilter* extra_filter = new GPUFileFilter(file, image);

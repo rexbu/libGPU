@@ -20,6 +20,7 @@ public:
     
     virtual void newFrame();
     
+    void setExtraFilter(const char* image);
     void setExtraFilter(const char* file, const char* image);
     //void setExtraFilter(const char* shader, const char* image);
     void removeExtraFilter();
