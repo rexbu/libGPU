@@ -81,6 +81,7 @@ void destroyTexture(JNIEnv * env, jclass jc, jint texture){
 
 // 创建glContext
 jlong eglContext(JNIEnv * env, jobject jo, jboolean active){
+    bs_log_init("stdout");
 	GPUContext::setContextEnable(active);
 	GPUContext* context  = GPUContext::shareInstance();
 	context->makeCurrent();
@@ -153,6 +154,7 @@ void processTexture(JNIEnv * env, jobject jo, jint texture, jint texture_type){
 		stream->setInputFilter(g_texture_input);
 	}
 
+    GPUContext::shareInstance()->runAsyncTasks();
 	g_texture_input->processTexture(texture);
 }
 
@@ -235,10 +237,12 @@ void removeOutputView(JNIEnv * env, jobject obj){
 
 void setExtraFilter(JNIEnv * env, jobject obj, jstring filter){
 	const char* name = env->GetStringUTFChars(filter, NULL);
-	if(name == NULL) {
-		return;
-	}
-	//GPUStreamFrame::shareInstance()->setExtraFilter(name);
+    if(name == NULL || strlen(name)==0) {
+        return;
+    }
+
+    GPUStreamFrame::shareInstance()->setExtraFilter(name);
+
 	env->ReleaseStringUTFChars(filter, name);
 }
 

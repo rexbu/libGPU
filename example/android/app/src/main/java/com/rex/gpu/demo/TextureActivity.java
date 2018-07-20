@@ -19,8 +19,12 @@ import com.rex.utils.CameraUtil;
 import com.rex.utils.DeviceUtil;
 import com.rex.gpu.VSRawBytesCallback;
 import com.rex.gpu.GPUVideoFrame;
+import com.rex.utils.FileUtil;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 public class TextureActivity extends Activity implements SurfaceHolder.Callback{
 
@@ -45,6 +49,12 @@ public class TextureActivity extends Activity implements SurfaceHolder.Callback{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_texture);
+        //滤镜文件拷贝到可读目录
+        try {
+            this.copyFilterFile();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         surfaceView = (SurfaceView) findViewById(R.id.camera_surfaceView);
         surfaceHolder = surfaceView.getHolder();
@@ -178,8 +188,16 @@ public class TextureActivity extends Activity implements SurfaceHolder.Callback{
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if (videoFrame!=null){
-                    String filter = getResources().getStringArray(R.array.filter_name)[i];
-                    videoFrame.setExtraFilter(filter);
+                    if (i==0){
+                        videoFrame.closeExtraFilter();
+                    }
+                    else{
+                        String filter = getResources().getStringArray(R.array.filter_name)[i];
+
+                        videoFrame.setExtraFilter("/data/data/"+TextureActivity.this.getPackageName()+"/"+filter+".png");
+                        TextView filter_view = findViewById(R.id.filterText);
+                        filter_view.setText(filter);
+                    }
                 }
             }
 
@@ -252,5 +270,14 @@ public class TextureActivity extends Activity implements SurfaceHolder.Callback{
         Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         bmp.setPixels(rgba, 0, width, 0, 0, width, height);
         return bmp;
+    }
+
+    public void copyFilterFile() throws Exception {
+        String[] strings = this.getResources().getStringArray(R.array.filter_name);
+        for (int i=1; i<strings.length; i++) {
+            FileOutputStream fos = new FileOutputStream("/data/data/"+this.getPackageName()+"/"+strings[i]+".png");
+            InputStream is = this.getAssets().open(strings[i]+".png");
+            FileUtil.write(fos, is);
+        }
     }
 }

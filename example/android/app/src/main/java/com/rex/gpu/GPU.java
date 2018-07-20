@@ -75,7 +75,7 @@ public class GPU {
     /// 美颜
     public native void setSmoothStrength(float level);
     /// 滤镜
-    public native void setExtraFilter(String filter);
+    public native void setExtraFilter(String image);
     public native void closeExtraFilter();
     public native void setExtraParameter(float para);
     /// 预览

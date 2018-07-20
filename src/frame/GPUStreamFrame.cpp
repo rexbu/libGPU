@@ -43,6 +43,8 @@ m_output_group("OutputGroup")
     m_extra_group.addTarget(&m_video_blend_filter);
     m_video_blend_filter.addTarget(&m_output_group);
 
+    m_preview_blend_filter.disable();
+    m_video_blend_filter.disable();
     m_extra_group.disable();
     m_output = &m_output_group;
     
@@ -107,24 +109,28 @@ void GPUStreamFrame::setInputFilter(GPUFilter* input){
 
 #pragma --mark "Logo"
 void GPUStreamFrame::setPreviewBlend(GPUPicture* picture, gpu_rect_t rect, bool mirror){
+    m_preview_blend_filter.enable();
     m_preview_blend_filter.setBlendImage(picture, rect, mirror);
 }
 void GPUStreamFrame::setVideoBlend(GPUPicture* picture, gpu_rect_t rect, bool mirror){
+    m_video_blend_filter.enable();
     m_video_blend_filter.setBlendImage(picture, rect, mirror);
 }
 
 #pragma --mark "滤镜"
 void* changeExtraFilter(void* para){
     GPUStreamFrame* stream = GPUStreamFrame::shareInstance();
+
     if (stream->m_extra_filter!=NULL) {
         stream->m_extra_filter->removeAllTargets();
         delete stream->m_extra_filter;
     }
-    
+
     stream->m_extra_filter = (GPUFilter*)para;
     stream->m_extra_group.setFirstFilter(stream->m_extra_filter);
     stream->m_extra_group.setLastFilter(stream->m_extra_filter);
     stream->m_extra_group.enable();
+
     return NULL;
 }
 
@@ -137,6 +143,7 @@ void GPUStreamFrame::setExtraFilter(const char* image){
     
     GPUContext::shareInstance()->pushAsyncTask(changeExtraFilter, extra_filter);
 }
+
 void GPUStreamFrame::setExtraFilter(const char* file, const char* image){
 
     GPUFilter* extra_filter = new GPUFileFilter(file, image);
@@ -152,6 +159,7 @@ void GPUStreamFrame::removeExtraFilter(){
     m_extra_group.disable();
     
     if (m_extra_filter!=NULL) {
+        m_extra_filter->removeAllTargets();
         delete m_extra_filter;
         m_extra_filter = NULL;
     }

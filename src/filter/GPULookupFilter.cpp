@@ -56,6 +56,11 @@ GPUFilter(g_lookup_fragment_shader, 2, "Lookup Filter"){
     m_lookup = NULL;
 }
 
+GPULookupFilter::~GPULookupFilter(){
+    if (m_lookup != NULL){
+        delete m_lookup;
+    }
+}
 void GPULookupFilter::setLookupImage(const char* path){
     stopLookup();
     

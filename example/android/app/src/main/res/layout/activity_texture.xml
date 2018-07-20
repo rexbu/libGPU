@@ -40,7 +40,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/filterSpinner"
-        android:layout_alignParentRight="true"
+        android:layout_alignBaseline="@id/switchCamera"
+        android:layout_toEndOf="@id/switchCamera"
+        android:layout_marginLeft="20dp"
         android:entries="@array/filter_name"
         android:background="@android:color/holo_orange_dark"
         />
