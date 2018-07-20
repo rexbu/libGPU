@@ -36,7 +36,7 @@ public class GPUVideoFrame extends GPU implements SurfaceTexture.OnFrameAvailabl
     // 输出处理后像素
     protected byte[]            outputBytes = null;
     // 获取处理后像素回调
-    protected VSRawBytesCallback    rawBytesCallback = null;
+    protected GPURawBytesCallback rawBytesCallback = null;
 
     private AssetManager        assetManager;
 
@@ -249,7 +249,7 @@ public class GPUVideoFrame extends GPU implements SurfaceTexture.OnFrameAvailabl
             outputBytes = new byte[size];
         }
     }
-    public void setRGBACallback(VSRawBytesCallback rgbaCallback){
+    public void setRGBACallback(GPURawBytesCallback rgbaCallback){
         this.rawBytesCallback = rgbaCallback;
         setOutputFormat(GPU_RGBA);
     }
@@ -258,7 +258,7 @@ public class GPUVideoFrame extends GPU implements SurfaceTexture.OnFrameAvailabl
      * 获取处理后的I420格式视频帧数据
      * @param yuv420Callback
      */
-    public void setYuv420PCallback(VSRawBytesCallback yuv420Callback){
+    public void setYuv420PCallback(GPURawBytesCallback yuv420Callback){
         this.rawBytesCallback = yuv420Callback;
         setOutputFormat(GPU_YUV420P);
     }
@@ -267,7 +267,7 @@ public class GPUVideoFrame extends GPU implements SurfaceTexture.OnFrameAvailabl
      * 获取处理后的NV21格式视频帧数据
      * @param nv21Callback
      */
-    public void setNV21Callback(VSRawBytesCallback nv21Callback){
+    public void setNV21Callback(GPURawBytesCallback nv21Callback){
         this.rawBytesCallback = nv21Callback;
         setOutputFormat(GPU_NV21);
     }
@@ -276,7 +276,7 @@ public class GPUVideoFrame extends GPU implements SurfaceTexture.OnFrameAvailabl
      * 获取处理后的NV12格式视频帧数据
      * @param nv12Callback
      */
-    public void setNV12Callback(VSRawBytesCallback nv12Callback){
+    public void setNV12Callback(GPURawBytesCallback nv12Callback){
         this.rawBytesCallback = nv12Callback;
         setOutputFormat(GPU_NV12);
     }

@@ -16,12 +16,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.rex.utils.CameraUtil;
-import com.rex.utils.DeviceUtil;
-import com.rex.gpu.VSRawBytesCallback;
+import com.rex.gpu.GPURawBytesCallback;
 import com.rex.gpu.GPUVideoFrame;
 import com.rex.utils.FileUtil;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -105,7 +103,7 @@ public class TextureActivity extends Activity implements SurfaceHolder.Callback{
         videoFrame.setVideoSize(videoSize.width, videoSize.height);
 
         videoFrame.setSmoothStrength(0.9f);
-        videoFrame.setYuv420PCallback(new VSRawBytesCallback() {
+        videoFrame.setYuv420PCallback(new GPURawBytesCallback() {
             @Override
             public void outputBytes(byte[] bytes) {
                 imageView.setImageBitmap(yuv420p2RGBABitmap(bytes, 360, 640));
