@@ -43,7 +43,6 @@ m_output_group("OutputGroup")
     m_extra_group.addTarget(&m_video_blend_filter);
     m_video_blend_filter.addTarget(&m_output_group);
 
-    m_preview_blend_filter.disable();
     m_video_blend_filter.disable();
     m_extra_group.disable();
     m_output = &m_output_group;
@@ -109,7 +108,6 @@ void GPUStreamFrame::setInputFilter(GPUFilter* input){
 
 #pragma --mark "Logo"
 void GPUStreamFrame::setPreviewBlend(GPUPicture* picture, gpu_rect_t rect, bool mirror){
-    m_preview_blend_filter.enable();
     m_preview_blend_filter.setBlendImage(picture, rect, mirror);
 }
 void GPUStreamFrame::setVideoBlend(GPUPicture* picture, gpu_rect_t rect, bool mirror){

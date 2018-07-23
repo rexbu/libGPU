@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.hardware.Camera;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -15,6 +16,7 @@ import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.rex.gpu.GPU;
 import com.rex.utils.CameraUtil;
 import com.rex.gpu.GPURawBytesCallback;
 import com.rex.gpu.GPUVideoFrame;
@@ -99,6 +101,11 @@ public class TextureActivity extends Activity implements SurfaceHolder.Callback{
         videoFrame.setMirrorBackVideo(false);
         //设置预览镜像，true时预览为镜像（左右颠倒），false时为非镜像(正常画面)
         videoFrame.setMirrorBackPreview(true);
+        // 预览图像尺寸，如果和surface尺寸不一致，可能会被surface缩放
+        videoFrame.setViewOutputSize(540, 960);
+        // 和surface尺寸比例不一致时候的填充方式
+        videoFrame.setViewFillMode(GPU.GPU_FILL_RATIO);
+        // 用于编码的图片尺寸
         videoFrame.setOutputSize(360, 640);
         videoFrame.setVideoSize(videoSize.width, videoSize.height);
 
@@ -124,7 +131,7 @@ public class TextureActivity extends Activity implements SurfaceHolder.Callback{
     }
 
     @Override
-    public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
+    public void surfaceChanged(SurfaceHolder surfaceHolder, int format, int width, int height) {
         Configuration configuration = this.getResources().getConfiguration(); //获取设置的配置信息
         if (configuration.orientation==Configuration.ORIENTATION_LANDSCAPE){
             videoFrame.setOutputImageOritation(Configuration.ORIENTATION_LANDSCAPE);
@@ -132,6 +139,8 @@ public class TextureActivity extends Activity implements SurfaceHolder.Callback{
         else{
             videoFrame.setOutputImageOritation(Configuration.ORIENTATION_PORTRAIT);
         }
+
+        Log.e("gpu", "change surface:"+width+"/"+height);
     }
 
     @Override

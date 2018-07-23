@@ -38,6 +38,8 @@ public class GPU {
 
         NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setOutputView", "()V");
         NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "removeOutputView", "()V");
+        NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setViewFillMode", "(I)V");
+        NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setViewOutputSize", "(II)V");
 
         NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setPreviewBlend", "(Ljava/lang/String;FFFFZ)V");
         NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setVideoBlend", "(Ljava/lang/String;FFFFZ)V");
@@ -46,6 +48,9 @@ public class GPU {
     // processTexture函数要处理的texture类型，如果是surfaceTexture，则应该为OES类型
     public static final int GPU_TEXTURE_RGB = 0;
     public static final int GPU_TEXTURE_OES = 1;
+    public static final int GPU_FILL_STRETCH = 0;       // 完全匹配，直接拉伸，默认填充选项
+    public static final int GPU_FILL_RATIO = 1;         // 适配输出尺寸，可能有边框
+    public static final int GPU_FILL_RATIOANDFILL = 2;  // 按照输出比例裁剪，不保留边框
 
     /// SurfaceTexture相关
     protected static native int createTexture();
@@ -70,7 +75,7 @@ public class GPU {
     /// 镜像
     public native void setPreviewMirror(boolean mirror);
     public native void setOutputMirror(boolean mirror);
-    protected native void setOutputRotation(int rotation);
+    public native void setOutputRotation(int rotation);
 
     /// 美颜
     public native void setSmoothStrength(float level);
@@ -81,6 +86,8 @@ public class GPU {
     /// 预览
     public native void setOutputView();
     public native void removeOutputView();
+    public native void setViewFillMode(int mode);
+    public native void setViewOutputSize(int width, int height);
 
     // blend可用于logo
 

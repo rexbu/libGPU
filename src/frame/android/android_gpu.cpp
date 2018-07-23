@@ -43,6 +43,8 @@ void setExtraParameter(JNIEnv * env, jobject jo, jfloat para);
 void setOutputView(JNIEnv * env, jobject jo);
 void removeOutputView(JNIEnv * env, jobject jo);
 void setViewRotation(JNIEnv * env, jobject jo, jint rotation);
+void setViewOutputSize(JNIEnv* env, jobject jo, jint width, jint height);
+void setViewFillMode(JNIEnv* env, jobject jo, jint mode);
 
 // blend用于logo
 void setPreviewBlend(JNIEnv * env, jobject jo, jstring jpath, jfloat x, jfloat y, jfloat w, jfloat h, jboolean mirror);
@@ -255,6 +257,17 @@ void setViewRotation(JNIEnv * env, jobject jo, jint rotation){
 		err_log("Visionin View: view has not been new.");
 	}
 }
+
+void setViewOutputSize(JNIEnv* env, jobject jo, jint width, jint height){
+	GPUStreamFrame::shareInstance()->m_preview_blend_filter.setOutputSize(width, height);
+}
+
+void setViewFillMode(JNIEnv* env, jobject jo, jint mode){
+    if(GPUStreamFrame::shareInstance()->m_view!=NULL){
+        ((GPUView*)GPUStreamFrame::shareInstance()->m_view)->setFillMode((gpu_fill_mode_t)mode);
+    }
+}
+
 void closeExtraFilter(JNIEnv *, jobject){
 	GPUStreamFrame::shareInstance()->removeExtraFilter();
 }

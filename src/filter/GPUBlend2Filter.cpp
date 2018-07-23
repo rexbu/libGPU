@@ -30,8 +30,11 @@ GPUFilter(g_vertex_shaders[1], g_blend_fragment_shader, 2)
     m_blend_pic = NULL;
     m_blend_coor = m_program->attributeIndex("inputTextureCoordinate2");
     m_program->enableAttribArray("inputTextureCoordinate2");
-    disable();
+    removeBlendImage();
+    // 可能用于view的尺寸裁剪
+    m_fill_mode = GPUFillModePreserveAspectRatioAndFill;
 }
+
 GPUBlend2Filter::~GPUBlend2Filter(){
     if (m_blend_pic!=NULL) {
         delete m_blend_pic;
@@ -60,7 +63,8 @@ void GPUBlend2Filter::setBlendImagePoints(GPUPicture* pic, gpu_point_t points[4]
     
     // 停止使用
     if (pic==NULL) {
-        disable();
+        removeBlendImage();
+        return;
     }
     
     // 计算在points作为四个顶点的坐标系下，00 10 01 11的坐标
@@ -110,19 +114,28 @@ void GPUBlend2Filter::setBlendImagePoints(GPUPicture* pic, gpu_point_t points[4]
     context->glContextLock();
     pic->addTarget(this, 1);
     context->glContextUnlock();
-    enable();
+}
+
+void GPUBlend2Filter::removeBlendImage(){
+    if (m_blend_pic!=NULL){
+        m_blend_pic->removeAllTargets();
+        delete m_blend_pic;
+        m_blend_pic = NULL;
+    }
+
+    memcpy(m_blend_coors, GPUFilter::coordinatesRotation(m_rotation), sizeof(GLfloat)*8);
+    m_blend_buffer.setBuffer(m_blend_coors);
 }
 
 void GPUBlend2Filter::setInputFrameBuffer(GPUFrameBuffer *buffer, int location){
-    if (location==0 && !m_disable) {
+    GPUFilter::setInputFrameBuffer(buffer, location);
+    if (location==0 && m_blend_pic!=NULL) {
         m_blend_pic->processImage();
     }
-    else if(location==0 && m_disable){
+    else if(location==0){
         // 为了让ready返回true
         GPUFilter::setInputFrameBuffer(buffer, 1);
     }
-    
-    GPUFilter::setInputFrameBuffer(buffer, location);
 }
 
 #pragma --mark "渲染"
