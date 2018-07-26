@@ -15,7 +15,7 @@
 class GPULookupFilter: public GPUFilter{
 public:
     GPULookupFilter();
-    
+    ~GPULookupFilter();
     void setLookupImage(const char* path);
     void stopLookup();
     virtual void setInputFrameBuffer(GPUFrameBuffer *buffer, int location = 0);

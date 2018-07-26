@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "HomeViewController.h"
 #import "ViewController.h"
 
 @interface AppDelegate ()
@@ -22,7 +23,7 @@
     self.window.backgroundColor = [UIColor whiteColor];
     
     //((__bridge UIView*)f->rootUIView()).backgroundColor = [UIColor orangeColor];
-    self.window.rootViewController = [[ViewController alloc] init];
+    self.window.rootViewController = [[HomeViewController alloc] init];
     
     [self.window makeKeyAndVisible];
     return YES;

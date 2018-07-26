@@ -37,6 +37,7 @@ GPUVideoCamera* shareInstance = nil;
 }
 
 -(id)initWithSessionPreset:(NSString *)sessionPreset position:(AVCaptureDevicePosition)position view:(UIView*)view{
+    shareInstance = self;
     BOOL asYuv = YES;
     _videoOrientation = -1;
     _isProcessing = NO;
@@ -48,8 +49,6 @@ GPUVideoCamera* shareInstance = nil;
     cameraProcessingQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH,0);
     audioProcessingQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW,0);
     sampleProcessingQueue = dispatch_queue_create("com.visionin.sampleProcessingQueue", NULL);
-    
-    shareInstance = self;
 
     _captureDevice = nil;
     NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];

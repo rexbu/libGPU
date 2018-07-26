@@ -614,7 +614,6 @@
     NSString* path = [[NSBundle mainBundle] pathForResource:filterName ofType:@"png"];
     streamFrame->setExtraFilter([path UTF8String]);
 }
-
 -(void)closeExtraFilter{
     streamFrame->removeExtraFilter();
 }
