@@ -11,7 +11,7 @@
 
 const static char* g_gaussian_fragment_shader = SHADER_STRING(
     varying vec2 textureCoordinate;
-    uniform sampler2D inputImageTexture;
+    uniform sampler2D inputImageTexture[1];
 
     uniform mediump float xStep;
     uniform mediump float yStep;
@@ -50,8 +50,8 @@ char* GPUGaussianBlurFilter::generateShader(uint32_t radius, float sigma){
     float* weight = (float*)malloc(sizeof(float)*(radius+1));
     float sumWeight = 0;
     
-    const char* value_p = "value += %f * texture2D(inputImageTexture, textureCoordinate + stepOffset*%f);";
-    const char* value_d = "value += %f * texture2D(inputImageTexture, textureCoordinate - stepOffset*%f);";
+    const char* value_p = "value += %f * texture2D(inputImageTexture[0], textureCoordinate + stepOffset*%f);";
+    const char* value_d = "value += %f * texture2D(inputImageTexture[0], textureCoordinate - stepOffset*%f);";
     for (int i=0; i<radius+1; i++) {
         weight[i] = (1.0 / sqrt(2.0 * M_PI * pow((double)sigma, 2.0))) * exp(-pow((double)i, 2.0) / (2.0 * pow((double)sigma, 2.0)));
         
@@ -71,7 +71,7 @@ char* GPUGaussianBlurFilter::generateShader(uint32_t radius, float sigma){
     int pointNum = bs_min(radius / 2 + (radius % 2), 7);
     int largeOptimizedOffsets = radius / 2 + (radius % 2);
     
-    snprintf(circalValue+strlen(circalValue), sizeof(circalValue)-strlen(circalValue), "value += %f * texture2D(inputImageTexture, textureCoordinate);",
+    snprintf(circalValue+strlen(circalValue), sizeof(circalValue)-strlen(circalValue), "value += %f * texture2D(inputImageTexture[0], textureCoordinate);",
              weight[0]);
 //    for (int i=1; i<radius+1; i++) {
 //        snprintf(circalValue+strlen(circalValue), sizeof(circalValue)-strlen(circalValue), value_p,
@@ -105,9 +105,9 @@ char* GPUGaussianBlurFilter::generateShader(uint32_t radius, float sigma){
             GLfloat optimizedOffset = (firstWeight * (i * 2 + 1) + secondWeight * (i * 2 + 2)) / optimizedWeight;
             
             snprintf(circalValue+strlen(circalValue), sizeof(circalValue)-strlen(circalValue),
-                     "value += texture2D(inputImageTexture, textureCoordinate+stepOffset*%f) * %f;\n", optimizedOffset, optimizedWeight);
+                     "value += texture2D(inputImageTexture[0], textureCoordinate+stepOffset*%f) * %f;\n", optimizedOffset, optimizedWeight);
             snprintf(circalValue+strlen(circalValue), sizeof(circalValue)-strlen(circalValue),
-                     "value += texture2D(inputImageTexture, textureCoordinate-stepOffset*%f) * %f;\n", optimizedOffset, optimizedWeight);
+                     "value += texture2D(inputImageTexture[0], textureCoordinate-stepOffset*%f) * %f;\n", optimizedOffset, optimizedWeight);
         }
     }
 

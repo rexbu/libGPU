@@ -61,7 +61,7 @@ state_t bs_log_init_entity(bs_log_t* plog, const char* path){
         gettimeofday(&utime, NULL);
         localtimes((time_t)(utime.tv_sec), -28800, &plog->ltm);
 
-        sprintf(file, "%s.%d-%d-%d.log", plog->path, plog->ltm.tm_year+1900, plog->ltm.tm_mon+1, plog->ltm.tm_mday);
+        sprintf(file, "%s.%d-%d-%d.txt", plog->path, plog->ltm.tm_year+1900, plog->ltm.tm_mon+1, plog->ltm.tm_mday);
         plog->file = fopen(file, "a+");
         if(plog->file == NULL){
             return BS_NOTFOUND;
@@ -194,7 +194,7 @@ static void log_refresh(bs_log_t* plog){
     localtimes((time_t)(utime.tv_sec), -28800, &plog->ltm);
 
     if(strcmp(plog->path, "stdout")!=0){
-        sprintf(file, "%s.%s.%d-%d-%d", plog->path,"log", plog->ltm.tm_year+1900, plog->ltm.tm_mon+1, plog->ltm.tm_mday);
+        sprintf(file, "%s.%d-%d-%d.txt", plog->path, plog->ltm.tm_year+1900, plog->ltm.tm_mon+1, plog->ltm.tm_mday);
         fclose(plog->file);
         plog->file = fopen(file, "w+");
     }

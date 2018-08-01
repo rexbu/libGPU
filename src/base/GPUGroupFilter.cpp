@@ -53,3 +53,10 @@ void GPUGroupFilter::setInputFrameBuffer(GPUFrameBuffer* buffer, int location){
         m_input->setInputFrameBuffer(buffer, location);
     }
 }
+
+void GPUGroupFilter::setOutputRotation(gpu_rotation_t rotation){
+    GPUInput::setOutputRotation(rotation);
+    if (m_input!=NULL) {
+        m_input->setOutputRotation(rotation);
+    }
+}

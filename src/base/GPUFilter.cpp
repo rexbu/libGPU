@@ -29,6 +29,17 @@ const char* GPUFilter::g_fragment30_shader = SHADER30_STRING(
         out_color = fract(texture(inputImageTexture[0], textureCoordinate));
     }
 );
+
+const char* GPUFilter::g_vertex_shader = SHADER_STRING(
+        attribute vec4 position;
+        attribute vec4 inputTextureCoordinate;
+        varying vec2 textureCoordinate;
+        void main()
+        {
+            gl_Position = position;
+            textureCoordinate = inputTextureCoordinate.xy;
+        }
+);
 const char* GPUFilter::g_fragment_shader = SHADER_STRING(
   varying vec2 textureCoordinate;
   uniform sampler2D inputImageTexture[1];
@@ -56,7 +67,7 @@ GPUFilter::GPUFilter(bool compile, const char* name){
     }
 
     if (compile) {
-        m_program = new GPUProgram(g_vertext_shader[0], g_fragment_shader, m_filter_name.c_str());
+        m_program = new GPUProgram(g_vertex_shader, g_fragment_shader, m_filter_name.c_str());
         init();
     }
     else{
@@ -74,7 +85,7 @@ GPUInput(inputs){
         m_filter_name = name;
     }
 
-	m_program = new GPUProgram(g_vertext_shader[inputs-1], fragment, m_filter_name.c_str());
+	m_program = new GPUProgram(g_vertex_shader, fragment, m_filter_name.c_str());
     init();
 }
 
@@ -105,7 +116,7 @@ void GPUFilter::changeShader(const char* fragment, const char* vertex){
     }
     const char* ver = vertex;
     if (ver==NULL) {
-        ver = g_vertext_shader[0];
+        ver = g_vertex_shader;
     }
     
     GPUContext* context = GPUContext::shareInstance();
@@ -196,27 +207,32 @@ void GPUFilter::render(){
     err_log("filter name: %s texture: %d", m_filter_name.c_str(), m_input_buffers[0]->m_texture);
 #endif
     
-    GPUCheckGlError(m_filter_name.c_str(), true, false);
+    GPUCheckGlError((m_filter_name+" start").c_str(), true, false);
     GPUContext* context = GPUContext::shareInstance();
     context->glContextLock();   // 加锁，防止此时设置参数
     
     context->setActiveProgram(m_program);
+    GPUCheckGlError((m_filter_name+" end0").c_str(), true, false);
     activeOutFrameBuffer();
+    GPUCheckGlError((m_filter_name+" end1").c_str(), true, false);
     for (int i=0; i<m_inputs; i++) {
         m_input_buffers[i]->activeTexture(GL_TEXTURE0+i);
         glUniform1i(m_input_textures[i], 0+i);
     }
-    
+    GPUCheckGlError((m_filter_name+" end2").c_str(), true, false);
     m_coordinate_buffer->activeBuffer(m_input_coordinate);
+    GPUCheckGlError((m_filter_name+" end3").c_str(), true, false);
     m_vertex_buffer->activeBuffer(m_position);
+    GPUCheckGlError((m_filter_name+" end4").c_str(), true, false);
     
     glDrawArrays(GL_TRIANGLE_STRIP, 0, (GLsizei)m_vertices.size()/2);
+    GPUCheckGlError((m_filter_name+" end5").c_str(), true, false);
     glFlush();
     m_coordinate_buffer->disableBuffer(m_input_coordinate);
     m_vertex_buffer->disableBuffer(m_position);
     m_outbuffer->unactive();
     
-    GPUCheckGlError(m_filter_name.c_str(), true, false);
+    GPUCheckGlError((m_filter_name+" end").c_str(), true, false);
     context->glContextUnlock();
 }
 
@@ -487,7 +503,7 @@ void GPUFilter::setInteger(const char* name, int i){
     m_program->setInteger(name, i);
 }
 
-const char* GPUFilter::g_vertext_shader[] = {
+const char* GPUFilter::g_vertex_shaders[] = {
 SHADER_STRING(
     attribute vec4 position;
     attribute vec4 inputTextureCoordinate;

@@ -17,14 +17,16 @@ public:
     GPUGroupFilter(const char* name = NULL);
     virtual void newFrame();
     virtual void setInputFrameBuffer(GPUFrameBuffer* buffer, int location=0);
-    
+    virtual void setOutputRotation(gpu_rotation_t rotation);
+
     inline void setFirstFilter(GPUFilter* f){
         m_input = f;
     }
+
     inline void setLastFilter(GPUFilter* f){
         m_output = f;
     }
-    
+
     inline GPUFilter* getFirstFilter(){ return m_input; }
     inline GPUFilter* getLastFilter(){ return m_output; }
 

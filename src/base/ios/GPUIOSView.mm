@@ -115,7 +115,7 @@ void GPUIOSView::setOutputRotation(gpu_rotation_t rotation){
     }
 
     GPUCheckGlError("IOSView init");
-    displayProgram = new GPUProgram(GPUFilter::g_vertext_shader[0], GPUFilter::g_fragment_shader);
+    displayProgram = new GPUProgram(GPUFilter::g_vertex_shader, GPUFilter::g_fragment_shader);
     _rotation = GPUNoRotation;
     displayPositionAttribute = displayProgram->attributeIndex("position");
     displayTextureCoordinateAttribute = displayProgram->attributeIndex("inputTextureCoordinate");
@@ -290,8 +290,10 @@ void GPUIOSView::setOutputRotation(gpu_rotation_t rotation){
 
 -(void)setInputFrameBuffer:(GPUIOSFrameBuffer*)frameBuffer{
     inputFramebufferForDisplay = frameBuffer;
-    inputImageSize = CGSizeMake(frameBuffer->m_width, frameBuffer->m_height);
-    [self recalculateViewGeometry];
+    if (inputImageSize.width!=frameBuffer->m_width || inputImageSize.height!=frameBuffer->m_height) {
+        inputImageSize = CGSizeMake(frameBuffer->m_width, frameBuffer->m_height);
+        [self recalculateViewGeometry];
+    }
 }
 
 #pragma mark -

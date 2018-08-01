@@ -12,7 +12,7 @@ const static char* g_saturation_fragment_shader = SHADER_STRING
 (
  varying highp vec2 textureCoordinate;
  
- uniform sampler2D inputImageTexture;
+ uniform sampler2D inputImageTexture[1];
  uniform lowp float saturation;
  
  // Values from "Graphics Shaders: Theory and Practice" by Bailey and Cunningham
@@ -20,7 +20,7 @@ const static char* g_saturation_fragment_shader = SHADER_STRING
  
  void main()
  {
-     lowp vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
+     lowp vec4 textureColor = texture2D(inputImageTexture[0], textureCoordinate);
      lowp float luminance = dot(textureColor.rgb, luminanceWeighting);
      lowp vec3 greyScaleColor = vec3(luminance);
      

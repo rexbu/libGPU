@@ -39,8 +39,8 @@ GPUContext::GPUContext(){
     m_gpu_context = NULL;
     
 #ifdef __ANDROID__
-    m_surfacewidth = 1080;
-    m_surfaceheight = 1920;
+    m_surfacewidth = 4096;
+    m_surfaceheight = 4096;
 #endif
 }
 

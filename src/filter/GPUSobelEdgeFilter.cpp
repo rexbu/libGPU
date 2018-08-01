@@ -12,7 +12,7 @@ const static char* g_sobeledge_fragment_shader = SHADER_STRING
 (
  varying vec2 textureCoordinate;
  
- uniform sampler2D inputImageTexture;
+ uniform sampler2D inputImageTexture[1];
  uniform mediump float edgeStrength;
  uniform mediump float widthStep;
  uniform mediump float heightStep;
@@ -20,14 +20,14 @@ const static char* g_sobeledge_fragment_shader = SHADER_STRING
  
  void main()
  {
-    mediump float bottomLeftIntensity = texture2D(inputImageTexture, textureCoordinate+vec2(-widthStep, heightStep)).r;
-    mediump float topRightIntensity = texture2D(inputImageTexture, textureCoordinate+vec2(widthStep, -heightStep)).r;
-    mediump float topLeftIntensity = texture2D(inputImageTexture, textureCoordinate+vec2(-widthStep, -heightStep)).r;
-    mediump float bottomRightIntensity = texture2D(inputImageTexture, textureCoordinate+vec2(widthStep, heightStep)).r;
-    mediump float leftIntensity = texture2D(inputImageTexture, textureCoordinate+vec2(-widthStep, 0.0)).r;
-    mediump float rightIntensity = texture2D(inputImageTexture, textureCoordinate+vec2(widthStep, 0.0)).r;
-    mediump float bottomIntensity = texture2D(inputImageTexture, textureCoordinate+vec2(0.0, heightStep)).r;
-    mediump float topIntensity = texture2D(inputImageTexture, textureCoordinate+vec2(0.0, -heightStep)).r;
+    mediump float bottomLeftIntensity = texture2D(inputImageTexture[0], textureCoordinate+vec2(-widthStep, heightStep)).r;
+    mediump float topRightIntensity = texture2D(inputImageTexture[0], textureCoordinate+vec2(widthStep, -heightStep)).r;
+    mediump float topLeftIntensity = texture2D(inputImageTexture[0], textureCoordinate+vec2(-widthStep, -heightStep)).r;
+    mediump float bottomRightIntensity = texture2D(inputImageTexture[0], textureCoordinate+vec2(widthStep, heightStep)).r;
+    mediump float leftIntensity = texture2D(inputImageTexture[0], textureCoordinate+vec2(-widthStep, 0.0)).r;
+    mediump float rightIntensity = texture2D(inputImageTexture[0], textureCoordinate+vec2(widthStep, 0.0)).r;
+    mediump float bottomIntensity = texture2D(inputImageTexture[0], textureCoordinate+vec2(0.0, heightStep)).r;
+    mediump float topIntensity = texture2D(inputImageTexture[0], textureCoordinate+vec2(0.0, -heightStep)).r;
      
     mediump float h = -topLeftIntensity - 2.0 * topIntensity - topRightIntensity + bottomLeftIntensity + 2.0 * bottomIntensity + bottomRightIntensity;
     mediump float v = -bottomLeftIntensity - 2.0 * leftIntensity - topLeftIntensity + bottomRightIntensity + 2.0 * rightIntensity + topRightIntensity;
@@ -77,21 +77,21 @@ const static char* g_sobeldirection_fragment_shader = SHADER_STRING
 (
  varying vec2 textureCoordinate;
  
- uniform sampler2D inputImageTexture;
+ uniform sampler2D inputImageTexture[1];
  uniform mediump float edgeStrength;
  uniform mediump float widthStep;
  uniform mediump float heightStep;
  
  void main()
  {
-    mediump float bottomLeftIntensity = texture2D(inputImageTexture, textureCoordinate+vec2(-widthStep, heightStep)).r;
-    mediump float topRightIntensity = texture2D(inputImageTexture, textureCoordinate+vec2(widthStep, -heightStep)).r;
-    mediump float topLeftIntensity = texture2D(inputImageTexture, textureCoordinate+vec2(-widthStep, -heightStep)).r;
-    mediump float bottomRightIntensity = texture2D(inputImageTexture, textureCoordinate+vec2(widthStep, heightStep)).r;
-    mediump float leftIntensity = texture2D(inputImageTexture, textureCoordinate+vec2(-widthStep, 0.0)).r;
-    mediump float rightIntensity = texture2D(inputImageTexture, textureCoordinate+vec2(widthStep, 0.0)).r;
-    mediump float bottomIntensity = texture2D(inputImageTexture, textureCoordinate+vec2(0.0, heightStep)).r;
-    mediump float topIntensity = texture2D(inputImageTexture, textureCoordinate+vec2(0.0, -heightStep)).r;
+    mediump float bottomLeftIntensity = texture2D(inputImageTexture[0], textureCoordinate+vec2(-widthStep, heightStep)).r;
+    mediump float topRightIntensity = texture2D(inputImageTexture[0], textureCoordinate+vec2(widthStep, -heightStep)).r;
+    mediump float topLeftIntensity = texture2D(inputImageTexture[0], textureCoordinate+vec2(-widthStep, -heightStep)).r;
+    mediump float bottomRightIntensity = texture2D(inputImageTexture[0], textureCoordinate+vec2(widthStep, heightStep)).r;
+    mediump float leftIntensity = texture2D(inputImageTexture[0], textureCoordinate+vec2(-widthStep, 0.0)).r;
+    mediump float rightIntensity = texture2D(inputImageTexture[0], textureCoordinate+vec2(widthStep, 0.0)).r;
+    mediump float bottomIntensity = texture2D(inputImageTexture[0], textureCoordinate+vec2(0.0, heightStep)).r;
+    mediump float topIntensity = texture2D(inputImageTexture[0], textureCoordinate+vec2(0.0, -heightStep)).r;
      
 	mediump vec2 gradientDirection;
 	gradientDirection.x = -bottomLeftIntensity - 2.0 * leftIntensity - topLeftIntensity + bottomRightIntensity + 2.0 * rightIntensity + topRightIntensity;

@@ -25,11 +25,16 @@ const char* g_blend_fragment_shader = SHADER_STRING(
 );
 
 GPUBlend2Filter::GPUBlend2Filter():
-GPUFilter(g_blend_fragment_shader, 2, "Blend2Filter")
+GPUFilter(g_vertex_shaders[1], g_blend_fragment_shader, 2)
 {
     m_blend_pic = NULL;
-    disable();
+    m_blend_coor = m_program->attributeIndex("inputTextureCoordinate2");
+    m_program->enableAttribArray("inputTextureCoordinate2");
+    removeBlendImage();
+    // 可能用于view的尺寸裁剪
+    m_fill_mode = GPUFillModePreserveAspectRatioAndFill;
 }
+
 GPUBlend2Filter::~GPUBlend2Filter(){
     if (m_blend_pic!=NULL) {
         delete m_blend_pic;
@@ -58,7 +63,8 @@ void GPUBlend2Filter::setBlendImagePoints(GPUPicture* pic, gpu_point_t points[4]
     
     // 停止使用
     if (pic==NULL) {
-        disable();
+        removeBlendImage();
+        return;
     }
     
     // 计算在points作为四个顶点的坐标系下，00 10 01 11的坐标
@@ -69,55 +75,96 @@ void GPUBlend2Filter::setBlendImagePoints(GPUPicture* pic, gpu_point_t points[4]
     for (int i=0; i<4; i++) {
         // 左上
         if (coordinate[i*2]==0 && coordinate[i*2+1]==0) {
-            m_coordinates[i*2] = (0-points[0].x)/unit_x;
-            m_coordinates[i*2+1] = (0-points[0].y)/unit_y;
+            m_blend_coors[i*2] = (0-points[0].x)/unit_x;
+            m_blend_coors[i*2+1] = (0-points[0].y)/unit_y;
         }
         // 右上
         else if (coordinate[i*2]==1 && coordinate[i*2+1]==0) {
-            m_coordinates[i*2] = 1+(1-points[1].x)/unit_x;
-            m_coordinates[i*2+1] = (0-points[1].y)/unit_y;
+            m_blend_coors[i*2] = 1+(1-points[1].x)/unit_x;
+            m_blend_coors[i*2+1] = (0-points[1].y)/unit_y;
         }
         // 左下
         else if (coordinate[i*2]==0 && coordinate[i*2+1]==1) {
-            m_coordinates[i*2] = (0-points[2].x)/unit_x;
-            m_coordinates[i*2+1] = 1+(1-points[2].y)/unit_y;
+            m_blend_coors[i*2] = (0-points[2].x)/unit_x;
+            m_blend_coors[i*2+1] = 1+(1-points[2].y)/unit_y;
         }
         // 右下
         else if (coordinate[i*2]==1 && coordinate[i*2+1]==1) {
-            m_coordinates[i*2] = 1+(1-points[3].x)/unit_x;
-            m_coordinates[i*2+1] = 1+(1-points[3].y)/unit_y;
+            m_blend_coors[i*2] = 1+(1-points[3].x)/unit_x;
+            m_blend_coors[i*2+1] = 1+(1-points[3].y)/unit_y;
         }
     }
     
     if (mirror) {
         GLfloat coors[8];
-        coors[0] = m_coordinates[2];
-        coors[1] = m_coordinates[3];
-        coors[2] = m_coordinates[0];
-        coors[3] = m_coordinates[1];
-        coors[4] = m_coordinates[6];
-        coors[5] = m_coordinates[7];
-        coors[6] = m_coordinates[4];
-        coors[7] = m_coordinates[5];
-        memcpy(m_coordinates, coors, sizeof(GLfloat)*8);
+        coors[0] = m_blend_coors[2];
+        coors[1] = m_blend_coors[3];
+        coors[2] = m_blend_coors[0];
+        coors[3] = m_blend_coors[1];
+        coors[4] = m_blend_coors[6];
+        coors[5] = m_blend_coors[7];
+        coors[6] = m_blend_coors[4];
+        coors[7] = m_blend_coors[5];
+        memcpy(m_blend_coors, coors, sizeof(GLfloat)*8);
     }
+    m_blend_buffer.setBuffer(m_blend_coors);
     
     m_blend_pic = pic;
     GPUContext* context = GPUContext::shareInstance();
     context->glContextLock();
     pic->addTarget(this, 1);
     context->glContextUnlock();
-    enable();
+}
+
+void GPUBlend2Filter::removeBlendImage(){
+    if (m_blend_pic!=NULL){
+        m_blend_pic->removeAllTargets();
+        delete m_blend_pic;
+        m_blend_pic = NULL;
+    }
+
+    memcpy(m_blend_coors, GPUFilter::coordinatesRotation(m_rotation), sizeof(GLfloat)*8);
+    m_blend_buffer.setBuffer(m_blend_coors);
 }
 
 void GPUBlend2Filter::setInputFrameBuffer(GPUFrameBuffer *buffer, int location){
-    if (location==0 && !m_disable) {
+    GPUFilter::setInputFrameBuffer(buffer, location);
+    if (location==0 && m_blend_pic!=NULL) {
         m_blend_pic->processImage();
     }
-    else if(location==0 && m_disable){
+    else if(location==0){
         // 为了让ready返回true
         GPUFilter::setInputFrameBuffer(buffer, 1);
     }
+}
+
+#pragma --mark "渲染"
+void GPUBlend2Filter::render(){
+#if DEBUG_FILTER_NAME
+    err_log("filter name: %s texture: %d", m_filter_name.c_str(), m_input_buffers[0]->m_texture);
+#endif
     
-    GPUFilter::setInputFrameBuffer(buffer, location);
+    GPUCheckGlError(m_filter_name.c_str(), true, false);
+    GPUContext* context = GPUContext::shareInstance();
+    context->glContextLock();   // 加锁，防止此时设置参数
+    
+    context->setActiveProgram(m_program);
+    activeOutFrameBuffer();
+    for (int i=0; i<m_inputs; i++) {
+        m_input_buffers[i]->activeTexture(GL_TEXTURE0+i);
+        glUniform1i(m_input_textures[i], 0+i);
+    }
+    
+    m_coordinate_buffer->activeBuffer(m_input_coordinate);
+    m_blend_buffer.activeBuffer(m_blend_coor);
+    m_vertex_buffer->activeBuffer(m_position);
+    
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, (GLsizei)m_vertices.size()/2);
+    glFlush();
+    m_coordinate_buffer->disableBuffer(m_input_coordinate);
+    m_vertex_buffer->disableBuffer(m_position);
+    m_outbuffer->unactive();
+    
+    GPUCheckGlError(m_filter_name.c_str(), true, false);
+    context->glContextUnlock();
 }

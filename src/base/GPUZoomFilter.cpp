@@ -33,5 +33,5 @@ void GPUZoomFilter::render(){
 
 void GPUZoomFilter::setOutputFormat(gpu_pixel_format_t format){
 	const char *fragment = (format==GPU_BGRA) ? g_bgra_fragment_shader : g_fragment_shader;
-	changeShader(fragment, g_vertext_shader[0]);
+	changeShader(fragment, g_vertex_shader);
 }

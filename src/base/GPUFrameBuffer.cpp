@@ -94,6 +94,7 @@ m_height(height){
     m_renderbuffer = 0;
     m_referencecount = 0;
     m_is_reference = true;
+    m_rgba = NULL;
     if (option==NULL) {
         m_option = GPUFrameBuffer::defaultFrameOption();
     }
@@ -417,7 +418,7 @@ GPUFrameBuffer* GPUBufferCache::getFrameBuffer(int width, int height, int depth,
     
     if (i >= m_bufferlist.size())
     {
-        buffer = newFrameBuffer(width, height, depth, option, only_texture);
+        buffer = newFrameBuffer(width, height, option, only_texture);
         debug_log("create: size[%d,%d] format[%x,%x,%x]", width, height, option->color_format, option->format, option->type);
         m_bufferlist.push_back(buffer);
     }
@@ -425,8 +426,8 @@ GPUFrameBuffer* GPUBufferCache::getFrameBuffer(int width, int height, int depth,
     return buffer;
 }
 
-GPUFrameBuffer* GPUBufferCache::newFrameBuffer(int width, int height, int depth, gpu_frame_option_t* option, bool only_texture){
-    return new GPUFrameBuffer(width, height, depth, option, only_texture);
+GPUFrameBuffer* GPUBufferCache::newFrameBuffer(int width, int height, gpu_frame_option_t* option, bool only_texture){
+    return new GPUFrameBuffer(width, height, option, only_texture);
 }
 
 bool GPUBufferCache::setFrameBuffer(GPUFrameBuffer* buffer){

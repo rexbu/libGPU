@@ -1,3 +1,26 @@
 <resources>
     <string name="app_name">GPUDemo</string>
+    <array name="filter_name">
+        <item>无</item>
+        <item>filter0</item>
+        <item>filter1</item>
+        <item>filter2</item>
+        <item>filter3</item>
+        <item>filter4</item>
+        <item>filter5</item>
+        <item>filter6</item>
+        <item>filter7</item>
+        <item>filter8</item>
+        <item>filter9</item>
+        <item>filter10</item>
+        <item>filter11</item>
+        <item>filter13</item>
+        <item>filter15</item>
+        <item>filter16</item>
+        <item>filter17</item>
+        <item>filter18</item>
+        <item>filter20</item>
+        <item>filter21</item>
+        <item>filter86</item>
+    </array>
 </resources>
