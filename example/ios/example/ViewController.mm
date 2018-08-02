@@ -46,6 +46,11 @@ BOOL canRotateToAllOrientations;
     videoCamera = [[GPUVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPresetHigh position:AVCaptureDevicePositionFront view:self.view];
     [videoCamera setMirrorFrontFacingCamera:TRUE];
     [videoCamera setMirrorFrontPreview:TRUE];
+    // 设置预览显示模式
+    [videoCamera setPreviewFillMode:GPUFillModePreserveAspectRatio];
+    // 设置预览显示比例，4：3
+    [videoCamera setPreviewSize:CGSizeMake(480, 640)];
+    // 设置输出视频流尺寸
     [videoCamera setOutputSize:CGSizeMake(480, 640)];
     [videoCamera setOutputImageOrientation:UIInterfaceOrientationPortrait];
     

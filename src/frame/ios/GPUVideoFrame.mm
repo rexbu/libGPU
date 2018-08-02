@@ -674,4 +674,15 @@
     gpu_rect_t rect = {0};
     stream->setVideoBlend(NULL, rect, false);
 }
+#pragma --mark "预览模式"
+-(void)setPreviewFillMode:(gpu_fill_mode_t)previewFillMode{
+    _previewFillMode = previewFillMode;
+    if (playView!=nil) {
+        ((GPUUIView*)playView->uiview()).fillMode = previewFillMode;
+    }
+}
+-(void)setPreviewSize:(CGSize)previewSize{
+    _previewSize = previewSize;
+    GPUStreamFrame::shareInstance()->m_preview_blend_filter.setOutputSize(previewSize.width, previewSize.height);
+}
 @end

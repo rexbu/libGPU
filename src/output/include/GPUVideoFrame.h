@@ -16,6 +16,8 @@
 @property(nonatomic, assign) CGSize videoSize;  // 视频流尺寸
 @property(nonatomic, assign) CGSize outputSize; // 输出视频流尺寸，默认(0,0)，表示不裁剪不压缩
 @property(nonatomic, assign) CGRect viewFrame;  // 预览窗口尺寸
+@property(nonatomic, assign) gpu_fill_mode_t previewFillMode;   // 预览的视频显示填充模式，默认GPUFillModePreserveAspectRatioAndFill
+@property(nonatomic, assign) CGSize previewSize;    // 预览的视频流尺寸，最终和previewFillMode配合填满预览窗口，最大作用是设置视频流的显示比例，如4：3，16：9等
 @property(nonatomic, assign)AVCaptureDevicePosition     cameraPosition;         // 前后摄像头
 @property(nonatomic, assign)UIInterfaceOrientation      outputImageOrientation; // 设备方向，默认UIInterfaceOrientationPortrait
 
