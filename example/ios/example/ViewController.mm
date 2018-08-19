@@ -51,7 +51,7 @@ BOOL canRotateToAllOrientations;
     // 设置预览显示模式，等比例，可能有黑框填充，默认GPUFillModePreserveAspectRatioAndFill
     [videoCamera setPreviewFillMode:GPUFillModePreserveAspectRatio];
     // 设置预览显示比例，4：3
-    // [videoCamera setPreviewSize:CGSizeMake(480, 640)];
+    [videoCamera setPreviewSize:CGSizeMake(200, 600)];
     // 设置输出视频流尺寸
     [videoCamera setOutputSize:CGSizeMake(480, 640)];
     [videoCamera setOutputImageOrientation:UIInterfaceOrientationPortrait];

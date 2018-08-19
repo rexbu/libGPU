@@ -37,7 +37,8 @@ m_output_group("OutputGroup")
     m_view = NULL;
     m_input = NULL;
     
-    m_input = &m_smooth_filter;
+    // m_input = &m_smooth_filter;
+    setInputFormat(GPU_RGBA);
     m_smooth_filter.addTarget(&m_extra_group);
     m_extra_group.addTarget(&m_preview_blend_filter);
     m_extra_group.addTarget(&m_video_blend_filter);

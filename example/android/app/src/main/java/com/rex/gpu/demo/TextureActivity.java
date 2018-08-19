@@ -119,8 +119,8 @@ public class TextureActivity extends Activity implements SurfaceHolder.Callback{
 
 
         // 设置logo
-        //videoFrame.setPreviewBlend("/data/data/"+ DeviceUtil.getPackageName(this) +"/logo.png", 0.8f, 0.1f, 0.1f, 0.1f, false);
-        //videoFrame.setVideoBlend("/data/data/"+ DeviceUtil.getPackageName(this) +"/logo.png", 0.8f, 0.5f, 0.1f, 0.1f, false);
+        videoFrame.setPreviewBlend("/data/data/"+ TextureActivity.this.getPackageName() +"/logo.png", 0.8f, 0.1f, 0.1f, 0.1f, false);
+        videoFrame.setVideoBlend("/data/data/"+ TextureActivity.this.getPackageName() +"/logo.png", 0.8f, 0.5f, 0.1f, 0.1f, false);
         videoFrame.start();
         try {
             com.rex.utils.CameraUtil.mCamera.setPreviewTexture(videoFrame.surfaceTexture());
@@ -286,5 +286,8 @@ public class TextureActivity extends Activity implements SurfaceHolder.Callback{
             InputStream is = this.getAssets().open(strings[i]+".png");
             FileUtil.write(fos, is);
         }
+        FileOutputStream fos = new FileOutputStream("/data/data/"+this.getPackageName()+"/logo.png");
+        InputStream is = this.getAssets().open("logo.png");
+        FileUtil.write(fos, is);
     }
 }

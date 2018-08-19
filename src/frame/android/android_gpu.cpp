@@ -153,7 +153,8 @@ void processTexture(JNIEnv * env, jobject jo, jint texture, jint texture_type){
 			return;
 		}
 		g_texture_input = new GPUTextureInput(stream->m_frame_width, stream->m_frame_height, texture_type);
-		stream->setInputFilter(g_texture_input);
+		//stream->setInputFilter(g_texture_input);
+		g_texture_input->addTarget(stream);
 	}
 
     GPUContext::shareInstance()->runAsyncTasks();
@@ -226,7 +227,7 @@ void setOutputRotation(JNIEnv * env, jobject jo, jint rotation){
 	GPUStreamFrame::shareInstance()->setOutputRotation((gpu_rotation_t)rotation);
 }
 void setSmoothStrength(JNIEnv * env, jobject jo, jfloat level){
-	//GPUStreamFrame::shareInstance()->setSmoothStrength(level);
+	GPUStreamFrame::shareInstance()->setSmoothStrength(level);
 }
 
 void setOutputView(JNIEnv *env, jobject obj){
