@@ -258,9 +258,15 @@ void GPUStreamFrame::setBorder(int width, int height, float r, float g, float b)
 
 #pragma --mark "输入、输出的尺寸与旋转方向"
 void GPUStreamFrame::setInputRotation(gpu_rotation_t rotation){
-    info_log("input rotation[%d]", rotation);
+    err_log("set input rotation[%d]", rotation);
+#if __ANDROID__
+    // android旋转方向由g_texture_input控制
+    GPUInput::setOutputRotation(rotation);
+#else
     m_input->setOutputRotation(rotation);
+#endif
 }
+
 void GPUStreamFrame::setInputSize(uint32_t width, uint32_t height){
     m_input->setOutputSize(width, height);
     m_frame_width = width;

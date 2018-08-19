@@ -20,6 +20,7 @@ void makeCurrent(JNIEnv * env, jobject jo, jlong jl);
 void destroyEGL(JNIEnv * env, jobject jo, jlong jl);
 
 void processTexture(JNIEnv * env, jobject jo, jint texture, jint texture_type);
+void processPicture(JNIEnv * env, jobject jo, jstring jpath);
 void processBytes(JNIEnv* env, jobject jo, jstring path);
 void getBytes(JNIEnv* env, jobject jo, jbyteArray jb);
 int getTexture(JNIEnv* env, jobject jo);
@@ -154,6 +155,7 @@ void processTexture(JNIEnv * env, jobject jo, jint texture, jint texture_type){
 			return;
 		}
 		g_texture_input = new GPUTextureInput(stream->m_frame_width, stream->m_frame_height, texture_type);
+		g_texture_input->setOutputRotation(stream->getOutputRotation());
 		//stream->setInputFilter(g_texture_input);
 		g_texture_input->addTarget(stream);
 	}
@@ -169,11 +171,6 @@ void processPicture(JNIEnv * env, jobject jo, jstring jpath){
 	}
 
 	GPUStreamFrame* stream = GPUStreamFrame::shareInstance();
-	if (stream->m_frame_width==0 || stream->m_frame_height==0)
-	{
-		err_log("Visionin Error: don't set videosize!");
-		return;
-	}
 
 	GPUPicture pic(path);
 	pic.addTarget(stream);
@@ -236,6 +233,9 @@ void setInputSize(JNIEnv * env, jobject jo, jint width, jint height){
 }
 void setInputRotation(JNIEnv * env, jobject jo, jint rotation){
 	GPUStreamFrame::shareInstance()->setInputRotation((gpu_rotation_t)rotation);
+	if (g_texture_input!=NULL){
+		g_texture_input->setOutputRotation((gpu_rotation_t)rotation);
+	}
 }
 
 void setPreviewMirror(JNIEnv * env, jobject jo, jboolean mirror){

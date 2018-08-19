@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.hardware.Camera;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -17,23 +18,16 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.rex.gpu.GPU;
-import com.rex.utils.CameraUtil;
 import com.rex.gpu.GPURawBytesCallback;
 import com.rex.gpu.GPUVideoFrame;
-import com.rex.utils.FileUtil;
+import com.rex.utils.CameraUtil;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
-public class TextureActivity extends Activity implements SurfaceHolder.Callback{
-
-    protected SurfaceView surfaceView = null;
+public class PictureActivity extends Activity {
     protected ImageView imageView = null;
-    protected SurfaceHolder surfaceHolder = null;
     protected GPUVideoFrame videoFrame = null;
     protected boolean isFront = true;
-    Camera.Size videoSize;
 
     protected Button swtichButton;
     protected Button propsButton;
@@ -43,134 +37,67 @@ public class TextureActivity extends Activity implements SurfaceHolder.Callback{
     protected TextView smoothText;
     protected SeekBar smoothValueSeek;
     protected SeekBar whitenValueSeek;
-    protected SeekBar shaperValueSeek;
-    protected boolean isProps = true;
-    protected boolean isShaper = true;
 
+    protected String pic;
+    protected byte[] picBytes;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_texture);
 
-        surfaceView = (SurfaceView) findViewById(R.id.camera_surfaceView);
-        surfaceHolder = surfaceView.getHolder();
-        imageView = (ImageView)findViewById(R.id.cmaera_iamgeView);
+        setContentView(R.layout.activity_picture);
+
+        imageView = findViewById(R.id.cmaera_iamgeView);
 
         isFront = true;
         initView();
-    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        videoSize = CameraUtil.openCamera(1280, 720, isFront);
-        surfaceHolder.addCallback(this);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    public void surfaceCreated(SurfaceHolder surfaceHolder) {
         try {
-            videoFrame = new GPUVideoFrame(surfaceHolder.getSurface());
+            videoFrame = new GPUVideoFrame(null);
         } catch (Exception e) {
             e.printStackTrace();
             return;
         }
 
-        if (isFront){
-            videoFrame.setCameraPosition(GPUVideoFrame.CAMERA_FACING_FRONT);
-        }
-        else {
-            videoFrame.setCameraPosition(GPUVideoFrame.CAMERA_FACING_BACK);
-        }
-
         videoFrame.setOutputImageOritation(Configuration.ORIENTATION_PORTRAIT);
-        //设置推流视频镜像
-        videoFrame.setMirrorFrontVideo(false);
-        //设置预览镜像，true时预览为镜像（正常画面），false时为非镜像(左右颠倒)
-        videoFrame.setMirrorFrontPreview(true);
-        //设置推流视频镜像
-        videoFrame.setMirrorBackVideo(false);
-        //设置预览镜像，true时预览为镜像（左右颠倒），false时为非镜像(正常画面)
-        videoFrame.setMirrorBackPreview(false);
+
         // 预览图像尺寸，如果和surface尺寸不一致，可能会被surface缩放
         // videoFrame.setViewOutputSize(540, 960);
         // 和surface尺寸比例不一致时候的填充方式
         // videoFrame.setViewFillMode(GPU.GPU_FILL_RATIO);
         // 用于编码的图片尺寸
         videoFrame.setOutputSize(360, 640);
-        videoFrame.setVideoSize(videoSize.width, videoSize.height);
+        videoFrame.setOutputFormat(GPUVideoFrame.GPU_YUV420P);
+        picBytes = new byte[360*640*4];
 
         videoFrame.setSmoothStrength(0.9f);
         videoFrame.setWhitenStrength(0.9f);
-        videoFrame.setYuv420PCallback(new GPURawBytesCallback() {
-            @Override
-            public void outputBytes(byte[] bytes) {
-                imageView.setImageBitmap(yuv420p2RGBABitmap(bytes, 360, 640));
-            }
-        });
-
 
         // 设置logo
-        videoFrame.setPreviewBlend("/data/data/"+ TextureActivity.this.getPackageName() +"/logo.png", 20, 40, 160, 240, false);
-        videoFrame.setVideoBlend("/data/data/"+ TextureActivity.this.getPackageName() +"/logo.png", 20, 40, 160, 240, false);
+        // videoFrame.setPreviewBlend("/data/data/"+ PictureActivity.this.getPackageName() +"/logo.png", 20, 40, 160, 240, false);
+        // videoFrame.setVideoBlend("/data/data/"+ PictureActivity.this.getPackageName() +"/logo.png", 20, 40, 160, 240, false);
         videoFrame.start();
-        try {
-            com.rex.utils.CameraUtil.mCamera.setPreviewTexture(videoFrame.surfaceTexture());
-            com.rex.utils.CameraUtil.mCamera.startPreview();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        pic = "/data/data/"+this.getPackageName()+"/logo.png";
+
+        videoFrame.processPicture(pic);
+        videoFrame.getBytes(picBytes);
+        imageView.setImageBitmap(yuv420p2RGBABitmap(picBytes, 360, 640));
     }
 
-    @Override
-    public void surfaceChanged(SurfaceHolder surfaceHolder, int format, int width, int height) {
-        Configuration configuration = this.getResources().getConfiguration(); //获取设置的配置信息
-        if (configuration.orientation==Configuration.ORIENTATION_LANDSCAPE){
-            videoFrame.setOutputImageOritation(Configuration.ORIENTATION_LANDSCAPE);
-        }
-        else{
-            videoFrame.setOutputImageOritation(Configuration.ORIENTATION_PORTRAIT);
-        }
 
-        Log.e("gpu", "change surface:"+width+"/"+height);
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
-
     @Override
-    public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
+    protected void onStop(){
+        super.onStop();
+
         if (videoFrame!=null){
             videoFrame.stop();
         }
         videoFrame.destroy();
-        com.rex.utils.CameraUtil.releaseCamera();
         videoFrame = null;
-    }
-
-    // 切换摄像头做的操作
-    protected void rotateCamera(){
-        if(isFront){
-            isFront=false;
-            videoFrame.setCameraPosition(GPUVideoFrame.CAMERA_FACING_BACK);
-        }
-        else{
-            isFront=true;
-            videoFrame.setCameraPosition(GPUVideoFrame.CAMERA_FACING_FRONT);
-        }
-
-        com.rex.utils.CameraUtil.releaseCamera();
-        videoSize = com.rex.utils.CameraUtil.openCamera(1280, 720, isFront);
-        videoFrame.setVideoSize(videoSize.width, videoSize.height);
-
-        try {
-            com.rex.utils.CameraUtil.mCamera.setPreviewTexture(videoFrame.surfaceTexture());
-            com.rex.utils.CameraUtil.mCamera.startPreview();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     protected void initView(){
@@ -184,13 +111,6 @@ public class TextureActivity extends Activity implements SurfaceHolder.Callback{
         smoothValueSeek.setProgress(90);
         whitenValueSeek.setProgress(90);
 
-        swtichButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                rotateCamera();
-            }
-        });
-
         // 设置滤镜
         filterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -202,10 +122,15 @@ public class TextureActivity extends Activity implements SurfaceHolder.Callback{
                     else{
                         String filter = getResources().getStringArray(R.array.filter_name)[i];
 
-                        videoFrame.setExtraFilter("/data/data/"+TextureActivity.this.getPackageName()+"/"+filter+".png");
+                        videoFrame.setExtraFilter("/data/data/"+getBaseContext().getPackageName()+"/"+filter+".png");
                         TextView filter_view = findViewById(R.id.filterText);
                         filter_view.setText(filter);
                     }
+
+                    // 每次操作都要处理
+                    videoFrame.processPicture(pic);
+                    videoFrame.getBytes(picBytes);
+                    imageView.setImageBitmap(yuv420p2RGBABitmap(picBytes, 360, 640));
                 }
             }
 
@@ -238,6 +163,10 @@ public class TextureActivity extends Activity implements SurfaceHolder.Callback{
                             break;
                     }
                 }
+                // 每次操作都要处理
+                videoFrame.processPicture(pic);
+                videoFrame.getBytes(picBytes);
+                imageView.setImageBitmap(yuv420p2RGBABitmap(picBytes, 360, 640));
             }
 
             @Override
@@ -264,6 +193,11 @@ public class TextureActivity extends Activity implements SurfaceHolder.Callback{
                     float strength = value*(float)1.0/100;
                     videoFrame.setSmoothStrength(strength);
                     smoothText.setText("磨皮："+ strength);
+
+                    // 每次操作都要处理
+                    videoFrame.processPicture(pic);
+                    videoFrame.getBytes(picBytes);
+                    imageView.setImageBitmap(yuv420p2RGBABitmap(picBytes, 360, 640));
                 }
             }
         });
@@ -284,6 +218,10 @@ public class TextureActivity extends Activity implements SurfaceHolder.Callback{
                 if (videoFrame!=null){
                     float strength = value*(float)1.0/100;
                     videoFrame.setWhitenStrength(strength);
+                    // 每次操作都要处理
+                    videoFrame.processPicture(pic);
+                    videoFrame.getBytes(picBytes);
+                    imageView.setImageBitmap(yuv420p2RGBABitmap(picBytes, 360, 640));
                 }
             }
         });

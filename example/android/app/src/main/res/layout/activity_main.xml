@@ -17,8 +17,8 @@
         android:layout_marginTop="20dp"/>
 
     <Button
-        android:id="@+id/bytesButton"
-        android:text="处理Bytes的Demo(速度较慢)"
+        android:id="@+id/pictureButton"
+        android:text="处理图片的Demo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"

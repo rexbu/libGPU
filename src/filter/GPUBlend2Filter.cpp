@@ -90,6 +90,7 @@ void GPUBlend2Filter::setBlendPoints(gpu_point_t ps[4], bool mirror){
     if (m_frame_width==0 or m_frame_height==0) {
         return;
     }
+
     // 如果输出经过了裁剪，实际坐标需要加上-1到v[0]这段被裁剪掉的部分
     float w = m_frame_width*(1+m_vertices[0])/(2*m_vertices[0]);
     float h = m_frame_height*(1+m_vertices[1])/(2*m_vertices[1]);
@@ -97,6 +98,13 @@ void GPUBlend2Filter::setBlendPoints(gpu_point_t ps[4], bool mirror){
         points[i].x = (points[i].x+w)/m_frame_width;
         points[i].y = (points[i].y+h)/m_frame_height;
     }
+
+    /*
+    for (int i=0; i<4; i++) {
+        points[i].x = (points[i].x)/m_frame_width;
+        points[i].y = (points[i].y)/m_frame_height;
+    }
+    */
     
     // 计算在points作为四个顶点的坐标系下，00 10 01 11的坐标
     float unit_x = sqrt((points[1].x-points[0].x)*(points[1].x-points[0].x)+(points[1].y-points[0].y)*(points[1].y-points[0].y));
