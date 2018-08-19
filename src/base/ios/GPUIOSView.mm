@@ -115,6 +115,7 @@ void GPUIOSView::setOutputRotation(gpu_rotation_t rotation){
     }
 
     GPUCheckGlError("IOSView init");
+    _viewSize = self.bounds.size;
     displayProgram = new GPUProgram(GPUFilter::g_vertex_shader, GPUFilter::g_fragment_shader);
     _rotation = GPUNoRotation;
     displayPositionAttribute = displayProgram->attributeIndex("position");
@@ -132,6 +133,10 @@ void GPUIOSView::setOutputRotation(gpu_rotation_t rotation){
     // 设置描绘属性，在这里设置不维持渲染内容以及颜色格式为 RGBA8
     eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:NO], kEAGLDrawablePropertyRetainedBacking, kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat, nil];
     
+    if (!displayFramebuffer)
+    {
+        [self createDisplayFramebuffer];
+    }
     GPUCheckGlError("IOSView init");
     self.enabled = YES;
 }
@@ -292,7 +297,11 @@ void GPUIOSView::setOutputRotation(gpu_rotation_t rotation){
     inputFramebufferForDisplay = frameBuffer;
     if (inputImageSize.width!=frameBuffer->m_width || inputImageSize.height!=frameBuffer->m_height) {
         inputImageSize = CGSizeMake(frameBuffer->m_width, frameBuffer->m_height);
-        [self recalculateViewGeometry];
+        if (![NSThread isMainThread]){
+            dispatch_sync(dispatch_get_main_queue(), ^{
+                [self recalculateViewGeometry];
+            });
+        }
     }
 }
 
@@ -301,15 +310,11 @@ void GPUIOSView::setOutputRotation(gpu_rotation_t rotation){
 
 - (void)recalculateViewGeometry;
 {
-    CGFloat heightScaling, widthScaling;
-    
-    CGSize currentViewSize = self.bounds.size;
-    
     //    CGFloat imageAspectRatio = inputImageSize.width / inputImageSize.height;
     //    CGFloat viewAspectRatio = currentViewSize.width / currentViewSize.height;
     
+    CGFloat heightScaling, widthScaling;
     CGRect insetRect = AVMakeRectWithAspectRatioInsideRect(inputImageSize, self.bounds);
-    
     switch(_fillMode)
     {
         case GPUFillModeStretch:
@@ -319,17 +324,16 @@ void GPUIOSView::setOutputRotation(gpu_rotation_t rotation){
         }; break;
         case GPUFillModePreserveAspectRatio:
         {
-            widthScaling = insetRect.size.width / currentViewSize.width;
-            heightScaling = insetRect.size.height / currentViewSize.height;
+            widthScaling = insetRect.size.width / _viewSize.width;
+            heightScaling = insetRect.size.height / _viewSize.height;
         }; break;
         case GPUFillModePreserveAspectRatioAndFill:
         {
             //            CGFloat widthHolder = insetRect.size.width / currentViewSize.width;
-            widthScaling = currentViewSize.height / insetRect.size.height;
-            heightScaling = currentViewSize.width / insetRect.size.width;
+            widthScaling = _viewSize.height / insetRect.size.height;
+            heightScaling = _viewSize.width / insetRect.size.width;
         }; break;
     }
-    
     imageVertices[0] = -widthScaling;
     imageVertices[1] = -heightScaling;
     imageVertices[2] = widthScaling;
