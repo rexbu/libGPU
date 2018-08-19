@@ -609,7 +609,13 @@
     GPUContext::destroyInstance();
 }
 
-#pragma -mark 额外滤镜
+#pragma --mark 美颜相关
+-(void)setSmoothStrength:(float)smoothStrength{
+    _smoothStrength = smoothStrength;
+    streamFrame->setSmoothStrength(smoothStrength);
+}
+
+#pragma --mark 额外滤镜
 -(void)setExtraFilter:(NSString*)filterName{
     NSString* path = [[NSBundle mainBundle] pathForResource:filterName ofType:@"png"];
     streamFrame->setExtraFilter([path UTF8String]);

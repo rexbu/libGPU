@@ -138,6 +138,8 @@
 		CD2747FA20F6F307009EEA35 /* GPUVideoFrame.h in Headers */ = {isa = PBXBuildFile; fileRef = CD2747F620F6F306009EEA35 /* GPUVideoFrame.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CD2747FB20F6F307009EEA35 /* GPUVideoCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = CD2747F720F6F307009EEA35 /* GPUVideoCamera.m */; };
 		CD2747FC20F6F307009EEA35 /* GPUVideoCamera.h in Headers */ = {isa = PBXBuildFile; fileRef = CD2747F820F6F307009EEA35 /* GPUVideoCamera.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CD3BB799212932E700B87F67 /* GPUSmoothFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CD3BB797212932E600B87F67 /* GPUSmoothFilter.cpp */; };
+		CD3BB79A212932E700B87F67 /* GPUSmoothFilter.h in Headers */ = {isa = PBXBuildFile; fileRef = CD3BB798212932E700B87F67 /* GPUSmoothFilter.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CD9F6FCB1FF9EE3F004F9C37 /* GPUPixelBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = CD9F6FC91FF9EE3E004F9C37 /* GPUPixelBuffer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CD9F6FCC1FF9EE3F004F9C37 /* GPUPixelBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CD9F6FCA1FF9EE3E004F9C37 /* GPUPixelBuffer.cpp */; };
 		CDEF172620FA475E0090D3CC /* GPULookupFilter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CDEF172420FA475E0090D3CC /* GPULookupFilter.cpp */; };
@@ -289,6 +291,8 @@
 		CD2747F620F6F306009EEA35 /* GPUVideoFrame.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUVideoFrame.h; path = frame/ios/GPUVideoFrame.h; sourceTree = "<group>"; };
 		CD2747F720F6F307009EEA35 /* GPUVideoCamera.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GPUVideoCamera.m; path = frame/ios/GPUVideoCamera.m; sourceTree = "<group>"; };
 		CD2747F820F6F307009EEA35 /* GPUVideoCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUVideoCamera.h; path = frame/ios/GPUVideoCamera.h; sourceTree = "<group>"; };
+		CD3BB797212932E600B87F67 /* GPUSmoothFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GPUSmoothFilter.cpp; path = filter/GPUSmoothFilter.cpp; sourceTree = "<group>"; };
+		CD3BB798212932E700B87F67 /* GPUSmoothFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUSmoothFilter.h; path = filter/GPUSmoothFilter.h; sourceTree = "<group>"; };
 		CD9F6FC91FF9EE3E004F9C37 /* GPUPixelBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GPUPixelBuffer.h; path = base/GPUPixelBuffer.h; sourceTree = "<group>"; };
 		CD9F6FCA1FF9EE3E004F9C37 /* GPUPixelBuffer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GPUPixelBuffer.cpp; path = base/GPUPixelBuffer.cpp; sourceTree = "<group>"; };
 		CDEF172420FA475E0090D3CC /* GPULookupFilter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GPULookupFilter.cpp; path = filter/GPULookupFilter.cpp; sourceTree = "<group>"; };
@@ -398,6 +402,8 @@
 		C8A0ACB21ECE9D2D0043ADE9 /* filter */ = {
 			isa = PBXGroup;
 			children = (
+				CD3BB797212932E600B87F67 /* GPUSmoothFilter.cpp */,
+				CD3BB798212932E700B87F67 /* GPUSmoothFilter.h */,
 				CDEF172420FA475E0090D3CC /* GPULookupFilter.cpp */,
 				CDEF172520FA475E0090D3CC /* GPULookupFilter.h */,
 				C8EB52DE1ED7E306000EA55C /* GPUColorFilter.cpp */,
@@ -564,6 +570,7 @@
 				C8A0AD901ECEBBC70043ADE9 /* GPUSobelEdgeFilter.h in Headers */,
 				C8A0AD911ECEBBC70043ADE9 /* GPUGaussianBlurFilter.h in Headers */,
 				C8A0AD921ECEBBC70043ADE9 /* GPULuminanceFilter.h in Headers */,
+				CD3BB79A212932E700B87F67 /* GPUSmoothFilter.h in Headers */,
 				C8A0AD931ECEBBC70043ADE9 /* GPUBlend2Filter.h in Headers */,
 				CD1493BF20F5DC26005095D5 /* GPUFileFilter.h in Headers */,
 				C8A0AD941ECEBBC70043ADE9 /* GPUBlendImageFilter.h in Headers */,
@@ -694,6 +701,7 @@
 				CD1493BE20F5DC26005095D5 /* GPUFileFilter.cpp in Sources */,
 				C8A0ACE51ECE9D420043ADE9 /* GPUOutputFilter.cpp in Sources */,
 				C8A0ACEC1ECE9D420043ADE9 /* GPUTriangleFilter.h.cpp in Sources */,
+				CD3BB799212932E700B87F67 /* GPUSmoothFilter.cpp in Sources */,
 				C8A0AD6A1ECEA4E80043ADE9 /* bs_pack.c in Sources */,
 				C8A0AD151ECE9DDD0043ADE9 /* GPUPicture.mm in Sources */,
 				C8A0AD531ECEA4E80043ADE9 /* bs_object.c in Sources */,

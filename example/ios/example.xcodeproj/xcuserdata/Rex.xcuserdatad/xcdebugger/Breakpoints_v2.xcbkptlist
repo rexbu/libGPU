@@ -26,11 +26,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "example/ViewController.mm"
-            timestampString = "556347004.796023"
+            timestampString = "556348827.120226"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "170"
-            endingLineNumber = "170"
+            startingLineNumber = "172"
+            endingLineNumber = "172"
             landmarkName = "-rotateCamera"
             landmarkType = "7">
          </BreakpointContent>

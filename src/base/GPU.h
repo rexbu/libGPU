@@ -34,6 +34,7 @@
 #include "GPULineFilter.h"
 
 #include "GPULookupFilter.h"
+#include "GPUSmoothFilter.h"        // 磨皮
 #include "GPUMedianFilter.h"        // 中值滤波
 #include "GPUGaussianBlurFilter.h"  // 高斯滤波
 #include "GPULuminanceFilter.h"     // 灰度

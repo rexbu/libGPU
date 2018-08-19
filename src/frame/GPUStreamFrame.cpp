@@ -37,8 +37,8 @@ m_output_group("OutputGroup")
     m_view = NULL;
     m_input = NULL;
     
-    // 用于人脸
-    m_input = &m_extra_group;
+    m_input = &m_smooth_filter;
+    m_smooth_filter.addTarget(&m_extra_group);
     m_extra_group.addTarget(&m_preview_blend_filter);
     m_extra_group.addTarget(&m_video_blend_filter);
     m_video_blend_filter.addTarget(&m_output_group);
@@ -91,7 +91,7 @@ void GPUStreamFrame::setInputFormat(gpu_pixel_format_t format){
         }
     }
     
-    m_input->addTarget(&m_extra_group);
+    m_input->addTarget(&m_smooth_filter);
 }
 
 void GPUStreamFrame::setInputFilter(GPUFilter* input){
@@ -104,6 +104,10 @@ void GPUStreamFrame::setInputFilter(GPUFilter* input){
     input->setOutputRotation(m_input->getOutputRotation());
 
     m_input = input;
+}
+#pragma --mark beauty
+void GPUStreamFrame::setSmoothStrength(float strength){
+    m_smooth_filter.setExtraParameter(strength);
 }
 
 #pragma --mark "Logo"

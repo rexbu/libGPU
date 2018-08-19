@@ -20,6 +20,7 @@ public:
     
     virtual void newFrame();
     
+    void setSmoothStrength(float strength);
     void setExtraFilter(const char* image);
     void setExtraFilter(const char* file, const char* image);
     //void setExtraFilter(const char* shader, const char* image);
@@ -52,6 +53,8 @@ public:
     //VSBeautyGroup       m_beauty_group;
     GPUGroupFilter      m_extra_group;
     GPUGroupFilter      m_output_group; // output不会再有target
+    // 磨皮
+    GPUSmoothFilter     m_smooth_filter;
     // 滤镜
     GPUFilter*          m_extra_filter;
     // 预览
