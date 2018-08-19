@@ -120,8 +120,8 @@ public class TextureActivity extends Activity implements SurfaceHolder.Callback{
 
 
         // 设置logo
-        videoFrame.setPreviewBlend("/data/data/"+ TextureActivity.this.getPackageName() +"/logo.png", 0.8f, 0.1f, 0.1f, 0.1f, false);
-        videoFrame.setVideoBlend("/data/data/"+ TextureActivity.this.getPackageName() +"/logo.png", 0.8f, 0.5f, 0.1f, 0.1f, false);
+        videoFrame.setPreviewBlend("/data/data/"+ TextureActivity.this.getPackageName() +"/logo.png", 20, 40, 160, 240, false);
+        videoFrame.setVideoBlend("/data/data/"+ TextureActivity.this.getPackageName() +"/logo.png", 20, 40, 160, 240, false);
         videoFrame.start();
         try {
             com.rex.utils.CameraUtil.mCamera.setPreviewTexture(videoFrame.surfaceTexture());
