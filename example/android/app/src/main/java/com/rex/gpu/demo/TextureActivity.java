@@ -39,6 +39,7 @@ public class TextureActivity extends Activity implements SurfaceHolder.Callback{
     protected Button propsButton;
     protected Button shaperButton;
     protected Spinner filterSpinner;
+    protected Spinner ratioSpinner;
     protected TextView smoothText;
     protected SeekBar smoothValueSeek;
     protected SeekBar shaperValueSeek;
@@ -102,9 +103,9 @@ public class TextureActivity extends Activity implements SurfaceHolder.Callback{
         //设置预览镜像，true时预览为镜像（左右颠倒），false时为非镜像(正常画面)
         videoFrame.setMirrorBackPreview(true);
         // 预览图像尺寸，如果和surface尺寸不一致，可能会被surface缩放
-        videoFrame.setViewOutputSize(540, 960);
+        // videoFrame.setViewOutputSize(540, 960);
         // 和surface尺寸比例不一致时候的填充方式
-        videoFrame.setViewFillMode(GPU.GPU_FILL_RATIO);
+        // videoFrame.setViewFillMode(GPU.GPU_FILL_RATIO);
         // 用于编码的图片尺寸
         videoFrame.setOutputSize(360, 640);
         videoFrame.setVideoSize(videoSize.width, videoSize.height);
@@ -178,6 +179,7 @@ public class TextureActivity extends Activity implements SurfaceHolder.Callback{
     protected void initView(){
         swtichButton = (Button)findViewById(R.id.switchCamera);
         filterSpinner = (Spinner)findViewById(R.id.filterSpinner);
+        ratioSpinner = findViewById(R.id.ratioSpinner);
         smoothText = (TextView)findViewById(R.id.smoothText);
         smoothValueSeek = (SeekBar)findViewById(R.id.smoothValueBar);
         smoothText.setText("磨皮：0.9");
@@ -213,6 +215,38 @@ public class TextureActivity extends Activity implements SurfaceHolder.Callback{
 
             }
         });
+        // 设置显示比例
+        ratioSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if (videoFrame!=null){
+                    switch (i){
+                        case 0:
+                            videoFrame.setViewFillMode(GPU.GPU_FILL_RATIOANDFILL);
+                            videoFrame.setViewOutputSize(videoFrame.frameWidth, videoFrame.frameHeight);
+                            break;
+                        case 1: // 1:1
+                            videoFrame.setViewFillMode(GPU.GPU_FILL_RATIO);
+                            videoFrame.setViewOutputSize(640, 640);
+                            break;
+                        case 2: // 3:2
+                            videoFrame.setViewFillMode(GPU.GPU_FILL_RATIO);
+                            videoFrame.setViewOutputSize(640, 720);
+                            break;
+                        case 3: // 16:9
+                            videoFrame.setViewFillMode(GPU.GPU_FILL_RATIO);
+                            videoFrame.setViewOutputSize(540, 960);
+                            break;
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
         smoothValueSeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public int value;
             @Override

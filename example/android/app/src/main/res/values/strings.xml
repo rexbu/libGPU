@@ -23,4 +23,10 @@
         <item>filter21</item>
         <item>filter86</item>
     </array>
+    <array name="ratio_name">
+        <item>原始尺寸</item>
+        <item>1 : 1</item>
+        <item>3 : 2</item>
+        <item>16: 9</item>
+    </array>
 </resources>

@@ -194,6 +194,8 @@ public class GPUVideoFrame extends GPU implements SurfaceTexture.OnFrameAvailabl
 
     protected int videoWidth = 0;
     protected int videoHeight = 0;
+    public int frameWidth = 0;
+    public int frameHeight = 0;
     /**
      * 设置视频帧尺寸，VisioninSDK会根据图片旋转做调整，Surface方向显示放在Size设置之前
      * @param width
@@ -204,9 +206,13 @@ public class GPUVideoFrame extends GPU implements SurfaceTexture.OnFrameAvailabl
         videoHeight = height;
         if (outputImageOritation==Configuration.ORIENTATION_PORTRAIT) {
             super.setInputSize(height, width);
+            frameWidth = height;
+            frameHeight = width;
         }
         else{
             super.setInputSize(width, height);
+            frameWidth = width;
+            frameHeight = height;
         }
     }
 

@@ -18,6 +18,7 @@ static bool initViewFlag = true;
     UIImage*        logo;
     UITextView*     smoothView;
     UIImageView*    videoView;
+    UIButton*       ratioButton;
     
     // 滤镜滑动框
     UICollectionView*   filterScrollView;
@@ -25,6 +26,7 @@ static bool initViewFlag = true;
     NSArray*            filterNameArray;
     
     UIInterfaceOrientation old_orientation;
+    int ratioIndex;
 }
 
 @end
@@ -35,6 +37,7 @@ BOOL canRotateToAllOrientations;
 -(id) init{
     self = [super init];
     old_orientation = UIInterfaceOrientationUnknown;
+    ratioIndex = 0;
     return self;
 }
 
@@ -49,13 +52,13 @@ BOOL canRotateToAllOrientations;
     // 设置磨皮
     [videoCamera setSmoothStrength:0.9];
     // 设置预览显示模式，等比例，可能有黑框填充，默认GPUFillModePreserveAspectRatioAndFill
-    [videoCamera setPreviewFillMode:GPUFillModePreserveAspectRatio];
+    //[videoCamera setPreviewFillMode:GPUFillModePreserveAspectRatio];
     // 设置预览显示比例，4：3
-    [videoCamera setPreviewSize:CGSizeMake(200, 600)];
+    //[videoCamera setPreviewSize:CGSizeMake(200, 600)];
     // 设置输出视频流尺寸
     [videoCamera setOutputSize:CGSizeMake(480, 640)];
     [videoCamera setOutputImageOrientation:UIInterfaceOrientationPortrait];
-    [videoCamera setPreviewBlend:logo rect:CGRectMake(0.1, 0.1, 0.3, 0.3) mirror:FALSE];
+    [videoCamera setPreviewBlend:logo rect:CGRectMake(20, 20, 160, 280) mirror:FALSE];
     __block typeof(self) parent = self;
     videoCamera.bgraPixelBlock = ^(CVPixelBufferRef pixelBuffer, CMTime time){
         // 获取处理后视频帧
@@ -93,9 +96,15 @@ BOOL canRotateToAllOrientations;
     [rotate setBackgroundColor:[UIColor orangeColor]];
     [rotate addTarget:videoCamera action:@selector(rotateCamera) forControlEvents:UIControlEventTouchUpInside];
     
+    ratioButton = [[UIButton alloc]initWithFrame:CGRectMake(220, 20, 60, 40)];
+    [ratioButton setTitle:@"比例" forState:UIControlStateNormal];
+    [ratioButton setBackgroundColor:[UIColor orangeColor]];
+    [ratioButton addTarget:self action:@selector(ratioSwitch) forControlEvents:UIControlEventTouchUpInside];
+    
     [self.view addSubview:record];
     [self.view addSubview:stop];
     [self.view addSubview:rotate];
+    [self.view addSubview:ratioButton];
     
     UILabel* smoothLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 480, 40, 20)];
     [smoothLabel setText:@"美颜"];
@@ -144,7 +153,33 @@ BOOL canRotateToAllOrientations;
     [videoCamera stopCameraCapture];
     videoCamera = nil;
 }
-
+-(void)ratioSwitch{
+    ratioIndex = (++ratioIndex)%3;
+    switch (ratioIndex) {
+        case 0: // 原始尺寸
+            [ratioButton setTitle:@"比例" forState:UIControlStateNormal];
+            [videoCamera setPreviewFillMode:GPUFillModePreserveAspectRatioAndFill];
+            [videoCamera setPreviewSize:CGSizeMake(720, 1280)];
+            break;
+        case 1: // 1：1
+            [ratioButton setTitle:@"1 : 1" forState:UIControlStateNormal];
+            [videoCamera setPreviewSize:CGSizeMake(720, 720)];
+            [videoCamera setPreviewFillMode:GPUFillModePreserveAspectRatio];
+            break;
+        case 2: // 3:2
+            [ratioButton setTitle:@"3 : 2" forState:UIControlStateNormal];
+            [videoCamera setPreviewSize:CGSizeMake(640, 960)];
+            [videoCamera setPreviewFillMode:GPUFillModePreserveAspectRatio];
+            break;
+        case 3: // 16:9
+            [ratioButton setTitle:@"16: 9" forState:UIControlStateNormal];
+            [videoCamera setPreviewSize:CGSizeMake(540, 960)];
+            [videoCamera setPreviewFillMode:GPUFillModePreserveAspectRatio];
+            break;
+        default:
+            break;
+    }
+}
 - (void)viewDidLayoutSubviews {
     //self.view setBounds:CGRectMake(0, 0, self.view, CGFloat height)
     if (initViewFlag) {

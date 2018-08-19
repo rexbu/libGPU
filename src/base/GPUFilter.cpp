@@ -270,11 +270,11 @@ void GPUFilter::activeOutFrameBuffer(){
         if (m_vertex_buffer == NULL) {
             m_coordinate_buffer = new GPUVertexBuffer();
             m_vertex_buffer = new GPUVertexBuffer();
-            m_vertex_buffer->setBuffer(&m_vertices[0]);
-            // 更新纹理坐标
-            if (m_coordinates[0]==-1) {
-                memcpy(&m_coordinates[0], GPUFilter::coordinatesRotation(m_rotation), sizeof(GLfloat)*8);
-            }
+        }
+        m_vertex_buffer->setBuffer(&m_vertices[0]);
+        // 更新纹理坐标
+        if (m_coordinates[0]==-1) {
+            memcpy(&m_coordinates[0], GPUFilter::coordinatesRotation(m_rotation), sizeof(GLfloat)*8);
         }
         // 有可能中途切换镜像等操作，每次设置一次
         m_coordinate_buffer->setBuffer(&m_coordinates[0]);

@@ -67,6 +67,37 @@ void GPUBlend2Filter::setBlendImagePoints(GPUPicture* pic, gpu_point_t points[4]
         return;
     }
     
+    setBlendPoints(points, mirror);
+
+    m_blend_pic = pic;
+    GPUContext* context = GPUContext::shareInstance();
+    context->glContextLock();
+    pic->addTarget(this, 1);
+    context->glContextUnlock();
+}
+
+void GPUBlend2Filter::setBlendPoints(gpu_point_t ps[4], bool mirror){
+    gpu_point_t points[4];
+    memcpy(m_points, ps, sizeof(gpu_point_t)*4);
+    memcpy(points, ps, sizeof(gpu_point_t)*4);
+    m_mirror = mirror;
+    /*
+    gpu_size_t size = sizeOfFBO();
+    if (size.width==0 or size.height==0) {
+        return;
+    }
+    */
+    if (m_frame_width==0 or m_frame_height==0) {
+        return;
+    }
+    // 如果输出经过了裁剪，实际坐标需要加上-1到v[0]这段被裁剪掉的部分
+    float w = m_frame_width*(1+m_vertices[0])/(2*m_vertices[0]);
+    float h = m_frame_height*(1+m_vertices[1])/(2*m_vertices[1]);
+    for (int i=0; i<4; i++) {
+        points[i].x = (points[i].x+w)/m_frame_width;
+        points[i].y = (points[i].y+h)/m_frame_height;
+    }
+    
     // 计算在points作为四个顶点的坐标系下，00 10 01 11的坐标
     float unit_x = sqrt((points[1].x-points[0].x)*(points[1].x-points[0].x)+(points[1].y-points[0].y)*(points[1].y-points[0].y));
     float unit_y = sqrt((points[2].x-points[0].x)*(points[2].x-points[0].x)+(points[2].y-points[0].y)*(points[2].y-points[0].y));
@@ -107,13 +138,21 @@ void GPUBlend2Filter::setBlendImagePoints(GPUPicture* pic, gpu_point_t points[4]
         coors[7] = m_blend_coors[5];
         memcpy(m_blend_coors, coors, sizeof(GLfloat)*8);
     }
-    m_blend_buffer.setBuffer(m_blend_coors);
     
-    m_blend_pic = pic;
-    GPUContext* context = GPUContext::shareInstance();
-    context->glContextLock();
-    pic->addTarget(this, 1);
-    context->glContextUnlock();
+    m_blend_buffer.setBuffer(m_blend_coors);
+}
+
+void GPUBlend2Filter::setFrameSize(uint32_t width, uint32_t height){
+    GPUFilter::setFrameSize(width, height);
+    if (m_blend_pic!=NULL) {
+        setBlendPoints(m_points, m_mirror);
+    }
+}
+void GPUBlend2Filter::setOutputSize(uint32_t width, uint32_t height){
+    GPUFilter::setOutputSize(width, height);
+    if (m_blend_pic!=NULL) {
+        setBlendPoints(m_points, m_mirror);
+    }
 }
 
 void GPUBlend2Filter::removeBlendImage(){
