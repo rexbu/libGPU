@@ -107,6 +107,7 @@ void GPUStreamFrame::setInputFilter(GPUFilter* input){
 
     m_input = input;
 }
+
 #pragma --mark beauty
 void GPUStreamFrame::setSmoothStrength(float strength){
     m_smooth_filter.setExtraParameter(strength);
@@ -238,6 +239,23 @@ void GPUStreamFrame::setOutputFormat(gpu_pixel_format_t format){
     }
 }
 
+void GPUStreamFrame::setBorder(int width, int height, float r, float g, float b){
+    gpu_size_t size = m_input->sizeOfFBO();
+    float ver[8];
+    float w = width*1.0/(width+size.width/2.0);
+    float h = height*1.0/(height+size.height/2.0);
+    ver[0] = -1.0 + w;
+    ver[1] = -1.0 + h;
+    ver[2] = 1.0 - w;
+    ver[3] = -1.0 + h;
+    ver[4] = -1.0 + w;
+    ver[5] = 1.0 - h;
+    ver[6] = 1.0 - w ;
+    ver[7] = 1.0 - h;
+    m_input->setVertices(ver);
+    m_input->setClearColor(r, g, b);
+}
+
 #pragma --mark "输入、输出的尺寸与旋转方向"
 void GPUStreamFrame::setInputRotation(gpu_rotation_t rotation){
     info_log("input rotation[%d]", rotation);
@@ -286,7 +304,7 @@ void GPUStreamFrame::setOutputMirror(bool mirror){
 #pragma --mark "析构函数"
 GPUStreamFrame::~GPUStreamFrame(){
     m_input->removeAllTargets();
-    if (m_outer_input)
+    if (!m_outer_input)
     {
         delete m_input;
     }

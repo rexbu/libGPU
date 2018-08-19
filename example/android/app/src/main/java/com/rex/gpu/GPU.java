@@ -33,6 +33,7 @@ public class GPU {
         NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setOutputRotation", "(I)V");
 
         NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setSmoothStrength", "(F)V");
+        NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setWhitenStrength", "(F)V");
 
         NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setExtraFilter", "(Ljava/lang/String;)V");
         NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "closeExtraFilter", "()V");
@@ -82,6 +83,8 @@ public class GPU {
 
     /// 美颜
     public native void setSmoothStrength(float level);
+    public native void setWhitenStrength(float level);
+
     /// 滤镜
     public native void setExtraFilter(String image);
     public native void closeExtraFilter();

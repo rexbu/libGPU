@@ -51,7 +51,9 @@ public:
     // 设置输出的byte格式，目前支持yuv420p, rgba, nv21, nv12
     void setOutputFormat(gpu_pixel_format_t format);
     void setVideoBlend(GPUPicture* picture, gpu_rect_t rect, bool mirror);
-    
+    // 设置边框宽度与颜色
+    void setBorder(int width, int height, float r, float g, float b);
+public:
     // GPUBeautyFilter     m_beauty_filter;
     //VSBeautyGroup       m_beauty_group;
     GPUGroupFilter      m_extra_group;

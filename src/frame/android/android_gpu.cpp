@@ -35,6 +35,7 @@ void setOutputMirror(JNIEnv * env, jobject jo, jboolean mirror);
 void setOutputRotation(JNIEnv * env, jobject jo, jint rotation);
 
 void setSmoothStrength(JNIEnv * env, jobject jo, jfloat level);
+void setWhitenStrength(JNIEnv * env, jobject jo, jfloat level);
 
 void setExtraFilter(JNIEnv * env, jobject jo, jstring jname);
 void closeExtraFilter(JNIEnv * env, jobject jo);
@@ -248,6 +249,9 @@ void setOutputRotation(JNIEnv * env, jobject jo, jint rotation){
 }
 void setSmoothStrength(JNIEnv * env, jobject jo, jfloat level){
 	GPUStreamFrame::shareInstance()->setSmoothStrength(level);
+}
+void setWhitenStrength(JNIEnv * env, jobject jo, jfloat level){
+    GPUStreamFrame::shareInstance()->setWhitenStrength(level);
 }
 
 void setOutputView(JNIEnv *env, jobject obj){

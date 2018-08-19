@@ -684,6 +684,14 @@
     gpu_rect_t rect = {0};
     stream->setVideoBlend(NULL, rect, false);
 }
+
+# pragma --mark "边框"
+-(void)setBorder:(int)w height:(int)h color:(UIColor*)color{
+    CGFloat r,g,b,a;
+    [color getRed:&r green:&g blue:&b alpha:&a];
+    streamFrame->setBorder(w, h, r, g, b);
+}
+
 #pragma --mark "预览模式"
 -(void)setPreviewFillMode:(gpu_fill_mode_t)previewFillMode{
     _previewFillMode = previewFillMode;

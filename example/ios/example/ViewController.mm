@@ -61,6 +61,8 @@ BOOL canRotateToAllOrientations;
     [videoCamera setOutputSize:CGSizeMake(480, 640)];
     [videoCamera setOutputImageOrientation:UIInterfaceOrientationPortrait];
     [videoCamera setPreviewBlend:logo rect:CGRectMake(20, 20, 160, 280) mirror:FALSE];
+    // 设置边框
+    [videoCamera setBorder:40 height:40 color:[UIColor redColor]];
     __block typeof(self) parent = self;
     videoCamera.bgraPixelBlock = ^(CVPixelBufferRef pixelBuffer, CMTime time){
         // 获取处理后视频帧

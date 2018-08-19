@@ -93,6 +93,9 @@
 // 为视频流叠加图片，指定宽和高，RGBA格式
 -(void)setVideoBlend:(unsigned char*)bytes width:(int)w height:(int)h rect:(CGRect)rect mirror:(BOOL)mirror;
 -(void)removeVideoBlend;
+
+// 添加边框
+-(void)setBorder:(int)w height:(int)h color:(UIColor*)color;
 @end
 
 // 实时滤镜

@@ -472,7 +472,20 @@ const GLfloat* GPUFilter::coordinatesRotation(gpu_rotation_t mode)
 		default: return noRotationTextureCoordinates;
     }
 }
-
+void GPUFilter::setVertices(float* v){
+    GPUContext* c = GPUContext::shareInstance();
+    c->glContextLock();
+    memcpy(&m_vertices[0], v, sizeof(float)*8);
+    c->glContextUnlock();
+}
+void GPUFilter::setClearColor(float r, float g, float b){
+    GPUContext* c = GPUContext::shareInstance();
+    c->glContextLock();
+    m_clear_color[0] = r;
+    m_clear_color[1] = g;
+    m_clear_color[2] = b;
+    c->glContextUnlock();
+}
 void GPUFilter::enableAttribArray(const char* name){
     GLuint index = m_program->attributeIndex(name);
     glEnableVertexAttribArray(index);

@@ -47,7 +47,10 @@ public:
     // 设置输出framebuffer，如果设置了，则不再从cache中获取buffer
     virtual void setOutputFrameBuffer(GPUFrameBuffer* buffer){ m_special_outbuffer = buffer;}
     virtual void activeOutFrameBuffer();
+    virtual gpu_size_t sizeOfFBO();
     
+    void setVertices(float* v);
+    void setClearColor(float r, float g, float b);
     void setFloat(const char* name, GLfloat val);
     void setFloat(const char* name, GLfloat* val, int num);
     void setFloatv(const char* name, GLfloat* val, int num);
@@ -60,7 +63,6 @@ protected:
     virtual void initShader();
     void initParams();
     
-    virtual gpu_size_t sizeOfFBO();
     /// 更新帧尺寸并重新计算裁剪
     virtual void setFrameSize(uint32_t width, uint32_t height);
     // 计算裁剪比例，更新顶点

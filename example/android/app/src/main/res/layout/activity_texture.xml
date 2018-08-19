@@ -60,16 +60,31 @@
     <SeekBar
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:id="@+id/smoothValueBar"
+        android:id="@+id/whitenValueBar"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true" />
     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-              android:layout_marginLeft="10px"
-              android:layout_above="@id/smoothValueBar"
-              android:id="@+id/meiyantext"
-              android:text="美颜参数"
-              android:background="@android:color/holo_orange_light"
-            />
+        android:layout_marginLeft="10px"
+        android:layout_above="@id/whitenValueBar"
+        android:id="@+id/meibaitext"
+        android:text="美白参数"
+        android:background="@android:color/holo_orange_light"
+        />
+
+    <SeekBar
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginBottom="20px"
+        android:id="@+id/smoothValueBar"
+        android:layout_above="@+id/whitenValueBar"
+        android:layout_alignParentStart="true" />
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:layout_marginLeft="10px"
+        android:layout_above="@id/smoothValueBar"
+        android:id="@+id/meiyantext"
+        android:text="美颜参数"
+        android:background="@android:color/holo_orange_light"
+        />
 
     <ImageView android:layout_width="120dp" android:layout_height="180dp"
             android:id="@+id/cmaera_iamgeView"

@@ -42,6 +42,7 @@ public class TextureActivity extends Activity implements SurfaceHolder.Callback{
     protected Spinner ratioSpinner;
     protected TextView smoothText;
     protected SeekBar smoothValueSeek;
+    protected SeekBar whitenValueSeek;
     protected SeekBar shaperValueSeek;
     protected boolean isProps = true;
     protected boolean isShaper = true;
@@ -111,6 +112,7 @@ public class TextureActivity extends Activity implements SurfaceHolder.Callback{
         videoFrame.setVideoSize(videoSize.width, videoSize.height);
 
         videoFrame.setSmoothStrength(0.9f);
+        videoFrame.setWhitenStrength(0.9f);
         videoFrame.setYuv420PCallback(new GPURawBytesCallback() {
             @Override
             public void outputBytes(byte[] bytes) {
@@ -182,8 +184,10 @@ public class TextureActivity extends Activity implements SurfaceHolder.Callback{
         ratioSpinner = findViewById(R.id.ratioSpinner);
         smoothText = (TextView)findViewById(R.id.smoothText);
         smoothValueSeek = (SeekBar)findViewById(R.id.smoothValueBar);
+        whitenValueSeek = findViewById(R.id.whitenValueBar);
         smoothText.setText("磨皮：0.9");
         smoothValueSeek.setProgress(90);
+        whitenValueSeek.setProgress(90);
 
         swtichButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -265,6 +269,26 @@ public class TextureActivity extends Activity implements SurfaceHolder.Callback{
                     float strength = value*(float)1.0/100;
                     videoFrame.setSmoothStrength(strength);
                     smoothText.setText("磨皮："+ strength);
+                }
+            }
+        });
+        whitenValueSeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            public int value;
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                value = i;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                if (videoFrame!=null){
+                    float strength = value*(float)1.0/100;
+                    videoFrame.setWhitenStrength(strength);
                 }
             }
         });
