@@ -15,7 +15,7 @@ static bool initViewFlag = true;
 
 @interface ViewController (){
     GPUVideoCamera* videoCamera;
-    
+    UIImage*        logo;
     UITextView*     smoothView;
     UIImageView*    videoView;
     
@@ -42,18 +42,18 @@ BOOL canRotateToAllOrientations;
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     bs_log_init("stdout");
-    
+    logo = [UIImage imageNamed:@"logo.png"];
     videoCamera = [[GPUVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPresetHigh position:AVCaptureDevicePositionFront view:self.view];
     [videoCamera setMirrorFrontFacingCamera:TRUE];
     [videoCamera setMirrorFrontPreview:TRUE];
-    // 设置预览显示模式
+    // 设置预览显示模式，等比例，可能有黑框填充，默认GPUFillModePreserveAspectRatioAndFill
     [videoCamera setPreviewFillMode:GPUFillModePreserveAspectRatio];
     // 设置预览显示比例，4：3
-    [videoCamera setPreviewSize:CGSizeMake(480, 640)];
+    // [videoCamera setPreviewSize:CGSizeMake(480, 640)];
     // 设置输出视频流尺寸
     [videoCamera setOutputSize:CGSizeMake(480, 640)];
     [videoCamera setOutputImageOrientation:UIInterfaceOrientationPortrait];
-    
+    [videoCamera setPreviewBlend:logo rect:CGRectMake(0.1, 0.1, 0.3, 0.3) mirror:FALSE];
     __block typeof(self) parent = self;
     videoCamera.bgraPixelBlock = ^(CVPixelBufferRef pixelBuffer, CMTime time){
         // 获取处理后视频帧

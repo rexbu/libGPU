@@ -29,6 +29,7 @@
 		C8DACD2E1ED4684A001F607A /* facepoints.json in Resources */ = {isa = PBXBuildFile; fileRef = C8DACD2B1ED4684A001F607A /* facepoints.json */; };
 		CD0661301F21CC5B00098365 /* liblibGPU.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CD06612D1F21CC4C00098365 /* liblibGPU.a */; };
 		CD32A7BF2107766D00A0C94C /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CD32A7BE2107766D00A0C94C /* HomeViewController.m */; };
+		CD3BB79621292CA900B87F67 /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = CD3BB79521292CA900B87F67 /* logo.png */; };
 		CDEF173D20FA4D800090D3CC /* filter4.png in Resources */ = {isa = PBXBuildFile; fileRef = CDEF172920FA4D7E0090D3CC /* filter4.png */; };
 		CDEF173E20FA4D800090D3CC /* filter17.png in Resources */ = {isa = PBXBuildFile; fileRef = CDEF172A20FA4D7E0090D3CC /* filter17.png */; };
 		CDEF173F20FA4D800090D3CC /* filter20.png in Resources */ = {isa = PBXBuildFile; fileRef = CDEF172B20FA4D7E0090D3CC /* filter20.png */; };
@@ -96,6 +97,7 @@
 		CD0661281F21CC4C00098365 /* libGPU.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = libGPU.xcodeproj; path = ../../src/libGPU.xcodeproj; sourceTree = "<group>"; };
 		CD32A7BD2107766D00A0C94C /* HomeViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
 		CD32A7BE2107766D00A0C94C /* HomeViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
+		CD3BB79521292CA900B87F67 /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo.png; sourceTree = "<group>"; };
 		CDEF172920FA4D7E0090D3CC /* filter4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = filter4.png; sourceTree = "<group>"; };
 		CDEF172A20FA4D7E0090D3CC /* filter17.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = filter17.png; sourceTree = "<group>"; };
 		CDEF172B20FA4D7E0090D3CC /* filter20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = filter20.png; sourceTree = "<group>"; };
@@ -184,6 +186,7 @@
 		C8A0ADDF1ECFE5A10043ADE9 /* example */ = {
 			isa = PBXGroup;
 			children = (
+				CD3BB79521292CA900B87F67 /* logo.png */,
 				CDEF172820FA4D640090D3CC /* filters */,
 				C8A0ADE31ECFE5A10043ADE9 /* AppDelegate.h */,
 				C8A0ADE41ECFE5A10043ADE9 /* AppDelegate.m */,
@@ -336,6 +339,7 @@
 				CDEF173E20FA4D800090D3CC /* filter17.png in Resources */,
 				CDEF173F20FA4D800090D3CC /* filter20.png in Resources */,
 				CDEF174520FA4D800090D3CC /* filter16.png in Resources */,
+				CD3BB79621292CA900B87F67 /* logo.png in Resources */,
 				C8A0ADEB1ECFE5A10043ADE9 /* Main.storyboard in Resources */,
 				CDEF174B20FA4D800090D3CC /* filter10.png in Resources */,
 				C8DACD2E1ED4684A001F607A /* facepoints.json in Resources */,
