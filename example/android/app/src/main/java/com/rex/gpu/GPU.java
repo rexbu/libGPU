@@ -134,7 +134,9 @@ public class GPU {
 
     protected GPU(Surface surface) throws Exception {
         mEGLContext = eglContext(true);
-        setRenderSurface(surface);
+        if (surface!=null){
+            setRenderSurface(surface);
+        }
     }
 
     public void makeCurrent(){
