@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		01DD12D52129C7DC00FE2DCC /* GPUVideoCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = 01DD12D42129C7DC00FE2DCC /* GPUVideoCamera.m */; };
+		01DD12D92129C98200FE2DCC /* libstdc++.6.0.9.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 01DD12D82129C98200FE2DCC /* libstdc++.6.0.9.dylib */; };
 		C80473821ED0139200947F74 /* libstdc++.6.0.9.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C80473751ED0139200947F74 /* libstdc++.6.0.9.dylib */; };
 		C80473831ED0139200947F74 /* libc++.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C80473761ED0139200947F74 /* libc++.1.dylib */; };
 		C80473841ED0139300947F74 /* libz.1.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C80473771ED0139200947F74 /* libz.1.dylib */; };
@@ -70,6 +72,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		01DD12D42129C7DC00FE2DCC /* GPUVideoCamera.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPUVideoCamera.m; sourceTree = "<group>"; };
+		01DD12D62129C81F00FE2DCC /* GPUVideoCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GPUVideoCamera.h; sourceTree = "<group>"; };
+		01DD12D82129C98200FE2DCC /* libstdc++.6.0.9.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = "libstdc++.6.0.9.dylib"; sourceTree = "<group>"; };
 		C80473751ED0139200947F74 /* libstdc++.6.0.9.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.6.0.9.dylib"; path = "../../../../../../usr/lib/libstdc++.6.0.9.dylib"; sourceTree = "<group>"; };
 		C80473761ED0139200947F74 /* libc++.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libc++.1.dylib"; path = "../../../../../../usr/lib/libc++.1.dylib"; sourceTree = "<group>"; };
 		C80473771ED0139200947F74 /* libz.1.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.dylib; path = ../../../../../../usr/lib/libz.1.dylib; sourceTree = "<group>"; };
@@ -139,6 +144,7 @@
 				C804738C1ED0139300947F74 /* CoreMedia.framework in Frameworks */,
 				C804738D1ED0139300947F74 /* CoreImage.framework in Frameworks */,
 				C804738E1ED0139300947F74 /* MediaPlayer.framework in Frameworks */,
+				01DD12D92129C98200FE2DCC /* libstdc++.6.0.9.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -186,6 +192,9 @@
 		C8A0ADDF1ECFE5A10043ADE9 /* example */ = {
 			isa = PBXGroup;
 			children = (
+				01DD12D82129C98200FE2DCC /* libstdc++.6.0.9.dylib */,
+				01DD12D62129C81F00FE2DCC /* GPUVideoCamera.h */,
+				01DD12D42129C7DC00FE2DCC /* GPUVideoCamera.m */,
 				CD3BB79521292CA900B87F67 /* logo.png */,
 				CDEF172820FA4D640090D3CC /* filters */,
 				C8A0ADE31ECFE5A10043ADE9 /* AppDelegate.h */,
@@ -360,6 +369,7 @@
 			files = (
 				C8A0ADE81ECFE5A10043ADE9 /* ViewController.mm in Sources */,
 				C8A0ADE51ECFE5A10043ADE9 /* AppDelegate.m in Sources */,
+				01DD12D52129C7DC00FE2DCC /* GPUVideoCamera.m in Sources */,
 				C8A0ADE21ECFE5A10043ADE9 /* main.m in Sources */,
 				CD32A7BF2107766D00A0C94C /* HomeViewController.m in Sources */,
 			);
@@ -493,6 +503,10 @@
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../../src/output/include";
 				INFOPLIST_FILE = example/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/example",
+				);
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rex.example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -507,6 +521,10 @@
 				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../../src/output/include";
 				INFOPLIST_FILE = example/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/example",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.rex.example;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
