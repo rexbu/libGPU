@@ -215,7 +215,7 @@ const static char* g_smooth_filter = SHADER_STRING(
 
 	smoothColor = mix(centralColor, smoothColor, strength);
 
-	gl_FragColor = vec4(pow(smoothColor, vec3(0.96)),1.0);
+	gl_FragColor = vec4(pow(smoothColor, vec3(0.96)), 1.0);
 	}
 );
 

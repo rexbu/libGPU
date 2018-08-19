@@ -51,6 +51,8 @@ BOOL canRotateToAllOrientations;
     [videoCamera setMirrorFrontPreview:TRUE];
     // 设置磨皮
     [videoCamera setSmoothStrength:0.9];
+    // 设置美白
+    [videoCamera setWhitenStrength:0.9];
     // 设置预览显示模式，等比例，可能有黑框填充，默认GPUFillModePreserveAspectRatioAndFill
     //[videoCamera setPreviewFillMode:GPUFillModePreserveAspectRatio];
     // 设置预览显示比例，4：3
@@ -117,6 +119,17 @@ BOOL canRotateToAllOrientations;
     [smooth addTarget:self action:@selector(smoothValueChanged:) forControlEvents:UIControlEventValueChanged];
     [self.view addSubview:smooth];
     
+    UILabel* whitenLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 530, 40, 20)];
+    [whitenLabel setText:@"美白"];
+    [self.view addSubview:whitenLabel];
+    UISlider* whiten = [[UISlider alloc] initWithFrame:CGRectMake(60, 530, 280, 20)];
+    whiten.minimumValue = 0.0;
+    whiten.maximumValue = 1.0;
+    whiten.value = 0.9;
+    whiten.continuous = NO;
+    [whiten addTarget:self action:@selector(whitenValueChanged:) forControlEvents:UIControlEventValueChanged];
+    [self.view addSubview:whiten];
+    
     smoothView = [[UITextView alloc] initWithFrame:CGRectMake(10, 80, 100, 30)];
     [smoothView setBackgroundColor:[UIColor clearColor]];
     NSString* text = [[NSString alloc] initWithFormat:@"磨皮:%0.2f", 0.5];
@@ -129,7 +142,7 @@ BOOL canRotateToAllOrientations;
     filterButtonArray = [[NSMutableArray alloc] init];
     UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
     flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-    filterScrollView = [[UICollectionView alloc] initWithFrame:CGRectMake(10, 530, 320, 40) collectionViewLayout:flowLayout];
+    filterScrollView = [[UICollectionView alloc] initWithFrame:CGRectMake(10, 580, 320, 40) collectionViewLayout:flowLayout];
     filterScrollView.backgroundColor = [UIColor clearColor];
     [self.view addSubview:filterScrollView];
     filterScrollView.delegate = self;
@@ -197,6 +210,9 @@ BOOL canRotateToAllOrientations;
     NSString* text = [[NSString alloc] initWithFormat:@"磨皮:%0.2f", [(UISlider*)sender value]];
     [smoothView setText:text];
     [videoCamera setSmoothStrength:[(UISlider*)sender value]];
+}
+-(void)whitenValueChanged:(id)sender{
+    [videoCamera setWhitenStrength:[(UISlider*)sender value]];
 }
 
 -(void)setNoneSmooth{

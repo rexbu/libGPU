@@ -39,7 +39,8 @@ m_output_group("OutputGroup")
     
     // m_input = &m_smooth_filter;
     setInputFormat(GPU_RGBA);
-    m_smooth_filter.addTarget(&m_extra_group);
+    m_smooth_filter.addTarget(&m_whiten_filter);
+    m_whiten_filter.addTarget(&m_extra_group);
     m_extra_group.addTarget(&m_preview_blend_filter);
     m_extra_group.addTarget(&m_video_blend_filter);
     m_video_blend_filter.addTarget(&m_output_group);
@@ -110,7 +111,9 @@ void GPUStreamFrame::setInputFilter(GPUFilter* input){
 void GPUStreamFrame::setSmoothStrength(float strength){
     m_smooth_filter.setExtraParameter(strength);
 }
-
+void GPUStreamFrame::setWhitenStrength(float strength){
+    m_whiten_filter.setStrength(strength);
+}
 #pragma --mark "Logo"
 void GPUStreamFrame::setPreviewBlend(GPUPicture* picture, gpu_rect_t rect, bool mirror){
     m_preview_blend_filter.setBlendImage(picture, rect, mirror);

@@ -614,6 +614,10 @@
     _smoothStrength = smoothStrength;
     streamFrame->setSmoothStrength(smoothStrength);
 }
+-(void)setWhitenStrength:(float)whitenStrength{
+    _whitenStrength = whitenStrength;
+    streamFrame->setWhitenStrength(whitenStrength);
+}
 
 #pragma --mark 额外滤镜
 -(void)setExtraFilter:(NSString*)filterName{

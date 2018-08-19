@@ -49,6 +49,8 @@
 @property(readonly, assign)CMTime presentTimeStamp;
 // 磨皮，范围:0-1.0
 @property(nonatomic, assign) float smoothStrength;
+// 美白
+@property(nonatomic, assign) float whitenStrength;
 
 /*
  * position:

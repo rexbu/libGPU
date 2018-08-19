@@ -212,27 +212,20 @@ void GPUFilter::render(){
     context->glContextLock();   // 加锁，防止此时设置参数
     
     context->setActiveProgram(m_program);
-    GPUCheckGlError((m_filter_name+" end0").c_str(), true, false);
     activeOutFrameBuffer();
-    GPUCheckGlError((m_filter_name+" end1").c_str(), true, false);
     for (int i=0; i<m_inputs; i++) {
         m_input_buffers[i]->activeTexture(GL_TEXTURE0+i);
         glUniform1i(m_input_textures[i], 0+i);
     }
-    GPUCheckGlError((m_filter_name+" end2").c_str(), true, false);
     m_coordinate_buffer->activeBuffer(m_input_coordinate);
-    GPUCheckGlError((m_filter_name+" end3").c_str(), true, false);
     m_vertex_buffer->activeBuffer(m_position);
-    GPUCheckGlError((m_filter_name+" end4").c_str(), true, false);
     
     glDrawArrays(GL_TRIANGLE_STRIP, 0, (GLsizei)m_vertices.size()/2);
-    GPUCheckGlError((m_filter_name+" end5").c_str(), true, false);
     glFlush();
     m_coordinate_buffer->disableBuffer(m_input_coordinate);
     m_vertex_buffer->disableBuffer(m_position);
     m_outbuffer->unactive();
     
-    GPUCheckGlError((m_filter_name+" end").c_str(), true, false);
     context->glContextUnlock();
 }
 
