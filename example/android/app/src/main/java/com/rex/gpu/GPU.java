@@ -1,5 +1,6 @@
 package com.rex.gpu;
 
+import android.graphics.Bitmap;
 import android.view.Surface;
 import com.rex.load.NativeLoad;
 
@@ -16,6 +17,7 @@ public class GPU {
         NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "destroyEGL", "(J)V");
 
         NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "processTexture", "(II)V");
+        NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "processPicture", "(Ljava/lang/String;)V");
         NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "processBytes", "([BIII)V");
         NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "getBytes", "([B)V");
         NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "getTexture", "()I");
@@ -63,6 +65,7 @@ public class GPU {
 
     /// c处理
     public native void processTexture(int texture, int texture_type);
+    public native void processPicture(String pic);
     public native void processBytes(byte[] bytes, int width, int height, int format);
     public native void getBytes(byte[] bytes);
     public native int getTexture();

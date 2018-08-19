@@ -20,7 +20,7 @@ void makeCurrent(JNIEnv * env, jobject jo, jlong jl);
 void destroyEGL(JNIEnv * env, jobject jo, jlong jl);
 
 void processTexture(JNIEnv * env, jobject jo, jint texture, jint texture_type);
-void processBytes(JNIEnv* env, jobject jo, jbyteArray jb, jint w, jint h, jint format);
+void processBytes(JNIEnv* env, jobject jo, jstring path);
 void getBytes(JNIEnv* env, jobject jo, jbyteArray jb);
 int getTexture(JNIEnv* env, jobject jo);
 
@@ -159,6 +159,26 @@ void processTexture(JNIEnv * env, jobject jo, jint texture, jint texture_type){
 
     GPUContext::shareInstance()->runAsyncTasks();
 	g_texture_input->processTexture(texture);
+}
+
+void processPicture(JNIEnv * env, jobject jo, jstring jpath){
+	const char* path = env->GetStringUTFChars(jpath, NULL);
+	if(path == NULL || strlen(path)==0) {
+		return;
+	}
+
+	GPUStreamFrame* stream = GPUStreamFrame::shareInstance();
+	if (stream->m_frame_width==0 || stream->m_frame_height==0)
+	{
+		err_log("Visionin Error: don't set videosize!");
+		return;
+	}
+
+	GPUPicture pic(path);
+	pic.addTarget(stream);
+	pic.processImage();
+	pic.removeAllTargets();
+	env->ReleaseStringUTFChars(jpath, path);
 }
 
 void processBytes(JNIEnv * env, jobject jo, jbyteArray jbytes, jint width, jint height, jint format){
