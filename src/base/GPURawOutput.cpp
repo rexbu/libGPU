@@ -40,7 +40,13 @@ void GPURawOutput::newFrame(){
 unsigned char* GPURawOutput::getBuffer(unsigned char* buffer, uint32_t size){
     if (m_direct)
     {
-        return m_bytebuffer;
+        if (buffer==NULL || size<m_size){
+            return m_bytebuffer;
+        }
+        else{
+            memcpy(buffer, m_bytebuffer, m_size);
+            return buffer;
+        }
     }
     else{
         if (buffer==NULL || size<m_size)

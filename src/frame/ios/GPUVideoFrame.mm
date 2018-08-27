@@ -38,7 +38,7 @@
 @implementation GPUVideoFrame
 
 #pragma -mark "初始化"
--(id)initWithPosition:(AVCaptureDevicePosition)position pixelFormat:(OSType)format view:(UIView*)view{
+-(id)initWithPosition:(AVCaptureDevicePosition)position view:(UIView*)view{
     self = [super init];
     if (self==nil) {
         return nil;
@@ -113,7 +113,7 @@
     originSize = CGSizeMake(0, 0);
     
     streamFrame = new GPUStreamFrame();
-    streamFrame->setInputFormat((gpu_pixel_format_t)format);
+    streamFrame->setInputFormat(GPU_RGBA);
     
     _outputImageOrientation = UIInterfaceOrientationPortrait;
     _frontVideoOrientation = AVCaptureVideoOrientationLandscapeLeft;
@@ -213,7 +213,12 @@
     }
     isProcessing = TRUE;
     
+    // 获取时间戳
+    _presentTimeStamp = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
     CVPixelBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+    return [self processVideoPixelBuffer:imageBuffer];
+}
+-(BOOL)processVideoPixelBuffer:(CVPixelBufferRef)imageBuffer{
     //CVPixelBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
     float width = CVPixelBufferGetWidth(imageBuffer);
     float height = CVPixelBufferGetHeight(imageBuffer);
@@ -222,9 +227,8 @@
         originSize = CGSizeMake(width, height);
         [self setVideoSize];
     }
-    // 获取时间戳
-    _presentTimeStamp = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
-    bufferInput->processSampleBuffer(sampleBuffer);
+    
+    bufferInput->processPixelBuffer(imageBuffer);
     if (_bgraPixelBlock!=nil) {
         GPUIOSFrameBuffer* outbuffer = (GPUIOSFrameBuffer*)streamFrame->m_zoom_filter->m_outbuffer;
         if(outbuffer == NULL){
@@ -264,7 +268,50 @@
     isProcessing = FALSE;
     return TRUE;
 }
-
+-(BOOL)processCGImage:(CGImageRef)cgImage{
+    GPUPicture picture((void*)cgImage);
+    picture.addTarget(streamFrame);
+    picture.processImage();
+    // 释放
+    picture.removeAllTargets();
+    
+    if (_bgraPixelBlock!=nil) {
+        GPUIOSFrameBuffer* outbuffer = (GPUIOSFrameBuffer*)streamFrame->m_zoom_filter->m_outbuffer;
+        if(outbuffer == NULL){
+            err_log("Visionin Error: ZoomFilter not run!");
+            isProcessing = FALSE;
+            return FALSE;
+        }
+        else {
+            glFinish();
+            CVPixelBufferRef pixel = outbuffer->getPixelBuffer();
+            _bgraPixelBlock(pixel, _presentTimeStamp);
+        }
+    }
+    if (_yuv420pPixelBlock!=nil) {
+        _yuv420pPixelBlock(streamFrame->m_raw_output->getBuffer(), _presentTimeStamp);
+    }
+    if (_nv21PixelBlock!=nil) {
+        _nv21PixelBlock(streamFrame->m_raw_output->getBuffer(), _presentTimeStamp);
+    }
+    if (_nv12PixelBlock!=nil) {
+        _nv12PixelBlock(streamFrame->m_raw_output->getBuffer(), _presentTimeStamp);
+    }
+    if (_textureBlock!=nil) {
+        if ((GPUIOSFrameBuffer*)streamFrame->m_zoom_filter->m_outbuffer==NULL) {
+            err_log("Visionin Error: ZoomFilter not run!");
+            isProcessing = FALSE;
+            return FALSE;
+        }
+        
+        GPUIOSFrameBuffer* outbuffer = (GPUIOSFrameBuffer*)streamFrame->m_zoom_filter->m_outbuffer;
+        if (outbuffer!=NULL) {
+            _textureBlock(outbuffer->m_texture, _presentTimeStamp);
+        }
+    }
+    
+    return TRUE;
+}
 //-(void)setPreview:(UIView *)preview{
 //    if (preview==nil) {
 //        return;
@@ -326,9 +373,6 @@
     rotateAngle = 0;
     switch(_outputImageOrientation)
     {
-        case UIInterfaceOrientationPortrait:
-            rotateAngle = 0;
-            break;
         case UIInterfaceOrientationPortraitUpsideDown:
             rotateAngle = 180;
             break;
@@ -338,18 +382,21 @@
         case UIInterfaceOrientationLandscapeRight:
             rotateAngle = -90;
             break;
+        case UIInterfaceOrientationPortrait:
+        default:
+            rotateAngle = 0;
     }
     
-    AVCaptureVideoOrientation orientation = _frontVideoOrientation;
-    if (_cameraPosition == AVCaptureDevicePositionBack) {
+    AVCaptureVideoOrientation orientation = AVCaptureVideoOrientationPortrait;
+    if (_cameraPosition == AVCaptureDevicePositionFront) {
+        orientation = _frontVideoOrientation;
+    }
+    else if (_cameraPosition == AVCaptureDevicePositionBack) {
         orientation = _backVideoOrientation;
     }
     
     switch(orientation)
     {
-        case AVCaptureVideoOrientationPortrait:
-            rotateAngle += 0;
-            break;
         case AVCaptureVideoOrientationPortraitUpsideDown:
             rotateAngle += 180;
             break;
@@ -358,6 +405,10 @@
             break;
         case AVCaptureVideoOrientationLandscapeRight:
             rotateAngle += 90;
+            break;
+        case AVCaptureVideoOrientationPortrait:
+        default:
+            rotateAngle += 0;
             break;
     }
     

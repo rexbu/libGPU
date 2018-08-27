@@ -10,7 +10,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "../../src/base/GPUFrameBuffer.cpp"
-            timestampString = "556364745.414198"
+            timestampString = "557085220.2215151"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "367"
@@ -25,13 +25,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../../src/base/GPUPicture.cpp"
-            timestampString = "554919177.701244"
+            filePath = "../../src/frame/ios/GPUVideoFrame.mm"
+            timestampString = "557085439.3934211"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "47"
-            endingLineNumber = "47"
-            landmarkName = "GPUPicture::~GPUPicture()"
+            startingLineNumber = "343"
+            endingLineNumber = "343"
+            landmarkName = "-setPlayView:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

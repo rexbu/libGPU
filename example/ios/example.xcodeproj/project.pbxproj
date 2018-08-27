@@ -32,6 +32,8 @@
 		CD0661301F21CC5B00098365 /* liblibGPU.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CD06612D1F21CC4C00098365 /* liblibGPU.a */; };
 		CD32A7BF2107766D00A0C94C /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CD32A7BE2107766D00A0C94C /* HomeViewController.m */; };
 		CD3BB79621292CA900B87F67 /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = CD3BB79521292CA900B87F67 /* logo.png */; };
+		CD5E8B3D2134549A00D62ECF /* ImageViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = CD5E8B3C2134549A00D62ECF /* ImageViewController.mm */; };
+		CD5E8B3F2134559F00D62ECF /* suyan.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = CD5E8B3E2134559E00D62ECF /* suyan.jpeg */; };
 		CDEF173D20FA4D800090D3CC /* filter4.png in Resources */ = {isa = PBXBuildFile; fileRef = CDEF172920FA4D7E0090D3CC /* filter4.png */; };
 		CDEF173E20FA4D800090D3CC /* filter17.png in Resources */ = {isa = PBXBuildFile; fileRef = CDEF172A20FA4D7E0090D3CC /* filter17.png */; };
 		CDEF173F20FA4D800090D3CC /* filter20.png in Resources */ = {isa = PBXBuildFile; fileRef = CDEF172B20FA4D7E0090D3CC /* filter20.png */; };
@@ -103,6 +105,9 @@
 		CD32A7BD2107766D00A0C94C /* HomeViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
 		CD32A7BE2107766D00A0C94C /* HomeViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
 		CD3BB79521292CA900B87F67 /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo.png; sourceTree = "<group>"; };
+		CD5E8B3B2134549A00D62ECF /* ImageViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImageViewController.h; sourceTree = "<group>"; };
+		CD5E8B3C2134549A00D62ECF /* ImageViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ImageViewController.mm; sourceTree = "<group>"; };
+		CD5E8B3E2134559E00D62ECF /* suyan.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = suyan.jpeg; sourceTree = "<group>"; };
 		CDEF172920FA4D7E0090D3CC /* filter4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = filter4.png; sourceTree = "<group>"; };
 		CDEF172A20FA4D7E0090D3CC /* filter17.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = filter17.png; sourceTree = "<group>"; };
 		CDEF172B20FA4D7E0090D3CC /* filter20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = filter20.png; sourceTree = "<group>"; };
@@ -192,23 +197,26 @@
 		C8A0ADDF1ECFE5A10043ADE9 /* example */ = {
 			isa = PBXGroup;
 			children = (
-				01DD12D82129C98200FE2DCC /* libstdc++.6.0.9.dylib */,
-				01DD12D62129C81F00FE2DCC /* GPUVideoCamera.h */,
-				01DD12D42129C7DC00FE2DCC /* GPUVideoCamera.m */,
-				CD3BB79521292CA900B87F67 /* logo.png */,
-				CDEF172820FA4D640090D3CC /* filters */,
 				C8A0ADE31ECFE5A10043ADE9 /* AppDelegate.h */,
 				C8A0ADE41ECFE5A10043ADE9 /* AppDelegate.m */,
-				C8A0ADE61ECFE5A10043ADE9 /* ViewController.h */,
-				C8A0ADE71ECFE5A10043ADE9 /* ViewController.mm */,
 				C8A0ADEC1ECFE5A10043ADE9 /* Assets.xcassets */,
 				C8DACD2B1ED4684A001F607A /* facepoints.json */,
-				C8A0ADF11ECFE5A10043ADE9 /* Info.plist */,
-				C8A0ADEE1ECFE5A10043ADE9 /* LaunchScreen.storyboard */,
-				C8A0ADE91ECFE5A10043ADE9 /* Main.storyboard */,
-				C8A0ADE01ECFE5A10043ADE9 /* Supporting Files */,
+				CDEF172820FA4D640090D3CC /* filters */,
+				01DD12D62129C81F00FE2DCC /* GPUVideoCamera.h */,
+				01DD12D42129C7DC00FE2DCC /* GPUVideoCamera.m */,
 				CD32A7BD2107766D00A0C94C /* HomeViewController.h */,
 				CD32A7BE2107766D00A0C94C /* HomeViewController.m */,
+				CD5E8B3B2134549A00D62ECF /* ImageViewController.h */,
+				CD5E8B3C2134549A00D62ECF /* ImageViewController.mm */,
+				C8A0ADE61ECFE5A10043ADE9 /* ViewController.h */,
+				C8A0ADE71ECFE5A10043ADE9 /* ViewController.mm */,
+				C8A0ADF11ECFE5A10043ADE9 /* Info.plist */,
+				C8A0ADEE1ECFE5A10043ADE9 /* LaunchScreen.storyboard */,
+				01DD12D82129C98200FE2DCC /* libstdc++.6.0.9.dylib */,
+				CD3BB79521292CA900B87F67 /* logo.png */,
+				C8A0ADE91ECFE5A10043ADE9 /* Main.storyboard */,
+				C8A0ADE01ECFE5A10043ADE9 /* Supporting Files */,
+				CD5E8B3E2134559E00D62ECF /* suyan.jpeg */,
 			);
 			path = example;
 			sourceTree = "<group>";
@@ -354,6 +362,7 @@
 				C8DACD2E1ED4684A001F607A /* facepoints.json in Resources */,
 				CDEF174320FA4D800090D3CC /* filter0.png in Resources */,
 				CDEF174820FA4D800090D3CC /* filter18.png in Resources */,
+				CD5E8B3F2134559F00D62ECF /* suyan.jpeg in Resources */,
 				CDEF174E20FA4D800090D3CC /* filter15.png in Resources */,
 				CDEF174D20FA4D800090D3CC /* filter8.png in Resources */,
 				CDEF174220FA4D800090D3CC /* filter1.png in Resources */,
@@ -367,6 +376,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CD5E8B3D2134549A00D62ECF /* ImageViewController.mm in Sources */,
 				C8A0ADE81ECFE5A10043ADE9 /* ViewController.mm in Sources */,
 				C8A0ADE51ECFE5A10043ADE9 /* AppDelegate.m in Sources */,
 				01DD12D52129C7DC00FE2DCC /* GPUVideoCamera.m in Sources */,

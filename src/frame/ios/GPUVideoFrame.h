@@ -57,7 +57,7 @@
  * pixelFormat: 摄像头输出视频帧格式，目前支持格式类型：kCVPixelFormatType_420YpCbCr8BiPlanarFullRange、kCVPixelFormatType_32BGRA、kCVPixelFormatType_32RGBA
  * view：视频预览窗口
  */
--(id)initWithPosition:(AVCaptureDevicePosition)position pixelFormat:(OSType)format view:(UIView*)view;
+-(id)initWithPosition:(AVCaptureDevicePosition)position view:(UIView*)view;
 /*
  * position:
  * format: 输入Bytes格式，目前支持格式类型：“1”为RGBA 、“2”为NV21、"6"为NV12
@@ -69,6 +69,8 @@
 -(void)stopVideoFrame;
 // 输入要处理的视频流, 返回错误表示上一帧还没有处理完，本次samplebuffer被丢弃
 -(BOOL)processVideoSampleBuffer:(CMSampleBufferRef)sampleBuffer;
+-(BOOL)processVideoPixelBuffer:(CVPixelBufferRef)pixelBuffer;
+-(BOOL)processCGImage:(CGImageRef)cgImage;
 // 处理输入的bytes流
 -(BOOL)processVideoBytes:(unsigned char*)bytes width:(int)width height:(int)height format:(int)format;
 

@@ -17,6 +17,10 @@ GPUSampleBufferInput::GPUSampleBufferInput(){
 
 void GPUSampleBufferInput::processSampleBuffer(CMSampleBufferRef sampleBuffer){
     CVImageBufferRef cameraFrame = CMSampleBufferGetImageBuffer(sampleBuffer);
+    processPixelBuffer(cameraFrame);
+}
+
+void GPUSampleBufferInput::processPixelBuffer(CVImageBufferRef cameraFrame){
     m_frame_width = (uint32_t) CVPixelBufferGetWidth(cameraFrame);
     m_frame_height = (uint32_t) CVPixelBufferGetHeight(cameraFrame);
     

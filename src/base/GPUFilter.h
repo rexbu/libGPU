@@ -100,6 +100,8 @@ protected:
     GPUFrameBuffer*     m_special_outbuffer;
     gpu_frame_option_t* m_option;   // 外部传入的option
     float               m_clear_color[4];
+
+public:
     std::string m_filter_name;  // 用于debug
 };
 

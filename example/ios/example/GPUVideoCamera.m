@@ -41,7 +41,7 @@ GPUVideoCamera* shareInstance = nil;
     BOOL asYuv = YES;
     _videoOrientation = -1;
     _isProcessing = NO;
-    self = [super initWithPosition:position pixelFormat:kCVPixelFormatType_420YpCbCr8BiPlanarFullRange view:view];
+    self = [super initWithPosition:position view:view];
     if (self==nil) {
         return nil;
     }

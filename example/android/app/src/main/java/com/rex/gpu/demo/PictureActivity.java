@@ -269,4 +269,18 @@ public class PictureActivity extends Activity {
         bmp.setPixels(rgba, 0, width, 0, 0, width, height);
         return bmp;
     }
+    public Bitmap rgba2Bitmap(byte[] data, int width, int height) {
+        int frameSize = width * height;
+        int[] rgba = new int[frameSize];
+        for (int i = 0; i < height; i++)
+            for (int j = 0; j < width; j++) {
+                int r = 0xff & ((int) data[(i * width + j)*4]);
+                int g = 0xff & ((int) data[(i * width + j)*4 + 1]);
+                int b = 0xff & ((int) data[(i * width + j)*4 + 2]);
+                rgba[i * width + j] = 0xff000000 + (r << 16) + (g << 8) + b;
+            }
+        Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        bmp.setPixels(rgba, 0, width, 0, 0, width, height);
+        return bmp;
+    }
 }

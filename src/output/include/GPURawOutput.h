@@ -16,7 +16,7 @@
 
 class GPURawOutput:public GPUInput{
 public:
-    GPURawOutput(bool direct = false);  // 默认直到获取buffer时候才从gpu中读取
+    GPURawOutput(bool direct = true);  // 默认直到获取buffer时候才从gpu中读取
     ~GPURawOutput();
     // 外部传入buffer
     void setBuffer(unsigned char* buffer, uint32_t size);

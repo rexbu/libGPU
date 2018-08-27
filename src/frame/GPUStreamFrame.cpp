@@ -36,6 +36,9 @@ m_output_group("OutputGroup")
     m_frame_height = 0;
     m_view = NULL;
     m_input = NULL;
+    m_smooth_filter.m_filter_name = "smooth_filter";
+    m_whiten_filter.m_filter_name = "whiten_filter";
+    m_video_blend_filter.m_filter_name = "video_blend0";
     
     // m_input = &m_smooth_filter;
     setInputFormat(GPU_RGBA);
@@ -51,6 +54,7 @@ m_output_group("OutputGroup")
     
     // 输出
     m_zoom_filter = new GPUZoomFilter();
+    m_zoom_filter->m_filter_name = "zoom_filter";
     m_yuv_filter = new GPURGBToYUVFilter();
     m_yuv420_filter = new GPUToYUV420Filter();
     m_nv21_filter = new GPUToNV21Filter();

@@ -22,6 +22,7 @@ public:
     ~GPUSampleBufferInput();
     // 视频流处理
     void processSampleBuffer(CMSampleBufferRef sampleBuffer);
+    void processPixelBuffer(CVImageBufferRef pixelBuffer);
     
 protected:
     OSType    m_format;        // 是否YUV数据
