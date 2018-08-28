@@ -118,9 +118,13 @@ void GPUIOSView::setOutputRotation(gpu_rotation_t rotation){
     _viewSize = self.bounds.size;
     displayProgram = new GPUProgram(GPUFilter::g_vertex_shader, GPUFilter::g_fragment_shader);
     _rotation = GPUNoRotation;
+    _fillMode = GPUFillModePreserveAspectRatioAndFill;
     displayPositionAttribute = displayProgram->attributeIndex("position");
     displayTextureCoordinateAttribute = displayProgram->attributeIndex("inputTextureCoordinate");
-    displayInputTextureUniform = displayProgram->uniformIndex("inputImageTexture");
+    
+    int input_textures[1] = {0};
+    displayProgram->setUniformsIndex("inputImageTexture", input_textures, 1);
+    //displayInputTextureUniform = displayProgram->uniformIndex("inputImageTexture");
     displayProgram->link();
     glEnableVertexAttribArray(displayPositionAttribute);
     glEnableVertexAttribArray(displayTextureCoordinateAttribute);
@@ -240,7 +244,8 @@ void GPUIOSView::setOutputRotation(gpu_rotation_t rotation){
     [self activeBuffer];
     
     inputFramebufferForDisplay->activeTexture(GL_TEXTURE4);
-    glUniform1i(displayInputTextureUniform, 4);
+    //glUniform1i(displayInputTextureUniform, 4);
+    glUniform1i(0, 4);
     
     GPUVertexBuffer* coors_buffer = GPUVertexBufferCache::shareInstance()->getVertexBuffer();
     coors_buffer->activeBuffer(displayTextureCoordinateAttribute, [GPUUIView textureCoordinatesForRotation:_rotation]);
@@ -301,6 +306,9 @@ void GPUIOSView::setOutputRotation(gpu_rotation_t rotation){
             dispatch_sync(dispatch_get_main_queue(), ^{
                 [self recalculateViewGeometry];
             });
+        }
+        else{
+            [self recalculateViewGeometry];
         }
     }
 }
