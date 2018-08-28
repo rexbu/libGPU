@@ -21,7 +21,8 @@ GPUFilter(true, "GPUView")
 GPUView::GPUView(ANativeWindow * surface):
 GPUFilter(true, "GPUView")
 {
-    m_rotation = GPUNoRotation;
+    // 安卓默认倒立
+    m_rotation = GPUFlipVertical;
     m_fill_mode = GPUFillModePreserveAspectRatioAndFill;
     m_eglsurface = EGL_NO_SURFACE;
     setNativeWindow(surface);

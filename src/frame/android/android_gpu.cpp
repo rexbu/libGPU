@@ -176,6 +176,8 @@ void processPicture(JNIEnv * env, jobject jo, jstring jpath){
 
 	GPUPicture pic(path);
 	pic.addTarget(stream);
+
+	stream->m_input->setOutputRotation(stream->getOutputRotation());
 	pic.processImage();
 	pic.removeAllTargets();
 	env->ReleaseStringUTFChars(jpath, path);

@@ -25,8 +25,11 @@ import com.rex.utils.FileUtil;
 
 import java.io.IOException;
 
-public class PictureActivity extends Activity {
+public class PictureActivity extends Activity implements SurfaceHolder.Callback{
+    protected SurfaceView surfaceView = null;
     protected ImageView imageView = null;
+    protected SurfaceHolder surfaceHolder = null;
+
     protected GPUVideoFrame videoFrame = null;
     protected boolean isFront = true;
 
@@ -45,22 +48,29 @@ public class PictureActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_picture);
+        setContentView(R.layout.activity_texture);
 
-        imageView = findViewById(R.id.cmaera_iamgeView);
+        surfaceView = (SurfaceView) findViewById(R.id.camera_surfaceView);
+        surfaceHolder = surfaceView.getHolder();
+        surfaceHolder.addCallback(this);
 
-        isFront = true;
+        imageView = (ImageView)findViewById(R.id.cmaera_iamgeView);
+        picBytes = new byte[1280*1280*4];
         initView();
+    }
 
+    @Override
+    public void surfaceCreated(SurfaceHolder surfaceHolder) {
         try {
-            videoFrame = new GPUVideoFrame(null);
+            // 如果不需要预览，则可以直接传入null参数
+            videoFrame = new GPUVideoFrame(surfaceHolder.getSurface());
         } catch (Exception e) {
             e.printStackTrace();
             return;
         }
 
-        videoFrame.setOutputImageOritation(Configuration.ORIENTATION_PORTRAIT);
-
+        //videoFrame.setOutputImageOritation(Configuration.ORIENTATION_PORTRAIT);
+        videoFrame.setInputRotation(GPUVideoFrame.GPUNoRotation);
         // 预览图像尺寸，如果和surface尺寸不一致，可能会被surface缩放
         // videoFrame.setViewOutputSize(540, 960);
         // 和surface尺寸比例不一致时候的填充方式
@@ -68,32 +78,38 @@ public class PictureActivity extends Activity {
         // 用于编码的图片尺寸
         videoFrame.setOutputSize(360, 640);
         videoFrame.setOutputFormat(GPUVideoFrame.GPU_YUV420P);
-        picBytes = new byte[360*640*4];
 
         videoFrame.setSmoothStrength(0.9f);
         videoFrame.setWhitenStrength(0.9f);
 
+        // 预览设置logo，使用路径方式
+        videoFrame.setPreviewBlend("/data/data/"+ this.getPackageName() +"/logo.png", 20, 40, 160, 240, false);
         // 视频流设置logo，使用bitmap方式
         Bitmap logo = FileUtil.readImage("/data/data/"+ this.getPackageName() +"/logo.png");
         videoFrame.setVideoBlendBitmap(logo, 120, 140, 160, 240, false);
         videoFrame.start();
 
         pic = "/data/data/"+this.getPackageName()+"/suyan.jpeg";
-
         videoFrame.processPicture(pic);
         videoFrame.getBytes(picBytes);
         imageView.setImageBitmap(yuv420p2RGBABitmap(picBytes, 360, 640));
     }
 
-
     @Override
-    protected void onPause() {
-        super.onPause();
+    public void surfaceChanged(SurfaceHolder surfaceHolder, int format, int width, int height) {
+        Configuration configuration = this.getResources().getConfiguration(); //获取设置的配置信息
+        if (configuration.orientation==Configuration.ORIENTATION_LANDSCAPE){
+            videoFrame.setOutputImageOritation(Configuration.ORIENTATION_LANDSCAPE);
+        }
+        else{
+            videoFrame.setOutputImageOritation(Configuration.ORIENTATION_PORTRAIT);
+        }
+
+        Log.e("gpu", "change surface:"+width+"/"+height);
     }
-    @Override
-    protected void onStop(){
-        super.onStop();
 
+    @Override
+    public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
         if (videoFrame!=null){
             videoFrame.stop();
         }
@@ -148,26 +164,42 @@ public class PictureActivity extends Activity {
                     switch (i){
                         case 0:
                             videoFrame.setViewFillMode(GPU.GPU_FILL_RATIOANDFILL);
-                            videoFrame.setViewOutputSize(videoFrame.frameWidth, videoFrame.frameHeight);
+                            videoFrame.setViewOutputSize(720, 1280);
+                            videoFrame.setOutputSize(720,1280);
+                            videoFrame.processPicture(pic);
+                            videoFrame.getBytes(picBytes);
+                            imageView.setImageBitmap(yuv420p2RGBABitmap(picBytes, 720, 1280));
                             break;
                         case 1: // 1:1
                             videoFrame.setViewFillMode(GPU.GPU_FILL_RATIO);
                             videoFrame.setViewOutputSize(640, 640);
+                            videoFrame.setOutputSize(640,640);
+                            videoFrame.processPicture(pic);
+                            videoFrame.getBytes(picBytes);
+                            imageView.setImageBitmap(yuv420p2RGBABitmap(picBytes, 640, 640));
                             break;
                         case 2: // 3:2
                             videoFrame.setViewFillMode(GPU.GPU_FILL_RATIO);
                             videoFrame.setViewOutputSize(640, 720);
+                            videoFrame.setOutputSize(640,720);
+                            videoFrame.processPicture(pic);
+                            videoFrame.getBytes(picBytes);
+                            imageView.setImageBitmap(yuv420p2RGBABitmap(picBytes, 640, 720));
                             break;
                         case 3: // 16:9
                             videoFrame.setViewFillMode(GPU.GPU_FILL_RATIO);
                             videoFrame.setViewOutputSize(540, 960);
+                            videoFrame.setOutputSize(540,960);
+                            videoFrame.processPicture(pic);
+                            videoFrame.getBytes(picBytes);
+                            imageView.setImageBitmap(yuv420p2RGBABitmap(picBytes, 540, 960));
                             break;
                     }
                 }
                 // 每次操作都要处理
-                videoFrame.processPicture(pic);
-                videoFrame.getBytes(picBytes);
-                imageView.setImageBitmap(yuv420p2RGBABitmap(picBytes, 360, 640));
+                if (videoFrame != null) {
+
+                }
             }
 
             @Override
