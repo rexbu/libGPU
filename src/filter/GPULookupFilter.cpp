@@ -54,6 +54,7 @@ void main() {
 GPULookupFilter::GPULookupFilter():
 GPUFilter(g_lookup_fragment_shader, 2, "Lookup Filter"){
     m_lookup = NULL;
+    stopLookup();
 }
 
 GPULookupFilter::~GPULookupFilter(){
