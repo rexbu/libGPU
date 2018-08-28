@@ -53,5 +53,8 @@ public class MainActivity extends Activity {
         FileOutputStream fos = new FileOutputStream("/data/data/"+this.getPackageName()+"/logo.png");
         InputStream is = this.getAssets().open("logo.png");
         FileUtil.write(fos, is);
+        fos = new FileOutputStream("/data/data/"+this.getPackageName()+"/suyan.jpeg");
+        is = this.getAssets().open("suyan.jpeg");
+        FileUtil.write(fos, is);
     }
 }

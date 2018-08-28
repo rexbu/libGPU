@@ -50,7 +50,9 @@ void setViewFillMode(JNIEnv* env, jobject jo, jint mode);
 
 // blend用于logo
 void setPreviewBlend(JNIEnv * env, jobject jo, jstring jpath, jfloat x, jfloat y, jfloat w, jfloat h, jboolean mirror);
+void setPreviewBlendBitmap(JNIEnv * env, jobject jo, jobject bitmap, jfloat x, jfloat y, jfloat w, jfloat h, jboolean mirror);
 void setVideoBlend(JNIEnv * env, jobject jo, jstring jpath, jfloat x, jfloat y, jfloat w, jfloat h, jboolean mirror);
+void setVideoBlendBitmap(JNIEnv * env, jobject jo, jobject bitmap, jfloat x, jfloat y, jfloat w, jfloat h, jboolean mirror);
 
 #ifdef __cplusplus
 }
@@ -318,6 +320,18 @@ void setPreviewBlend(JNIEnv * env, jobject jo, jstring jpath, jfloat x, jfloat y
 
 	env->ReleaseStringUTFChars(jpath, path);
 }
+void setPreviewBlendBitmap(JNIEnv * env, jobject jo, jobject bitmap, jfloat x, jfloat y, jfloat w, jfloat h, jboolean mirror){
+    GPUStreamFrame* stream = GPUStreamFrame::shareInstance();
+    gpu_rect_t rect;
+
+    rect.pointer.x = x;
+    rect.pointer.y = y;
+    rect.size.width = w;
+    rect.size.height = h;
+    GPUPicture* pic = new GPUPicture(bitmap);
+    stream->setPreviewBlend(pic, rect, mirror);
+}
+
 void setVideoBlend(JNIEnv * env, jobject jo, jstring jpath, jfloat x, jfloat y, jfloat w, jfloat h, jboolean mirror){
 	GPUStreamFrame* stream = GPUStreamFrame::shareInstance();
 	gpu_rect_t rect;
@@ -336,6 +350,18 @@ void setVideoBlend(JNIEnv * env, jobject jo, jstring jpath, jfloat x, jfloat y, 
 	stream->setVideoBlend(pic, rect, mirror);
 
 	env->ReleaseStringUTFChars(jpath, path);
+}
+
+void setVideoBlendBitmap(JNIEnv * env, jobject jo, jobject bitmap, jfloat x, jfloat y, jfloat w, jfloat h, jboolean mirror){
+    GPUStreamFrame* stream = GPUStreamFrame::shareInstance();
+    gpu_rect_t rect;
+
+    rect.pointer.x = x;
+    rect.pointer.y = y;
+    rect.size.width = w;
+    rect.size.height = h;
+    GPUPicture* pic = new GPUPicture(bitmap);
+    stream->setVideoBlend(pic, rect, mirror);
 }
 
 jint JNI_OnLoad(JavaVM *vm, void *reserved) {

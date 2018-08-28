@@ -115,9 +115,11 @@ public class TextureActivity extends Activity implements SurfaceHolder.Callback{
         });
 
 
-        // 设置logo
+        // 预览设置logo，使用路径方式
         videoFrame.setPreviewBlend("/data/data/"+ TextureActivity.this.getPackageName() +"/logo.png", 20, 40, 160, 240, false);
-        videoFrame.setVideoBlend("/data/data/"+ TextureActivity.this.getPackageName() +"/logo.png", 20, 40, 160, 240, false);
+        // 视频流设置logo，使用bitmap方式
+        Bitmap logo = FileUtil.readImage("/data/data/"+ TextureActivity.this.getPackageName() +"/logo.png");
+        videoFrame.setVideoBlendBitmap(logo, 20, 40, 160, 240, false);
         videoFrame.start();
         try {
             com.rex.utils.CameraUtil.mCamera.setPreviewTexture(videoFrame.surfaceTexture());

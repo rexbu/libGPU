@@ -21,6 +21,7 @@ import com.rex.gpu.GPU;
 import com.rex.gpu.GPURawBytesCallback;
 import com.rex.gpu.GPUVideoFrame;
 import com.rex.utils.CameraUtil;
+import com.rex.utils.FileUtil;
 
 import java.io.IOException;
 
@@ -72,12 +73,12 @@ public class PictureActivity extends Activity {
         videoFrame.setSmoothStrength(0.9f);
         videoFrame.setWhitenStrength(0.9f);
 
-        // 设置logo
-        // videoFrame.setPreviewBlend("/data/data/"+ PictureActivity.this.getPackageName() +"/logo.png", 20, 40, 160, 240, false);
-        // videoFrame.setVideoBlend("/data/data/"+ PictureActivity.this.getPackageName() +"/logo.png", 20, 40, 160, 240, false);
+        // 视频流设置logo，使用bitmap方式
+        Bitmap logo = FileUtil.readImage("/data/data/"+ this.getPackageName() +"/logo.png");
+        videoFrame.setVideoBlendBitmap(logo, 120, 140, 160, 240, false);
         videoFrame.start();
 
-        pic = "/data/data/"+this.getPackageName()+"/logo.png";
+        pic = "/data/data/"+this.getPackageName()+"/suyan.jpeg";
 
         videoFrame.processPicture(pic);
         videoFrame.getBytes(picBytes);

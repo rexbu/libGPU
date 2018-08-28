@@ -46,6 +46,8 @@ public class GPU {
 
         NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setPreviewBlend", "(Ljava/lang/String;FFFFZ)V");
         NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setVideoBlend", "(Ljava/lang/String;FFFFZ)V");
+        NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setPreviewBlendBitmap", "(Landroid/graphics/Bitmap;FFFFZ)V");
+        NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setVideoBlendBitmap", "(Landroid/graphics/Bitmap;FFFFZ)V");
 	}
 
     // processTexture函数要处理的texture类型，如果是surfaceTexture，则应该为OES类型
@@ -117,11 +119,15 @@ public class GPU {
      * @param mirror 是否镜像
      */
     public native void setVideoBlend(String path, float x, float y, float w, float h, boolean mirror);
+
+    public native void setPreviewBlendBitmap(Bitmap bitmap, float x, float y, float w, float h, boolean mirror);
+    public native void setVideoBlendBitmap(Bitmap bitmap, float x, float y, float w, float h, boolean mirror);
+
     public void removePreviewBlend(){
-        setPreviewBlend(null, 0, 0, 0, 0, false);
+        setPreviewBlend((String)null, 0, 0, 0, 0, false);
     }
     public void removeVideoBlend(){
-        setVideoBlend(null, 0, 0, 0, 0, false);
+        setVideoBlend((String)null, 0, 0, 0, 0, false);
     }
 
     protected long  mEGLContext = 0;

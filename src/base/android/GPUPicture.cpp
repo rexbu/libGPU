@@ -19,6 +19,25 @@ GPUPicture::GPUPicture(const char* path){
 	load(path);
 }
 
+GPUPicture::GPUPicture(jobject bitmap){
+	JNIEnv*     	env;
+	g_jvm->AttachCurrentThread(&env, NULL);
+
+	AndroidBitmapInfo info;
+	GLvoid* pixels;
+
+	AndroidBitmap_getInfo(env, bitmap, &info);
+	if(info.format != ANDROID_BITMAP_FORMAT_RGBA_8888) {
+		err_log("Bitmap format[%d] is not RGBA_8888!", info.format);
+		return;
+	}
+
+	m_option = GPUFrameBuffer::defaultFrameOption();
+	AndroidBitmap_lockPixels(env, bitmap, &pixels);
+	setPixel((uint8_t*)pixels, info.width, info.height);
+	AndroidBitmap_unlockPixels(env, bitmap);
+}
+
 bool GPUPicture::load(uint8_t * data, uint32_t size)
 {
 	JNIEnv*     	env;
