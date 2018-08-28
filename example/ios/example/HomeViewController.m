@@ -23,14 +23,14 @@
     [super viewDidLoad];
     
     CGSize size = self.view.bounds.size;
-    UIButton* button  = [[UIButton alloc] initWithFrame:CGRectMake(size.width/2-60, size.height/2-110, 120, 60)];
+    UIButton* button  = [[UIButton alloc] initWithFrame:CGRectMake(size.width/2-120, size.height/2-110, 240, 60)];
     [button setTitle:@"相机Demo" forState:UIControlStateNormal];
     [button setBackgroundColor:[UIColor blueColor]];
     [button addTarget:self action:@selector(enter) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:button];
     
-    UIButton* picButton  = [[UIButton alloc] initWithFrame:CGRectMake(size.width/2-60, size.height/2-30, 120, 60)];
-    [picButton setTitle:@"图片Demo" forState:UIControlStateNormal];
+    UIButton* picButton  = [[UIButton alloc] initWithFrame:CGRectMake(size.width/2-120, size.height/2-30, 240, 60)];
+    [picButton setTitle:@"图片Demo(类似GPUImage)" forState:UIControlStateNormal];
     [picButton setBackgroundColor:[UIColor blueColor]];
     [picButton addTarget:self action:@selector(enterImage) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:picButton];

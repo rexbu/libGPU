@@ -11,7 +11,6 @@
 #include "GPU.h"
 #include "GPUVideoFrame.h"
 
-static bool initViewFlag = true;
 @interface ImageViewController (){
     GPUVideoFrame*  videoFrame;
     UIImage*        logo;
@@ -27,6 +26,15 @@ static bool initViewFlag = true;
     
     UIInterfaceOrientation old_orientation;
     int ratioIndex;
+    
+    GPUPicture*         picture;
+    GPUPicture*         logo_picture;
+    GPUSmoothFilter*    smoothFilter;
+    GPUWhiteningFilter* whitenFilter;
+    GPULookupFilter*    lookupFilter;
+    GPUFilter*          extraFilter;
+    GPUBlend2Filter*    blendFilter;
+    GPUIOSView*         view;
 }
 
 @end
@@ -45,42 +53,58 @@ static bool initViewFlag = true;
     // Do any additional setup after loading the view, typically from a nib.
     
     bs_log_init("stdout");
+    
+    // 两种初始化GPUPicture的方式
+    NSString* path = [[NSBundle mainBundle] pathForResource:@"suyan" ofType:@"jpeg"];
+    picture = new GPUPicture(path.UTF8String);
     logo = [UIImage imageNamed:@"logo.png"];
-    videoFrame = [[GPUVideoFrame alloc] initWithPosition:AVCaptureDevicePositionUnspecified view:nil];
-    // 设置磨皮
-    [videoFrame setSmoothStrength:0.9];
-    // 设置美白
-    [videoFrame setWhitenStrength:0.9];
-    [videoFrame setOutputImageOrientation:UIInterfaceOrientationPortrait];
-    [videoFrame setOutputSize:CGSizeMake(540, 960)];
-    [videoFrame setPreviewBlend:logo rect:CGRectMake(20, 20, 160, 280) mirror:FALSE];
-    __block typeof(self) parent = self;
-    videoFrame.bgraPixelBlock = ^(CVPixelBufferRef pixelBuffer, CMTime time){
-        // 获取处理后视频帧
-        // 视频流预览
-        if (parent->videoView!=nil) {
-            // 此处对性能影响比较大，如果不用测试视频流是否正确，可以把以下代码关闭
-            UIImage* image = [self pixelBuffer2Image:pixelBuffer];
-            dispatch_async(dispatch_get_main_queue(), ^(){
-                [parent->videoView setImage:image];
-            });
-        }
-    };
+    logo_picture = new GPUPicture(logo.CGImage);
     
-    image = [UIImage imageNamed:@"suyan.jpeg"];
+    smoothFilter = new GPUSmoothFilter();
+    smoothFilter->setExtraParameter(0.9);
+    whitenFilter = new GPUWhiteningFilter();
+    whitenFilter->setStrength(0.9);
+    blendFilter = new GPUBlend2Filter();
+    // 用于设置滤镜
+    lookupFilter = new GPULookupFilter();
     
-    [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(processImage) userInfo:nil repeats:YES];
+    view = new GPUIOSView(self.view.bounds);
+    // 显示设置，按照图片比例等比缩放，预览view可能出现黑框
+    [view->uiview() setFillMode:GPUFillModePreserveAspectRatio];
+    // 将view添加到界面
+    [self.view addSubview:view->uiview()];
+    // 设置blend
+    gpu_rect_t rect = {20, 20, 180, 300};
+    blendFilter->setBlendImage(logo_picture, rect, false);
+    
+    picture->addTarget(smoothFilter);
+    smoothFilter->addTarget(whitenFilter);
+    whitenFilter->addTarget(lookupFilter);
+    lookupFilter->addTarget(blendFilter);
+    blendFilter->addTarget(view);
+    picture->processImage();
+    
+    // 获取处理后的图片,从最后一个filter中获取pixelBuffer
+    CVPixelBufferRef pixelbuffer = ((GPUIOSFrameBuffer*)blendFilter->m_outbuffer)->getPixelBuffer();
+    UIImage* image = [self pixelBuffer2Image:pixelbuffer];
+    
+    // 注意和view的相互覆盖
+    [self initView];
 }
--(void)processImage{
-    [videoFrame processCGImage:image.CGImage];
+
+-(void)dealloc{
+    // 注意退出时要销毁申请的C++对象
+    delete picture;
+    delete logo_picture;
+    delete smoothFilter;
+    delete whitenFilter;
+    delete lookupFilter;
+    delete blendFilter;
+    delete view;
 }
 
 - (void)initView{
     // 注意所有view的初始化都要放在VSVideoFrame的初始化之后，否则会被preview覆盖
-    // 视频流预览
-    videoView = [[UIImageView alloc] initWithFrame:self.view.bounds];
-    [videoView setBackgroundColor:[UIColor whiteColor]];
-    [self.view addSubview:videoView];
     
     UIButton* record = [[UIButton alloc]initWithFrame:CGRectMake(10, 20, 60, 40)];
     [record setTitle:@"返回" forState:UIControlStateNormal];
@@ -137,36 +161,35 @@ static bool initViewFlag = true;
     
     [filterScrollView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"myCell"];
 }
-- (void)viewDidLayoutSubviews {
-    //self.view setBounds:CGRectMake(0, 0, self.view, CGFloat height)
-    if (initViewFlag) {
-        [self initView];
-        initViewFlag = false;
-    }
-}
 
 -(void)ratioSwitch{
     ratioIndex = (++ratioIndex)%3;
+    gpu_size_t size = picture->m_image_size;
     switch (ratioIndex) {
         case 0: // 原始尺寸
             [ratioButton setTitle:@"比例" forState:UIControlStateNormal];
-            [videoFrame setPreviewFillMode:GPUFillModePreserveAspectRatioAndFill];
-            [videoFrame setPreviewSize:CGSizeMake(720, 1280)];
+            // 获取图片原始尺寸
+            lookupFilter->setOutputSize(size.width, size.height);
+            lookupFilter->setFillMode(GPUFillModeStretch);
+            picture->processImage();
             break;
         case 1: // 1：1
             [ratioButton setTitle:@"1 : 1" forState:UIControlStateNormal];
-            [videoFrame setPreviewSize:CGSizeMake(720, 720)];
-            [videoFrame setPreviewFillMode:GPUFillModePreserveAspectRatio];
+            lookupFilter->setFillMode(GPUFillModePreserveAspectRatioAndFill);
+            lookupFilter->setOutputSize(720, 720);
+            picture->processImage();
             break;
         case 2: // 3:2
             [ratioButton setTitle:@"3 : 2" forState:UIControlStateNormal];
-            [videoFrame setPreviewSize:CGSizeMake(640, 960)];
-            [videoFrame setPreviewFillMode:GPUFillModePreserveAspectRatio];
+            lookupFilter->setFillMode(GPUFillModePreserveAspectRatioAndFill);
+            lookupFilter->setOutputSize(640, 960);
+            picture->processImage();
             break;
         case 3: // 16:9
             [ratioButton setTitle:@"16: 9" forState:UIControlStateNormal];
-            [videoFrame setPreviewSize:CGSizeMake(540, 960)];
-            [videoFrame setPreviewFillMode:GPUFillModePreserveAspectRatio];
+            lookupFilter->setFillMode(GPUFillModePreserveAspectRatioAndFill);
+            lookupFilter->setOutputSize(540, 960);
+            picture->processImage();
             break;
         default:
             break;
@@ -186,16 +209,13 @@ static bool initViewFlag = true;
 -(void)smoothValueChanged:(id)sender{
     NSString* text = [[NSString alloc] initWithFormat:@"磨皮:%0.2f", [(UISlider*)sender value]];
     [smoothView setText:text];
-    [videoFrame setSmoothStrength:[(UISlider*)sender value]];
+    smoothFilter->setExtraParameter([(UISlider*)sender value]);
+    picture->processImage();
 }
 -(void)whitenValueChanged:(id)sender{
-    [videoFrame setWhitenStrength:[(UISlider*)sender value]];
+    whitenFilter->setStrength([(UISlider*)sender value]);
+    picture->processImage();
 }
-
--(void)setNoneSmooth{
-    [videoFrame setSmoothStrength:0];
-}
-
 
 -(void) viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
@@ -246,10 +266,15 @@ static bool initViewFlag = true;
     UIButton* button = (UIButton*)sender;
     NSInteger tag = button.tag;
     if (tag==0) {
-        [videoFrame closeExtraFilter];
+        // 滤镜失效
+        lookupFilter->stopLookup();
+        picture->processImage();
     }
     else{
-        [videoFrame setExtraFilter:[filterNameArray objectAtIndex:tag]];
+        // 滤镜生效
+        NSString* path = [[NSBundle mainBundle]pathForResource:[filterNameArray objectAtIndex:tag] ofType:@"png"];
+        lookupFilter->setLookupImage(path.UTF8String);
+        picture->processImage();
     }
 }
 
@@ -283,7 +308,7 @@ static bool initViewFlag = true;
     CIContext *context = [CIContext contextWithOptions:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:kCIContextUseSoftwareRenderer]];//CPU渲染
     CGImageRef cgimg = [context createCGImage:coreImage fromRect:[coreImage extent]];
     UIImage* image = [UIImage imageWithCGImage:cgimg];
-    CFRelease(cgimg);
+    //CFRelease(cgimg);
     return image;
 }
 
