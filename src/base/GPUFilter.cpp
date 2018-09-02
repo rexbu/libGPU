@@ -50,6 +50,16 @@ const char* GPUFilter::g_fragment_shader = SHADER_STRING(
   }
 );
 
+const char* GPUFilter::g_bgra_fragment_shader = SHADER_STRING(
+        varying vec2 textureCoordinate;
+        uniform sampler2D inputImageTexture;
+
+        void main()
+        {
+            gl_FragColor = texture2D(inputImageTexture, textureCoordinate).bgra;
+        }
+);
+
 const GLfloat GPUFilter::g_vertices[] = {
     -1.0f, -1.0f,
     1.0f, -1.0f,
@@ -110,6 +120,11 @@ GPUFilter::~GPUFilter()
     }
 }
 #pragma --mark "初始化"
+void GPUFilter::setOutputFormat(gpu_pixel_format_t format){
+    const char *fragment = (format==GPU_BGRA) ? g_bgra_fragment_shader : g_fragment_shader;
+    changeShader(fragment, g_vertex_shader);
+}
+
 void GPUFilter::changeShader(const char* fragment, const char* vertex){
     if (fragment==NULL) {
         return;

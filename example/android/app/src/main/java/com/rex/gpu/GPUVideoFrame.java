@@ -219,9 +219,9 @@ public class GPUVideoFrame extends GPU implements SurfaceTexture.OnFrameAvailabl
     /**
      * 设置输出尺寸及输出格式
      */
-    protected int outputWidth = 0;
-    protected int outputHeight = 0 ;
-    protected int outputFormat = GPU_UNKNOWN;
+    public int outputWidth = 0;
+    public int outputHeight = 0 ;
+    public int outputFormat = GPU_UNKNOWN;
     public void setOutputSize(int width, int height){
         outputWidth = width;
         outputHeight = height;

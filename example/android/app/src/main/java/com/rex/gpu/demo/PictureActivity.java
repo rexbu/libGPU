@@ -147,7 +147,7 @@ public class PictureActivity extends Activity implements SurfaceHolder.Callback{
                     // 每次操作都要处理
                     videoFrame.processPicture(pic);
                     videoFrame.getBytes(picBytes);
-                    imageView.setImageBitmap(yuv420p2RGBABitmap(picBytes, 360, 640));
+                    imageView.setImageBitmap(yuv420p2RGBABitmap(picBytes, videoFrame.outputWidth, videoFrame.outputHeight));
                 }
             }
 
