@@ -96,12 +96,26 @@
 -(void)setVideoBlend:(unsigned char*)bytes width:(int)w height:(int)h rect:(CGRect)rect mirror:(BOOL)mirror;
 -(void)removeVideoBlend;
 
+// 滤镜：曝光、锐化、对比度等滤镜
+-(void)setColorFilter:(int)filter strength:(float)strength;
 // 添加边框
 -(void)setBorder:(int)w height:(int)h color:(UIColor*)color;
 @end
 
 // 实时滤镜
-#define VS_GAUSSIAN_BLUR_FILTER     @"GaussianBlur"      // 高斯模糊
-#define VS_MEDIAN_BLUR_FILTER       @"MedianBlur"        // 中值滤波
-#define VS_FROSTED_BLUR_FILTER      @"FrostedBlur"       // iOS7毛玻璃
-#define VS_SATURATION_FILTER        @"Saturation"        // 饱和度
+#define GPU_GAUSSIAN_BLUR_FILTER     @"GaussianBlur"      // 高斯模糊
+#define GPU_MEDIAN_BLUR_FILTER       @"MedianBlur"        // 中值滤波
+#define GPU_FROSTED_BLUR_FILTER      @"FrostedBlur"       // iOS7毛玻璃
+#define GPU_SATURATION_FILTER        @"Saturation"        // 饱和度
+
+#define GPU_COLOR_CONTRAST_FILTER   0       // 对比度
+#define GPU_COLOR_GAMMA_FILTER      1       // 曝光度
+#define GPU_COLOR_SATURATION_FILTER 2       // 饱和度
+#define GPU_COLOR_FADE_FILTER       3       // 褪色
+#define GPU_COLOR_VIGNETTE_FILTER   4       // 模糊
+#define GPU_COLOR_SHARPNESS_FILTER  5       // 锐化
+#define GPU_COLOR_TEMPERATURE_FILTER 6      // 色温
+#define GPU_COLOR_TINT_FILTER       7       // 色调
+#define GPU_COLOR_HIGHLIGHTS_FILTER 8       // 高光
+#define GPU_COLOR_SHADOWS_FILTER    9       // 阴影
+//#define GPU_COLOR_CONTRAST_FILTER   @"contrast"         // 暗角

@@ -41,6 +41,7 @@ public:
 	virtual void setOutputSize(uint32_t width, uint32_t height);
     
     // 修改shader
+    virtual void setOutputFormat(gpu_pixel_format_t format);
     virtual void changeShader(const char* fragment, const char* vertex = NULL);
     virtual void setExtraParameter(float p){}
     
@@ -74,6 +75,7 @@ public:
     static const char* g_vertex_shaders[];
     static const char* g_vertex_shader;
     static const char* g_fragment_shader;
+    static const char* g_bgra_fragment_shader;
     static const char* g_vertext30_shader;
     static const char* g_fragment30_shader;
     static const GLfloat g_vertices[];

@@ -31,6 +31,7 @@
     GPUPicture*         logo_picture;
     GPUSmoothFilter*    smoothFilter;
     GPUWhiteningFilter* whitenFilter;
+    GPUColorFilter*     colorFilter;
     GPULookupFilter*    lookupFilter;
     GPUFilter*          extraFilter;
     GPUBlend2Filter*    blendFilter;
@@ -64,6 +65,7 @@
     smoothFilter->setExtraParameter(0.9);
     whitenFilter = new GPUWhiteningFilter();
     whitenFilter->setStrength(0.9);
+    colorFilter = new GPUColorFilter();
     blendFilter = new GPUBlend2Filter();
     // 用于设置滤镜
     lookupFilter = new GPULookupFilter();
@@ -80,11 +82,15 @@
     picture->addTarget(smoothFilter);
     smoothFilter->addTarget(whitenFilter);
     whitenFilter->addTarget(lookupFilter);
-    lookupFilter->addTarget(blendFilter);
+    lookupFilter->addTarget(colorFilter);
+    colorFilter->addTarget(blendFilter);
     blendFilter->addTarget(view);
+    // 颜色滤镜
+    //colorFilter->setContrast(1);
     picture->processImage();
     
     // 获取处理后的图片,从最后一个filter中获取pixelBuffer
+    glFinish();
     CVPixelBufferRef pixelbuffer = ((GPUIOSFrameBuffer*)blendFilter->m_outbuffer)->getPixelBuffer();
     UIImage* image = [self pixelBuffer2Image:pixelbuffer];
     

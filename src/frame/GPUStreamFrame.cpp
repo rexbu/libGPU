@@ -44,8 +44,9 @@ m_output_group("OutputGroup")
     setInputFormat(GPU_RGBA);
     m_smooth_filter.addTarget(&m_whiten_filter);
     m_whiten_filter.addTarget(&m_extra_group);
-    m_extra_group.addTarget(&m_preview_blend_filter);
-    m_extra_group.addTarget(&m_video_blend_filter);
+    m_extra_group.addTarget(&m_color_filter);
+    m_color_filter.addTarget(&m_preview_blend_filter);
+    m_color_filter.addTarget(&m_video_blend_filter);
     m_video_blend_filter.addTarget(&m_output_group);
 
     m_video_blend_filter.disable();

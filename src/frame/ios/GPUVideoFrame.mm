@@ -742,7 +742,37 @@
     [color getRed:&r green:&g blue:&b alpha:&a];
     streamFrame->setBorder(w, h, r, g, b);
 }
-
+-(void)setColorFilter:(int)filter strength:(float)strength{
+    switch(filter){
+        case GPU_COLOR_CONTRAST_FILTER:
+            streamFrame->m_color_filter.setContrast(strength);
+            break;
+        case GPU_COLOR_GAMMA_FILTER:
+            streamFrame->m_color_filter.setGamma(strength);
+            break;
+        case GPU_COLOR_SATURATION_FILTER:
+            streamFrame->m_color_filter.setSaturation(strength);
+            break;
+        case GPU_COLOR_FADE_FILTER:
+            streamFrame->m_color_filter.setFade(strength);
+            break;
+        case GPU_COLOR_VIGNETTE_FILTER:
+            //streamFrame->m_color_filter.setVignette(strength);
+            break;
+        case GPU_COLOR_SHARPNESS_FILTER:
+            streamFrame->m_color_filter.setSharpness(strength);
+            break;
+        case GPU_COLOR_TINT_FILTER:
+            streamFrame->m_color_filter.setTint(strength);
+            break;
+        case GPU_COLOR_HIGHLIGHTS_FILTER:
+            streamFrame->m_color_filter.setHighlights(strength);
+            break;
+        case GPU_COLOR_SHADOWS_FILTER:
+            streamFrame->m_color_filter.setShadows(strength);
+            break;
+    }
+}
 #pragma --mark "预览模式"
 -(void)setPreviewFillMode:(gpu_fill_mode_t)previewFillMode{
     _previewFillMode = previewFillMode;
