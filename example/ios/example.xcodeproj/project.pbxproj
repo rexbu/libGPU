@@ -30,6 +30,7 @@
 		C8A0ADF01ECFE5A10043ADE9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C8A0ADEE1ECFE5A10043ADE9 /* LaunchScreen.storyboard */; };
 		C8DACD2E1ED4684A001F607A /* facepoints.json in Resources */ = {isa = PBXBuildFile; fileRef = C8DACD2B1ED4684A001F607A /* facepoints.json */; };
 		CD0661301F21CC5B00098365 /* liblibGPU.a in Frameworks */ = {isa = PBXBuildFile; fileRef = CD06612D1F21CC4C00098365 /* liblibGPU.a */; };
+		CD317001213EEC4600E85EDD /* PictureViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = CD317000213EEC4600E85EDD /* PictureViewController.mm */; };
 		CD32A7BF2107766D00A0C94C /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CD32A7BE2107766D00A0C94C /* HomeViewController.m */; };
 		CD3BB79621292CA900B87F67 /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = CD3BB79521292CA900B87F67 /* logo.png */; };
 		CD5E8B3D2134549A00D62ECF /* ImageViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = CD5E8B3C2134549A00D62ECF /* ImageViewController.mm */; };
@@ -102,6 +103,8 @@
 		C8A0ADF11ECFE5A10043ADE9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C8DACD2B1ED4684A001F607A /* facepoints.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = facepoints.json; sourceTree = "<group>"; };
 		CD0661281F21CC4C00098365 /* libGPU.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = libGPU.xcodeproj; path = ../../src/libGPU.xcodeproj; sourceTree = "<group>"; };
+		CD316FFF213EEC4600E85EDD /* PictureViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PictureViewController.h; sourceTree = "<group>"; };
+		CD317000213EEC4600E85EDD /* PictureViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = PictureViewController.mm; sourceTree = "<group>"; };
 		CD32A7BD2107766D00A0C94C /* HomeViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
 		CD32A7BE2107766D00A0C94C /* HomeViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
 		CD3BB79521292CA900B87F67 /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo.png; sourceTree = "<group>"; };
@@ -217,6 +220,8 @@
 				C8A0ADE91ECFE5A10043ADE9 /* Main.storyboard */,
 				C8A0ADE01ECFE5A10043ADE9 /* Supporting Files */,
 				CD5E8B3E2134559E00D62ECF /* suyan.jpeg */,
+				CD316FFF213EEC4600E85EDD /* PictureViewController.h */,
+				CD317000213EEC4600E85EDD /* PictureViewController.mm */,
 			);
 			path = example;
 			sourceTree = "<group>";
@@ -379,6 +384,7 @@
 				CD5E8B3D2134549A00D62ECF /* ImageViewController.mm in Sources */,
 				C8A0ADE81ECFE5A10043ADE9 /* ViewController.mm in Sources */,
 				C8A0ADE51ECFE5A10043ADE9 /* AppDelegate.m in Sources */,
+				CD317001213EEC4600E85EDD /* PictureViewController.mm in Sources */,
 				01DD12D52129C7DC00FE2DCC /* GPUVideoCamera.m in Sources */,
 				C8A0ADE21ECFE5A10043ADE9 /* main.m in Sources */,
 				CD32A7BF2107766D00A0C94C /* HomeViewController.m in Sources */,

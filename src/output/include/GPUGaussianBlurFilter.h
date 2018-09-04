@@ -25,6 +25,8 @@ protected:
     void setUnBlurRegion();
     
     char        m_fragment[10240];
+    int         m_pixel_radius;
+    int         m_pixel_sigma;
     
     GPUFilter   m_x_filter;
     GPUFilter   m_y_filter;

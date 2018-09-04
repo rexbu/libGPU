@@ -9,6 +9,7 @@
 #import "HomeViewController.h"
 #import "ViewController.h"
 #import "ImageViewController.h"
+#import "PictureViewController.h"
 
 @implementation HomeViewController
 
@@ -34,6 +35,12 @@
     [picButton setBackgroundColor:[UIColor blueColor]];
     [picButton addTarget:self action:@selector(enterImage) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:picButton];
+    
+    UIButton* pictureButton  = [[UIButton alloc] initWithFrame:CGRectMake(size.width/2-120, size.height/2+50, 240, 60)];
+    [pictureButton setTitle:@"图片Demo(VideoFrame)" forState:UIControlStateNormal];
+    [pictureButton setBackgroundColor:[UIColor blueColor]];
+    [pictureButton addTarget:self action:@selector(enterPicture) forControlEvents:UIControlEventTouchDown];
+    [self.view addSubview:pictureButton];
 }
 
 -(void)enter{
@@ -42,6 +49,10 @@
 }
 -(void)enterImage{
     ViewController* view = [[ImageViewController alloc] init];
+    [self presentViewController:view animated:YES completion:nil];
+}
+-(void)enterPicture{
+    ViewController* view = [[PictureViewController alloc] init];
     [self presentViewController:view animated:YES completion:nil];
 }
 @end
