@@ -60,9 +60,18 @@ void GPUGaussianBlurFilter::setExtraParameter(float sigma){
 
     m_x_filter.changeShader(generateShader(calculatedSampleRadius, blurRadiusInPixels));
     m_y_filter.changeShader(generateShader(calculatedSampleRadius, blurRadiusInPixels));
+
+    m_x_filter.setFloat("xStep", 1.0/(m_frame_width-1));
+    m_x_filter.setFloat("yStep", 0.0);
+    m_y_filter.setFloat("xStep", 0.0);
+    m_y_filter.setFloat("yStep", 1.0/(m_frame_height-1));
+    setUnBlurRegion();
 }
 
 char* GPUGaussianBlurFilter::generateShader(uint32_t radius, float sigma){
+    m_pixel_radius = radius;
+    m_pixel_sigma = sigma;
+
     char circalValue[10240] = {0};
     float* weight = (float*)malloc(sizeof(float)*(radius+1));
     float sumWeight = 0;

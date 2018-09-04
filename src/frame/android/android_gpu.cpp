@@ -182,6 +182,7 @@ void processPicture(JNIEnv * env, jobject jo, jstring jpath){
 
 	stream->m_input->setOutputRotation(stream->getOutputRotation());
 	pic.processImage();
+    glFinish();
 	pic.removeAllTargets();
 	env->ReleaseStringUTFChars(jpath, path);
 }
@@ -315,6 +316,8 @@ void setColorFilter(JNIEnv * env, jobject jo, jint filter, jfloat strength){
 		case GPU_COLOR_VIGNETTE_FILTER:
 			GPUStreamFrame::shareInstance()->m_color_filter.setVignette(strength);
 			break;
+        default:
+            err_log("unkown color filter: %d", filter);
 	}
 }
 

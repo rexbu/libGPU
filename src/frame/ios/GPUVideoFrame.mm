@@ -762,6 +762,9 @@
         case GPU_COLOR_SHARPNESS_FILTER:
             streamFrame->m_color_filter.setSharpness(strength);
             break;
+        case GPU_COLOR_TEMPERATURE_FILTER:
+            streamFrame->m_color_filter.setTemperature(strength);
+            break;
         case GPU_COLOR_TINT_FILTER:
             streamFrame->m_color_filter.setTint(strength);
             break;
@@ -774,6 +777,8 @@
         case GPU_COLOR_VIGNETTE_FILTER:
             streamFrame->m_color_filter.setVignette(strength);
             break;
+        default:
+            err_log("unkown color filter: %d", filter);
     }
 }
 
