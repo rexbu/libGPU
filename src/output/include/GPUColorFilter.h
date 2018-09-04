@@ -10,6 +10,7 @@
 #define	__GPUCONTRASTFILTER_H_
 
 #include "GPUGroupFilter.h"
+#include "GPUGaussianBlurFilter.h"
 
 // 处理曝光、饱和、褪色、对比度
 class GPUColorShotFilter: public GPUFilter{
@@ -40,8 +41,10 @@ public:
     // 褪色 [0, 1]
     void setFade(float p);
     
-    // 模糊 [0,1]
-    void setVignette(float x, float y, float intensity);
+    // 设置模糊 [0, 1]
+    void setBlur(float p);
+    // 设置模糊范围
+    void setUnBlurRegion(int x, int y, int radius);
     // 锐化 [0,1]
     void setSharpness(float p);
     // 色温 [-1,1]
@@ -52,10 +55,12 @@ public:
     void setHighlights(float p);
     // 阴影 [0,1]
     void setShadows(float p);
-    // 暗角
+    // 暗角 [0,1]
+    void setVignette(float intensity);
 protected:
     GPUFilter       m_shot_filter;      // 处理曝光、饱和、褪色、对比度
     GPUFilter       m_adjust_filter;    // 处理模糊、锐化、色温、色调、高光、阴影、暗角
+    GPUGaussianBlurFilter m_blur_filter;
 };
 
 #endif

@@ -9,23 +9,29 @@
 #ifndef	__GPUGAUSSIANBLURFILTER_H_
 #define	__GPUGAUSSIANBLURFILTER_H_
 
-#include "GPUTwoPassFilter.h"
+#include "GPUGroupFilter.h"
 #include "GPUMedianFilter.h"
 
-class GPUGaussianBlurFilter: public GPUTwoPassFilter{
+class GPUGaussianBlurFilter: public GPUGroupFilter{
 public:
-    GPUGaussianBlurFilter(uint32_t radius=4, float sigma=2.0);
+    GPUGaussianBlurFilter(uint32_t radius=16, float sigma=2.0);
     
-    virtual void setExtraParameter(float pixel);
+    virtual void setExtraParameter(float sigma);
     virtual void setInputFrameBuffer(GPUFrameBuffer *buffer, int location = 0);
     
+    void setUnBlurRegion(int x, int y, int radius);
 protected:
     char* generateShader(uint32_t radius, float sigma);
+    void setUnBlurRegion();
     
     char        m_fragment[10240];
     
-    uint32_t 	m_frame_width;
-    uint32_t	m_frame_height;
+    GPUFilter   m_x_filter;
+    GPUFilter   m_y_filter;
+    
+    int         m_unblur_x;
+    int         m_unblur_y;
+    int         m_unblur_radius;
 };
 
 #endif

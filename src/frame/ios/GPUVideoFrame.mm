@@ -756,8 +756,8 @@
         case GPU_COLOR_FADE_FILTER:
             streamFrame->m_color_filter.setFade(strength);
             break;
-        case GPU_COLOR_VIGNETTE_FILTER:
-            //streamFrame->m_color_filter.setVignette(strength);
+        case GPU_COLOR_BLUR_FILTER:
+            streamFrame->m_color_filter.setBlur(strength);
             break;
         case GPU_COLOR_SHARPNESS_FILTER:
             streamFrame->m_color_filter.setSharpness(strength);
@@ -771,8 +771,16 @@
         case GPU_COLOR_SHADOWS_FILTER:
             streamFrame->m_color_filter.setShadows(strength);
             break;
+        case GPU_COLOR_VIGNETTE_FILTER:
+            streamFrame->m_color_filter.setVignette(strength);
+            break;
     }
 }
+
+-(void)setUnBlurRegion:(CGPoint)center radius:(int)radius{
+    streamFrame->m_color_filter.setUnBlurRegion(center.x, center.y, radius);
+}
+
 #pragma --mark "预览模式"
 -(void)setPreviewFillMode:(gpu_fill_mode_t)previewFillMode{
     _previewFillMode = previewFillMode;

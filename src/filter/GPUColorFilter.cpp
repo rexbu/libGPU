@@ -137,7 +137,7 @@ uniform lowp float tint;
 uniform lowp float shadows;
 // 高光
 uniform lowp float highlights;
-// 模糊
+// 暗角
 uniform lowp float vignetteIntensity;
 
 uniform lowp int spareMargin;
@@ -226,12 +226,20 @@ GPUColorFilter::GPUColorFilter():
 m_shot_filter(g_contrast_fragemtn_shader),
 m_adjust_filter(g_adjust_vertex_shader, g_adjust_fragment_shader){
     m_input = &m_shot_filter;
-    m_output = &m_shot_filter;
-    //m_shot_filter.addTarget(&m_adjust_filter);
+    m_output = &m_blur_filter;
+    m_shot_filter.addTarget(&m_adjust_filter);
+    m_adjust_filter.addTarget(&m_blur_filter);
     setContrast(0);
     setGamma(0);
     setSaturation(0);
     setFade(0);
+    setVignette(0);
+    m_blur_filter.disable();
+    //setShadows(1);
+    //setSharpness(0.5);
+    //setTemperature(1);
+    //m_blur_filter.setUnBlurRegion(300, 500, 300);
+    //m_blur_filter.setExtraParameter(32);
 }
 
 #pragma --mark "对比、曝光、饱和、褪色"
@@ -253,27 +261,49 @@ void GPUColorFilter::setFade(float p){
 }
 
 #pragma --mark "模糊、锐化、色温、色调、高光、阴影、暗角"
-// 模糊 [0,1]
-void GPUColorFilter::setVignette(float x, float y, float intensity){
-    float center[2] = {x, y};
-    m_adjust_filter.setFloat("vignetteCenter", center, 2);
-    m_adjust_filter.setFloat("vignetteIntensity", intensity);
+void GPUColorFilter::setBlur(float p){
+    if (p==0) {
+        m_blur_filter.disable();
+    }
+    else{
+        m_blur_filter.enable();
+        m_blur_filter.setExtraParameter(p*32);
+    }
 }
+// 设置模糊范围
+void GPUColorFilter::setUnBlurRegion(int x, int y, int radius){
+    m_blur_filter.setUnBlurRegion(x, y, radius);
+}
+// 暗角 [0,1]
+void GPUColorFilter::setVignette(float intensity){
+    float center[2] = {0.5, 0.5};
+    m_adjust_filter.setFloat("vignetteCenter", center, 2);
+    m_adjust_filter.setFloat("vignetteIntensity", intensity*1.8);
+}
+
 // 锐化 [0,1]
 void GPUColorFilter::setSharpness(float p){
-    m_adjust_filter.setFloat("sharpness", p);
+    m_adjust_filter.setFloat("sharpness", p/3);
+    if (p > 0) {
+        m_adjust_filter.setFloat("imageWidthFactor", 0.005);
+        m_adjust_filter.setFloat("imageHeightFactor", 0.005);
+    }
+    else{
+        m_adjust_filter.setFloat("imageWidthFactor", 0.0);
+        m_adjust_filter.setFloat("imageHeightFactor", 0.0);
+    }
 }
 // 色温 [-1,1]
 void GPUColorFilter::setTemperature(float p){
-    m_adjust_filter.setFloat("temperature", p);
+    m_adjust_filter.setFloat("temperature", p/3);
 }
 // 色调 [-1,1]
 void GPUColorFilter::setTint(float p){
-    m_adjust_filter.setFloat("tint", p);
+    m_adjust_filter.setFloat("tint", p/2);
 }
 // 高光 [0,1]
 void GPUColorFilter::setHighlights(float p){
-    m_adjust_filter.setFloat("highlights", p);
+    m_adjust_filter.setFloat("highlights", p*2);
 }
 // 阴影 [0,1]
 void GPUColorFilter::setShadows(float p){

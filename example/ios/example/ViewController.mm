@@ -62,7 +62,8 @@ BOOL canRotateToAllOrientations;
     [videoCamera setOutputImageOrientation:UIInterfaceOrientationPortrait];
     [videoCamera setPreviewBlend:logo rect:CGRectMake(20, 20, 160, 280) mirror:FALSE];
     // 颜色滤镜
-    // [videoCamera setColorFilter:GPU_COLOR_CONTRAST_FILTER strength:1];
+    //[videoCamera setColorFilter:GPU_COLOR_BLUR_FILTER strength:1];
+    //[videoCamera setUnBlurRegion:CGPointMake(300, 400) radius:300];
     // 设置边框
     [videoCamera setBorder:40 height:40 color:[UIColor redColor]];
     __block typeof(self) parent = self;
