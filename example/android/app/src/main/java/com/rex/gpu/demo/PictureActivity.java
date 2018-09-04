@@ -81,6 +81,7 @@ public class PictureActivity extends Activity implements SurfaceHolder.Callback{
 
         videoFrame.setSmoothStrength(0.9f);
         videoFrame.setWhitenStrength(0.9f);
+        videoFrame.setColorFilter(GPU.GPU_COLOR_BLUR_FILTER, 1);
 
         // 预览设置logo，使用路径方式
         videoFrame.setPreviewBlend("/data/data/"+ this.getPackageName() +"/logo.png", 20, 40, 160, 240, false);
@@ -135,9 +136,12 @@ public class PictureActivity extends Activity implements SurfaceHolder.Callback{
                 if (videoFrame!=null){
                     if (i==0){
                         videoFrame.closeExtraFilter();
+                        videoFrame.clearColorFilter();
                     }
                     else{
                         String filter = getResources().getStringArray(R.array.filter_name)[i];
+                        //videoFrame.clearColorFilter();
+                        //videoFrame.setColorFilter(i-1, 1);
 
                         videoFrame.setExtraFilter("/data/data/"+getBaseContext().getPackageName()+"/"+filter+".png");
                         TextView filter_view = findViewById(R.id.filterText);

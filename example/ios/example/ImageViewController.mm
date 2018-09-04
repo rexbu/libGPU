@@ -54,7 +54,8 @@
     // Do any additional setup after loading the view, typically from a nib.
     
     bs_log_init("stdout");
-    
+    // 很重要，ios中需要framebuffer初始化为GPUIOSBufferCache
+    GPUIOSBufferCache::shareInstance();
     // 两种初始化GPUPicture的方式
     NSString* path = [[NSBundle mainBundle] pathForResource:@"suyan" ofType:@"jpeg"];
     picture = new GPUPicture(path.UTF8String);
@@ -86,7 +87,7 @@
     colorFilter->addTarget(blendFilter);
     blendFilter->addTarget(view);
     // 颜色滤镜
-    //colorFilter->setContrast(1);
+    // colorFilter->setBlur(1);
     picture->processImage();
     
     // 获取处理后的图片,从最后一个filter中获取pixelBuffer
@@ -314,7 +315,7 @@
     CIContext *context = [CIContext contextWithOptions:[NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES] forKey:kCIContextUseSoftwareRenderer]];//CPU渲染
     CGImageRef cgimg = [context createCGImage:coreImage fromRect:[coreImage extent]];
     UIImage* image = [UIImage imageWithCGImage:cgimg];
-    //CFRelease(cgimg);
+    CFRelease(cgimg);
     return image;
 }
 

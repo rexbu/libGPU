@@ -38,6 +38,8 @@ public class GPU {
         NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setExtraFilter", "(Ljava/lang/String;)V");
         NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "closeExtraFilter", "()V");
         NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setExtraParameter", "(F)V");
+        NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setColorFilter", "(IF)V");
+        NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setUnBlurRegion", "(III)V");
 
         NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setOutputView", "()V");
         NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "removeOutputView", "()V");
@@ -91,6 +93,16 @@ public class GPU {
     public native void setExtraFilter(String image);
     public native void closeExtraFilter();
     public native void setExtraParameter(float para);
+
+    // 颜色滤镜
+    public native void setColorFilter(int filter, float strength);
+    // 设置不模糊的区域
+    public native void setUnBlurRegion(int x, int y, int radius);
+    public void clearColorFilter(){
+        for (int i=0; i<=GPU_COLOR_VIGNETTE_FILTER; i++){
+            setColorFilter(i, 0);
+        }
+    }
     /// 预览
     public native void setOutputView();
     public native void removeOutputView();
@@ -150,4 +162,16 @@ public class GPU {
             makeCurrent(mEGLContext);
         }
     }
+
+    public final static int GPU_COLOR_CONTRAST_FILTER = 0;       // 对比度
+    public final static int GPU_COLOR_GAMMA_FILTER = 1;       // 曝光度
+    public final static int GPU_COLOR_SATURATION_FILTER = 2;       // 饱和度
+    public final static int GPU_COLOR_FADE_FILTER = 3;       // 褪色
+    public final static int GPU_COLOR_BLUR_FILTER = 4;       // 模糊
+    public final static int GPU_COLOR_SHARPNESS_FILTER = 5;       // 锐化
+    public final static int GPU_COLOR_TEMPERATURE_FILTER = 6;      // 色温
+    public final static int GPU_COLOR_TINT_FILTER = 7;       // 色调
+    public final static int GPU_COLOR_HIGHLIGHTS_FILTER=8;       // 高光
+    public final static int GPU_COLOR_SHADOWS_FILTER = 9;       // 阴影
+    public final static int GPU_COLOR_VIGNETTE_FILTER = 10;      // 暗角
 }

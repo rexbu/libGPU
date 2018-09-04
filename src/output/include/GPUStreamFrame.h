@@ -11,6 +11,18 @@
 
 #include "GPU.h"
 
+#define GPU_COLOR_CONTRAST_FILTER   0       // 对比度
+#define GPU_COLOR_GAMMA_FILTER      1       // 曝光度
+#define GPU_COLOR_SATURATION_FILTER 2       // 饱和度
+#define GPU_COLOR_FADE_FILTER       3       // 褪色
+#define GPU_COLOR_BLUR_FILTER       4       // 模糊
+#define GPU_COLOR_SHARPNESS_FILTER  5       // 锐化
+#define GPU_COLOR_TEMPERATURE_FILTER 6      // 色温
+#define GPU_COLOR_TINT_FILTER       7       // 色调
+#define GPU_COLOR_HIGHLIGHTS_FILTER 8       // 高光
+#define GPU_COLOR_SHADOWS_FILTER    9       // 阴影
+#define GPU_COLOR_VIGNETTE_FILTER   10      // 暗角
+
 class GPUStreamFrame: public GPUGroupFilter{
 public:
     static GPUStreamFrame*  shareInstance();
