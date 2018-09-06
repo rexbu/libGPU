@@ -171,8 +171,9 @@ void GPUFilter::initParams(){
     // 初始化顶点数据
     m_vertices.resize(8);
     memcpy(&m_vertices[0], g_vertices, sizeof(GLfloat)*8);
-    
-    setFillMode(GPUFillModeStretch);
+
+    m_fill_mode = GPUFillModeStretch;
+    memcpy(&m_vertices[0], g_vertices, sizeof(GLfloat)*8);
 }
 void GPUFilter::initShader(){
     if (m_program==NULL)

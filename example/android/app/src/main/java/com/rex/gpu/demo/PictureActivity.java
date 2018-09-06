@@ -89,7 +89,7 @@ public class PictureActivity extends Activity implements SurfaceHolder.Callback{
         videoFrame.setPreviewBlend("/data/data/"+ this.getPackageName() +"/logo.png", 20, 40, 160, 240, false);
         // 视频流设置logo，使用bitmap方式
         Bitmap logo = FileUtil.readImage("/data/data/"+ this.getPackageName() +"/logo.png");
-        videoFrame.setVideoBlendBitmap(logo, 120, 140, 160, 240, false);
+        videoFrame.setVideoBlendBitmap(logo, 20, 40, 160, 240, false);
         videoFrame.start();
 
         pic = "/data/data/"+this.getPackageName()+"/suyan.jpeg";
@@ -167,8 +167,9 @@ public class PictureActivity extends Activity implements SurfaceHolder.Callback{
                 if (videoFrame!=null){
                     switch (i){
                         case 0:
-                            videoFrame.setViewFillMode(GPU.GPU_FILL_RATIOANDFILL);
-                            videoFrame.setViewOutputSize(720, 1280);
+                            //videoFrame.setViewFillMode(GPU.GPU_FILL_RATIOANDFILL);
+                            videoFrame.setViewFillMode(GPU.GPU_FILL_RATIO);
+                            videoFrame.setFrameSize(720, 1280);
                             videoFrame.setOutputSize(720,1280);
                             videoFrame.processPicture(pic);
                             videoFrame.getBytes(picBytes);
@@ -176,7 +177,7 @@ public class PictureActivity extends Activity implements SurfaceHolder.Callback{
                             break;
                         case 1: // 1:1
                             videoFrame.setViewFillMode(GPU.GPU_FILL_RATIO);
-                            videoFrame.setViewOutputSize(640, 640);
+                            videoFrame.setFrameSize(640, 640);
                             videoFrame.setOutputSize(640,640);
                             videoFrame.processPicture(pic);
                             videoFrame.getBytes(picBytes);
@@ -184,7 +185,7 @@ public class PictureActivity extends Activity implements SurfaceHolder.Callback{
                             break;
                         case 2: // 3:2
                             videoFrame.setViewFillMode(GPU.GPU_FILL_RATIO);
-                            videoFrame.setViewOutputSize(640, 720);
+                            videoFrame.setFrameSize(640, 720);
                             videoFrame.setOutputSize(640,720);
                             videoFrame.processPicture(pic);
                             videoFrame.getBytes(picBytes);
@@ -192,7 +193,7 @@ public class PictureActivity extends Activity implements SurfaceHolder.Callback{
                             break;
                         case 3: // 16:9
                             videoFrame.setViewFillMode(GPU.GPU_FILL_RATIO);
-                            videoFrame.setViewOutputSize(540, 960);
+                            videoFrame.setFrameSize(540, 960);
                             videoFrame.setOutputSize(540,960);
                             videoFrame.processPicture(pic);
                             videoFrame.getBytes(picBytes);
@@ -263,7 +264,26 @@ public class PictureActivity extends Activity implements SurfaceHolder.Callback{
             }
         });
 
+        final Button blankButton = findViewById(R.id.blankButton);
+        blankButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(blankButton.getText().toString().equals("留白")){
+                    blankButton.setText("填充");
+                    videoFrame.setBlank(0, 0, 0, 0);
+
+                }
+                else{
+                    blankButton.setText("留白");
+                    videoFrame.setBlank(50, 255, 0, 0);
+                }
+                videoFrame.processPicture(pic);
+                videoFrame.getBytes(picBytes);
+                imageView.setImageBitmap(yuv420p2RGBABitmap(picBytes, videoFrame.outputWidth, videoFrame.outputHeight));
+            }
+        });
     }
+
     public Bitmap yuv420p2RGBABitmap(byte[] data, int width, int height) {
         int frameSize = width * height;
         int[] rgba = new int[frameSize];

@@ -48,7 +48,7 @@ void setUnBlurRegion(JNIEnv * env, jobject jo, jint x, jint y, jint radius);
 void setOutputView(JNIEnv * env, jobject jo);
 void removeOutputView(JNIEnv * env, jobject jo);
 void setViewRotation(JNIEnv * env, jobject jo, jint rotation);
-void setViewOutputSize(JNIEnv* env, jobject jo, jint width, jint height);
+void setFrameSize(JNIEnv* env, jobject jo, jint width, jint height);
 void setViewFillMode(JNIEnv* env, jobject jo, jint mode);
 
 // blend用于logo
@@ -57,6 +57,7 @@ void setPreviewBlendBitmap(JNIEnv * env, jobject jo, jobject bitmap, jfloat x, j
 void setVideoBlend(JNIEnv * env, jobject jo, jstring jpath, jfloat x, jfloat y, jfloat w, jfloat h, jboolean mirror);
 void setVideoBlendBitmap(JNIEnv * env, jobject jo, jobject bitmap, jfloat x, jfloat y, jfloat w, jfloat h, jboolean mirror);
 
+void setBlank(JNIEnv* env, jobject jo, jint border, jint r, jint g, jint b);
 #ifdef __cplusplus
 }
 #endif
@@ -335,8 +336,9 @@ void setViewRotation(JNIEnv * env, jobject jo, jint rotation){
 	}
 }
 
-void setViewOutputSize(JNIEnv* env, jobject jo, jint width, jint height){
-	GPUStreamFrame::shareInstance()->m_preview_blend_filter.setOutputSize(width, height);
+void setFrameSize(JNIEnv* env, jobject jo, jint width, jint height){
+	//GPUStreamFrame::shareInstance()->m_blank_filter.setFillMode(GPUFillModePreserveAspectRatioAndFill);
+	GPUStreamFrame::shareInstance()->setStreamFrameSize(width, height);
 }
 
 void setViewFillMode(JNIEnv* env, jobject jo, jint mode){
@@ -412,6 +414,10 @@ void setVideoBlendBitmap(JNIEnv * env, jobject jo, jobject bitmap, jfloat x, jfl
     rect.size.height = h;
     GPUPicture* pic = new GPUPicture(bitmap);
     stream->setVideoBlend(pic, rect, mirror);
+}
+
+void setBlank(JNIEnv* env, jobject jo, jint border, jint r, jint g, jint b){
+	GPUStreamFrame::shareInstance()->setBlank(border, r, g, b);
 }
 
 jint JNI_OnLoad(JavaVM *vm, void *reserved) {

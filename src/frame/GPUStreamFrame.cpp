@@ -45,8 +45,9 @@ m_output_group("OutputGroup")
     m_smooth_filter.addTarget(&m_whiten_filter);
     m_whiten_filter.addTarget(&m_extra_group);
     m_extra_group.addTarget(&m_color_filter);
-    m_color_filter.addTarget(&m_preview_blend_filter);
-    m_color_filter.addTarget(&m_video_blend_filter);
+    m_color_filter.addTarget(&m_blank_filter);
+    m_blank_filter.addTarget(&m_preview_blend_filter);
+    m_blank_filter.addTarget(&m_video_blend_filter);
     m_video_blend_filter.addTarget(&m_output_group);
 
     m_video_blend_filter.disable();
@@ -54,15 +55,14 @@ m_output_group("OutputGroup")
     m_output = &m_output_group;
     
     // 输出
-    m_zoom_filter = new GPUZoomFilter();
-    m_zoom_filter->m_filter_name = "zoom_filter";
+    m_zoom_filter.m_filter_name = "zoom_filter";
     m_yuv_filter = new GPURGBToYUVFilter();
     m_yuv420_filter = new GPUToYUV420Filter();
     m_nv21_filter = new GPUToNV21Filter();
     m_nv12_filter = new GPUToNV12Filter();
     m_raw_output = new GPURawOutput();
-    m_output_group.setFirstFilter(m_zoom_filter);
-    m_output_group.setLastFilter(m_zoom_filter);
+    m_output_group.setFirstFilter(&m_zoom_filter);
+    m_output_group.setLastFilter(&m_zoom_filter);
     m_output_group.disable();
     
     m_extra_filter = NULL;
@@ -204,36 +204,36 @@ void GPUStreamFrame::setOutputFormat(gpu_pixel_format_t format){
     }
     
     m_output_format = format;
-    m_zoom_filter->removeAllTargets();
+    m_zoom_filter.removeAllTargets();
     m_yuv_filter->removeAllTargets();
     m_output_group.enable();
     
     switch(m_output_format){
         case GPU_BGRA:
-            m_zoom_filter->setOutputFormat(GPU_BGRA);
+            m_zoom_filter.setOutputFormat(GPU_BGRA);
             err_log("output format bgra");
 #ifdef __ANDROID__
-            m_zoom_filter->addTarget(m_raw_output);
+            m_zoom_filter.addTarget(m_raw_output);
 #endif
             break;
         case GPU_RGBA:
-            m_zoom_filter->addTarget(m_raw_output);
+            m_zoom_filter.addTarget(m_raw_output);
             err_log("output format rgba");
             break;
         case GPU_I420:
-            m_zoom_filter->addTarget(m_yuv_filter);
+            m_zoom_filter.addTarget(m_yuv_filter);
             m_yuv_filter->addTarget(m_yuv420_filter);
             m_yuv420_filter->addTarget(m_raw_output);
             err_log("output format yuv420p");
             break;
         case GPU_NV21:
-            m_zoom_filter->addTarget(m_yuv_filter);
+            m_zoom_filter.addTarget(m_yuv_filter);
             m_yuv_filter->addTarget(m_nv21_filter);
             m_nv21_filter->addTarget(m_raw_output);
             err_log("output format nv21");
             break;
         case GPU_NV12:
-            m_zoom_filter->addTarget(m_yuv_filter);
+            m_zoom_filter.addTarget(m_yuv_filter);
             m_yuv_filter->addTarget(m_nv12_filter);
             m_nv12_filter->addTarget(m_raw_output);
             err_log("output format nv12");
@@ -244,21 +244,35 @@ void GPUStreamFrame::setOutputFormat(gpu_pixel_format_t format){
     }
 }
 
-void GPUStreamFrame::setBorder(int width, int height, float r, float g, float b){
-    gpu_size_t size = m_input->sizeOfFBO();
-    float ver[8];
-    float w = width*1.0/(width+size.width/2.0);
-    float h = height*1.0/(height+size.height/2.0);
-    ver[0] = -1.0 + w;
-    ver[1] = -1.0 + h;
-    ver[2] = 1.0 - w;
-    ver[3] = -1.0 + h;
-    ver[4] = -1.0 + w;
-    ver[5] = 1.0 - h;
-    ver[6] = 1.0 - w ;
-    ver[7] = 1.0 - h;
-    m_input->setVertices(ver);
-    m_input->setClearColor(r, g, b);
+void GPUStreamFrame::setStreamFrameSize(int width, int height){
+    if(m_blank_filter.getFillMode()!=GPUFillModePreserveAspectRatio){
+        m_blank_filter.setFillMode(GPUFillModePreserveAspectRatioAndFill);
+    }
+    m_blank_filter.setOutputSize(width, height);
+}
+
+void GPUStreamFrame::setBlank(int border, int r, int g, int b){
+    if(border==0){
+        m_blank_filter.setFillMode(GPUFillModePreserveAspectRatioAndFill);
+        return;
+    }
+
+    m_blank_filter.setFillMode(GPUFillModePreserveAspectRatio);
+    if (m_blank_filter.m_frame_width>0 && m_blank_filter.m_frame_height>0){
+        float wf = border / m_blank_filter.m_frame_width;
+        float hf = border / m_blank_filter.m_frame_height;
+        float* v = m_blank_filter.getVertices();
+        v[0] += wf;
+        v[1] += hf;
+        v[2] -= wf;
+        v[3] += hf;
+        v[4] += wf;
+        v[5] -= hf;
+        v[6] -= wf;
+        v[7] -= hf;
+    }
+
+    m_blank_filter.setClearColor(r/255.0f, g/255.0f, b/255.0f);
 }
 
 #pragma --mark "输入、输出的尺寸与旋转方向"
@@ -284,12 +298,12 @@ void GPUStreamFrame::setPreviewRotation(gpu_rotation_t rotation){
     }
 }
 void GPUStreamFrame::setOutputRotation(gpu_rotation_t rotation){
-    m_zoom_filter->setOutputRotation(rotation);
+    m_zoom_filter.setOutputRotation(rotation);
 }
 
 void GPUStreamFrame::setOutputSize(uint32_t width, uint32_t height){
     GPUFilter::setOutputSize(width, height);
-    m_zoom_filter->setOutputSize(width, height);
+    m_zoom_filter.setOutputSize(width, height);
     info_log("output size[%u/%u]", width, height);
 }
 
@@ -306,12 +320,13 @@ void GPUStreamFrame::setPreviewMirror(bool mirror){
 
 void GPUStreamFrame::setOutputMirror(bool mirror){
 #ifdef __ANDROID__
-    m_zoom_filter->setOutputRotation(mirror ? GPUNoRotation:GPUFlipHorizonal);
+    m_zoom_filter.setOutputRotation(mirror ? GPUNoRotation:GPUFlipHorizonal);
 #else
     m_zoom_filter->setOutputRotation(mirror ? GPUFlipHorizonal:GPUNoRotation);
 #endif
     //    m_zoom_filter->setOutputRotation(mirror ? GPUFlipHorizonal:GPUNoRotation);
 }
+
 #pragma --mark "析构函数"
 GPUStreamFrame::~GPUStreamFrame(){
     m_input->removeAllTargets();
@@ -325,8 +340,7 @@ GPUStreamFrame::~GPUStreamFrame(){
     // m_background_group.removeAllTargets();
     // m_props_group.removeAllTargets();
     // m_extra_group.removeAllTargets();
-    
-    delete m_zoom_filter;
+
     delete m_yuv_filter;
     delete m_yuv420_filter;
     delete m_raw_output;

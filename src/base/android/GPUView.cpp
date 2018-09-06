@@ -54,7 +54,7 @@ void GPUView::newFrame(){
     
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(0, 0, (int)m_out_width, (int)m_out_height);
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     glClear( GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     
     m_firstbuffer->activeTexture(GL_TEXTURE2);

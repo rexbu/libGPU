@@ -224,19 +224,19 @@ public class TextureActivity extends Activity implements SurfaceHolder.Callback{
                     switch (i){
                         case 0:
                             videoFrame.setViewFillMode(GPU.GPU_FILL_RATIOANDFILL);
-                            videoFrame.setViewOutputSize(videoFrame.frameWidth, videoFrame.frameHeight);
+                            videoFrame.setFrameSize(videoFrame.frameWidth, videoFrame.frameHeight);
                             break;
                         case 1: // 1:1
                             videoFrame.setViewFillMode(GPU.GPU_FILL_RATIO);
-                            videoFrame.setViewOutputSize(640, 640);
+                            videoFrame.setFrameSize(640, 640);
                             break;
                         case 2: // 3:2
                             videoFrame.setViewFillMode(GPU.GPU_FILL_RATIO);
-                            videoFrame.setViewOutputSize(640, 720);
+                            videoFrame.setFrameSize(640, 720);
                             break;
                         case 3: // 16:9
                             videoFrame.setViewFillMode(GPU.GPU_FILL_RATIO);
-                            videoFrame.setViewOutputSize(540, 960);
+                            videoFrame.setFrameSize(540, 960);
                             break;
                     }
                 }

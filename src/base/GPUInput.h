@@ -67,6 +67,7 @@ protected:
 	int     m_ready;
 	bool    m_disable;										///	禁用，不执行 newFrame（）
 
+public:
 	// 帧尺寸
     uint32_t    m_frame_width;
     uint32_t    m_frame_height;

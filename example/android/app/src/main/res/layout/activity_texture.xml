@@ -56,7 +56,15 @@
         android:entries="@array/ratio_name"
         android:background="@android:color/holo_orange_dark"
         />
-
+    <Button
+        android:layout_width="60dp"
+        android:layout_height="40dp"
+        android:id="@+id/blankButton"
+        android:layout_alignBaseline="@id/ratioSpinner"
+        android:layout_toEndOf="@id/ratioSpinner"
+        android:layout_marginLeft="20dp"
+        android:text="填充"
+        />
     <SeekBar
         android:layout_width="match_parent"
         android:layout_height="40dp"

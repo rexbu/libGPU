@@ -37,6 +37,7 @@ public:
     
     /// 设置填充并计算裁剪
     virtual void setFillMode(gpu_fill_mode_t fillmode);
+    int getFillMode(){return m_fill_mode;}
     // 设置输出重新计算裁剪
 	virtual void setOutputSize(uint32_t width, uint32_t height);
     
@@ -51,6 +52,9 @@ public:
     virtual gpu_size_t sizeOfFBO();
     
     void setVertices(float* v);
+    float* getVertices(){
+        return &m_vertices[0];
+    }
     void setClearColor(float r, float g, float b);
     void setFloat(const char* name, GLfloat val);
     void setFloat(const char* name, GLfloat* val, int num);
