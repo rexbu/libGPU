@@ -64,8 +64,7 @@ BOOL canRotateToAllOrientations;
     // 颜色滤镜
     //[videoCamera setColorFilter:GPU_COLOR_BLUR_FILTER strength:1];
     //[videoCamera setUnBlurRegion:CGPointMake(300, 400) radius:300];
-    // 设置边框
-    [videoCamera setBorder:40 height:40 color:[UIColor redColor]];
+    
     __block typeof(self) parent = self;
     videoCamera.bgraPixelBlock = ^(CVPixelBufferRef pixelBuffer, CMTime time){
         // 获取处理后视频帧

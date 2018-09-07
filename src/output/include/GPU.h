@@ -45,6 +45,7 @@
 
 #include "GPUBezierFilter.h"        // 贝塞尔曲线
 #include "GPUPaintFilter.h"
+#include "GPUBlankFilter.h"
 
 #include "GPUBlendImageFilter.h"
 #include "GPUBlend2Filter.h"

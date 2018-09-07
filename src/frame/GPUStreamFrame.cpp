@@ -245,34 +245,11 @@ void GPUStreamFrame::setOutputFormat(gpu_pixel_format_t format){
 }
 
 void GPUStreamFrame::setStreamFrameSize(int width, int height){
-    if(m_blank_filter.getFillMode()!=GPUFillModePreserveAspectRatio){
-        m_blank_filter.setFillMode(GPUFillModePreserveAspectRatioAndFill);
-    }
-    m_blank_filter.setOutputSize(width, height);
+    m_blank_filter.setStreamFrameSize(width, height);
 }
 
 void GPUStreamFrame::setBlank(int border, int r, int g, int b){
-    if(border==0){
-        m_blank_filter.setFillMode(GPUFillModePreserveAspectRatioAndFill);
-        return;
-    }
-
-    m_blank_filter.setFillMode(GPUFillModePreserveAspectRatio);
-    if (m_blank_filter.m_frame_width>0 && m_blank_filter.m_frame_height>0){
-        float wf = border / m_blank_filter.m_frame_width;
-        float hf = border / m_blank_filter.m_frame_height;
-        float* v = m_blank_filter.getVertices();
-        v[0] += wf;
-        v[1] += hf;
-        v[2] -= wf;
-        v[3] += hf;
-        v[4] += wf;
-        v[5] -= hf;
-        v[6] -= wf;
-        v[7] -= hf;
-    }
-
-    m_blank_filter.setClearColor(r/255.0f, g/255.0f, b/255.0f);
+    m_blank_filter.setBlank(border, r, g, b);
 }
 
 #pragma --mark "输入、输出的尺寸与旋转方向"
@@ -322,7 +299,7 @@ void GPUStreamFrame::setOutputMirror(bool mirror){
 #ifdef __ANDROID__
     m_zoom_filter.setOutputRotation(mirror ? GPUNoRotation:GPUFlipHorizonal);
 #else
-    m_zoom_filter->setOutputRotation(mirror ? GPUFlipHorizonal:GPUNoRotation);
+    m_zoom_filter.setOutputRotation(mirror ? GPUFlipHorizonal:GPUNoRotation);
 #endif
     //    m_zoom_filter->setOutputRotation(mirror ? GPUFlipHorizonal:GPUNoRotation);
 }

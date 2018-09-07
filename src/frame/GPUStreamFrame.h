@@ -78,7 +78,7 @@ public:
     // 滤镜
     GPUFilter*          m_extra_filter;
     GPUColorFilter      m_color_filter;
-    GPUFilter           m_blank_filter;
+    GPUBlankFilter      m_blank_filter;
     // 预览
     GPUBlend2Filter     m_preview_blend_filter;
     // 输出

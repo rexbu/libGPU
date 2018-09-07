@@ -20,6 +20,7 @@ static bool initViewFlag = true;
     UITextView*     smoothView;
     UIImageView*    videoView;
     UIButton*       ratioButton;
+    UIButton*       blankButton;
     
     // 滤镜滑动框
     UICollectionView*   filterScrollView;
@@ -28,6 +29,7 @@ static bool initViewFlag = true;
     
     UIInterfaceOrientation old_orientation;
     int ratioIndex;
+    BOOL        blankFlag;
 }
 
 @end
@@ -38,6 +40,7 @@ static bool initViewFlag = true;
     self = [super init];
     old_orientation = UIInterfaceOrientationUnknown;
     ratioIndex = 0;
+    blankFlag = FALSE;
     return self;
 }
 
@@ -95,12 +98,18 @@ static bool initViewFlag = true;
     [record setBackgroundColor:[UIColor orangeColor]];
     [record addTarget:self action:@selector(back) forControlEvents:UIControlEventTouchUpInside];
     
+    blankButton = [[UIButton alloc]initWithFrame:CGRectMake(80, 20, 60, 40)];
+    [blankButton setTitle:@"填充" forState:UIControlStateNormal];
+    [blankButton setBackgroundColor:[UIColor orangeColor]];
+    [blankButton addTarget:self action:@selector(setBlank) forControlEvents:UIControlEventTouchUpInside];
+    
     ratioButton = [[UIButton alloc]initWithFrame:CGRectMake(220, 20, 60, 40)];
     [ratioButton setTitle:@"比例" forState:UIControlStateNormal];
     [ratioButton setBackgroundColor:[UIColor orangeColor]];
     [ratioButton addTarget:self action:@selector(ratioSwitch) forControlEvents:UIControlEventTouchUpInside];
     
     [self.view addSubview:record];
+    [self.view addSubview:blankButton];
     [self.view addSubview:ratioButton];
     
     UILabel* smoothLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 480, 40, 20)];
@@ -155,28 +164,39 @@ static bool initViewFlag = true;
     initViewFlag = true;
     [self dismissViewControllerAnimated:YES completion:nil];
 }
-
+-(void)setBlank{
+    if (blankFlag) {
+        [blankButton setTitle:@"填充" forState:UIControlStateNormal];
+        [videoFrame setBlank:0 color:NULL];
+    }
+    else{
+        [blankButton setTitle:@"空白" forState:UIControlStateNormal];
+        [videoFrame setBlank:20 color:[UIColor redColor]];
+    }
+    [videoFrame processCGImage:picture.CGImage];
+    blankFlag = !blankFlag;
+}
 -(void)ratioSwitch{
     ratioIndex = (++ratioIndex)%3;
     switch (ratioIndex) {
         case 0: // 原始尺寸
             [ratioButton setTitle:@"比例" forState:UIControlStateNormal];
             [videoFrame setPreviewFillMode:GPUFillModePreserveAspectRatioAndFill];
-            [videoFrame setPreviewSize:CGSizeMake(720, 1280)];
+            [videoFrame setFrameSize:CGSizeMake(720, 1280)];
             break;
         case 1: // 1：1
             [ratioButton setTitle:@"1 : 1" forState:UIControlStateNormal];
-            [videoFrame setPreviewSize:CGSizeMake(720, 720)];
+            [videoFrame setFrameSize:CGSizeMake(720, 720)];
             [videoFrame setPreviewFillMode:GPUFillModePreserveAspectRatio];
             break;
         case 2: // 3:2
             [ratioButton setTitle:@"3 : 2" forState:UIControlStateNormal];
-            [videoFrame setPreviewSize:CGSizeMake(640, 960)];
+            [videoFrame setFrameSize:CGSizeMake(640, 960)];
             [videoFrame setPreviewFillMode:GPUFillModePreserveAspectRatio];
             break;
         case 3: // 16:9
             [ratioButton setTitle:@"16: 9" forState:UIControlStateNormal];
-            [videoFrame setPreviewSize:CGSizeMake(540, 960)];
+            [videoFrame setFrameSize:CGSizeMake(540, 960)];
             [videoFrame setPreviewFillMode:GPUFillModePreserveAspectRatio];
             break;
         default:

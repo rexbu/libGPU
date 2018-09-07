@@ -99,8 +99,10 @@
 // 滤镜：曝光、锐化、对比度等滤镜
 -(void)setColorFilter:(int)filter strength:(float)strength;
 -(void)setUnBlurRegion:(CGPoint)center radius:(int)radius;
+// 设置视频流尺寸，可以作用于预览及输出视频流
+-(void)setFrameSize:(CGSize)size;
 // 添加边框
--(void)setBorder:(int)w height:(int)h color:(UIColor*)color;
+-(void)setBlank:(int)blank color:(UIColor*)color;
 @end
 
 // 实时滤镜

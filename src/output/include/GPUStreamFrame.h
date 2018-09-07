@@ -35,7 +35,7 @@ public:
     // 美颜
     void setSmoothStrength(float strength);
     void setWhitenStrength(float strength);
-    
+    // lookup滤镜
     void setExtraFilter(const char* image);
     void setExtraFilter(const char* file, const char* image);
     //void setExtraFilter(const char* shader, const char* image);
@@ -63,8 +63,10 @@ public:
     // 设置输出的byte格式，目前支持yuv420p, rgba, nv21, nv12
     void setOutputFormat(gpu_pixel_format_t format);
     void setVideoBlend(GPUPicture* picture, gpu_rect_t rect, bool mirror);
+
+    void setStreamFrameSize(int width, int height);
     // 设置边框宽度与颜色
-    void setBorder(int width, int height, float r, float g, float b);
+    void setBlank(int border, int r, int g, int b);
 public:
     // GPUBeautyFilter     m_beauty_filter;
     //VSBeautyGroup       m_beauty_group;
@@ -76,11 +78,13 @@ public:
     // 滤镜
     GPUFilter*          m_extra_filter;
     GPUColorFilter      m_color_filter;
+    GPUBlankFilter      m_blank_filter;
     // 预览
     GPUBlend2Filter     m_preview_blend_filter;
     // 输出
     GPUBlend2Filter     m_video_blend_filter;
-    GPUZoomFilter*      m_zoom_filter;
+    GPUZoomFilter       m_zoom_filter;
+
     GPURGBToYUVFilter*  m_yuv_filter;
     GPUToYUV420Filter*  m_yuv420_filter;
     GPUToNV21Filter*    m_nv21_filter;

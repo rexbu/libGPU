@@ -230,7 +230,7 @@
     
     bufferInput->processPixelBuffer(imageBuffer);
     if (_bgraPixelBlock!=nil) {
-        GPUIOSFrameBuffer* outbuffer = (GPUIOSFrameBuffer*)streamFrame->m_zoom_filter->m_outbuffer;
+        GPUIOSFrameBuffer* outbuffer = (GPUIOSFrameBuffer*)streamFrame->m_zoom_filter.m_outbuffer;
         if(outbuffer == NULL){
             err_log("Visionin Error: ZoomFilter not run!");
             isProcessing = FALSE;
@@ -252,13 +252,13 @@
         _nv12PixelBlock(streamFrame->m_raw_output->getBuffer(), _presentTimeStamp);
     }
     if (_textureBlock!=nil) {
-        if ((GPUIOSFrameBuffer*)streamFrame->m_zoom_filter->m_outbuffer==NULL) {
+        if ((GPUIOSFrameBuffer*)streamFrame->m_zoom_filter.m_outbuffer==NULL) {
             err_log("Visionin Error: ZoomFilter not run!");
             isProcessing = FALSE;
             return FALSE;
         }
         
-        GPUIOSFrameBuffer* outbuffer = (GPUIOSFrameBuffer*)streamFrame->m_zoom_filter->m_outbuffer;
+        GPUIOSFrameBuffer* outbuffer = (GPUIOSFrameBuffer*)streamFrame->m_zoom_filter.m_outbuffer;
         if (outbuffer!=NULL) {
             _textureBlock(outbuffer->m_texture, _presentTimeStamp);
         }
@@ -276,7 +276,7 @@
     picture.removeAllTargets();
     
     if (_bgraPixelBlock!=nil) {
-        GPUIOSFrameBuffer* outbuffer = (GPUIOSFrameBuffer*)streamFrame->m_zoom_filter->m_outbuffer;
+        GPUIOSFrameBuffer* outbuffer = (GPUIOSFrameBuffer*)streamFrame->m_zoom_filter.m_outbuffer;
         if(outbuffer == NULL){
             err_log("Visionin Error: ZoomFilter not run!");
             isProcessing = FALSE;
@@ -298,13 +298,13 @@
         _nv12PixelBlock(streamFrame->m_raw_output->getBuffer(), _presentTimeStamp);
     }
     if (_textureBlock!=nil) {
-        if ((GPUIOSFrameBuffer*)streamFrame->m_zoom_filter->m_outbuffer==NULL) {
+        if ((GPUIOSFrameBuffer*)streamFrame->m_zoom_filter.m_outbuffer==NULL) {
             err_log("Visionin Error: ZoomFilter not run!");
             isProcessing = FALSE;
             return FALSE;
         }
         
-        GPUIOSFrameBuffer* outbuffer = (GPUIOSFrameBuffer*)streamFrame->m_zoom_filter->m_outbuffer;
+        GPUIOSFrameBuffer* outbuffer = (GPUIOSFrameBuffer*)streamFrame->m_zoom_filter.m_outbuffer;
         if (outbuffer!=NULL) {
             _textureBlock(outbuffer->m_texture, _presentTimeStamp);
         }
@@ -574,11 +574,11 @@
 #pragma -mark 输出视频流
 -(void)setOutputRotation:(gpu_rotation_t)outputRotation{
     _outputRotation = outputRotation;
-    streamFrame->m_zoom_filter->setOutputRotation(outputRotation);
+    streamFrame->m_zoom_filter.setOutputRotation(outputRotation);
 }
 -(void)setOutputFillMode:(gpu_fill_mode_t)outputFillMode{
     _outputFillMode = outputFillMode;
-    streamFrame->m_zoom_filter->setFillMode(outputFillMode);
+    streamFrame->m_zoom_filter.setFillMode(outputFillMode);
 }
 -(void)setOutputSize:(CGSize)outputSize{
     _outputSize = outputSize;
@@ -730,6 +730,7 @@
     gpu_rect.size.height = rect.size.height;
     stream->setVideoBlend(pic, gpu_rect, mirror);
 }
+
 -(void)removeVideoBlend;{
     GPUStreamFrame* stream = GPUStreamFrame::shareInstance();
     gpu_rect_t rect = {0};
@@ -737,11 +738,19 @@
 }
 
 # pragma --mark "边框"
--(void)setBorder:(int)w height:(int)h color:(UIColor*)color{
+-(void)setFrameSize:(CGSize)size{
+    streamFrame->setStreamFrameSize(size.width, size.height);
+}
+// 添加边框
+-(void)setBlank:(int)blank color:(UIColor*)color{
+    if (color==NULL) {
+        color = [UIColor whiteColor];
+    }
     CGFloat r,g,b,a;
     [color getRed:&r green:&g blue:&b alpha:&a];
-    streamFrame->setBorder(w, h, r, g, b);
+    streamFrame->setBlank(blank, r*255, g*255, b*255);
 }
+
 -(void)setColorFilter:(int)filter strength:(float)strength{
     switch(filter){
         case GPU_COLOR_CONTRAST_FILTER:
