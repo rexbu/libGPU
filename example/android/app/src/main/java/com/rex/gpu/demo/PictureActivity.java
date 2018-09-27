@@ -77,7 +77,7 @@ public class PictureActivity extends Activity implements SurfaceHolder.Callback{
         // videoFrame.setViewFillMode(GPU.GPU_FILL_RATIO);
         // 用于编码的图片尺寸
         videoFrame.setOutputSize(360, 640);
-        videoFrame.setOutputFormat(GPUVideoFrame.GPU_YUV420P);
+        videoFrame.setOutputFormat(GPUVideoFrame.GPU_NV12);
 
         videoFrame.setSmoothStrength(0.9f);
         videoFrame.setWhitenStrength(0.9f);
@@ -95,7 +95,7 @@ public class PictureActivity extends Activity implements SurfaceHolder.Callback{
         pic = "/data/data/"+this.getPackageName()+"/suyan.jpeg";
         videoFrame.processPicture(pic);
         videoFrame.getBytes(picBytes);
-        imageView.setImageBitmap(yuv420p2RGBABitmap(picBytes, 360, 640));
+        imageView.setImageBitmap(nv122RGBABitmap(picBytes, 360, 640));
     }
 
     @Override
@@ -150,7 +150,7 @@ public class PictureActivity extends Activity implements SurfaceHolder.Callback{
                     // 每次操作都要处理
                     videoFrame.processPicture(pic);
                     videoFrame.getBytes(picBytes);
-                    imageView.setImageBitmap(yuv420p2RGBABitmap(picBytes, videoFrame.outputWidth, videoFrame.outputHeight));
+                    imageView.setImageBitmap(nv122RGBABitmap(picBytes, videoFrame.outputWidth, videoFrame.outputHeight));
                 }
             }
 
@@ -173,7 +173,7 @@ public class PictureActivity extends Activity implements SurfaceHolder.Callback{
                             videoFrame.setOutputSize(720,1280);
                             videoFrame.processPicture(pic);
                             videoFrame.getBytes(picBytes);
-                            imageView.setImageBitmap(yuv420p2RGBABitmap(picBytes, 720, 1280));
+                            imageView.setImageBitmap(nv122RGBABitmap(picBytes, 720, 1280));
                             break;
                         case 1: // 1:1
                             videoFrame.setViewFillMode(GPU.GPU_FILL_RATIO);
@@ -181,7 +181,7 @@ public class PictureActivity extends Activity implements SurfaceHolder.Callback{
                             videoFrame.setOutputSize(640,640);
                             videoFrame.processPicture(pic);
                             videoFrame.getBytes(picBytes);
-                            imageView.setImageBitmap(yuv420p2RGBABitmap(picBytes, 640, 640));
+                            imageView.setImageBitmap(nv122RGBABitmap(picBytes, 640, 640));
                             break;
                         case 2: // 3:2
                             videoFrame.setViewFillMode(GPU.GPU_FILL_RATIO);
@@ -189,7 +189,7 @@ public class PictureActivity extends Activity implements SurfaceHolder.Callback{
                             videoFrame.setOutputSize(640,720);
                             videoFrame.processPicture(pic);
                             videoFrame.getBytes(picBytes);
-                            imageView.setImageBitmap(yuv420p2RGBABitmap(picBytes, 640, 720));
+                            imageView.setImageBitmap(nv122RGBABitmap(picBytes, 640, 720));
                             break;
                         case 3: // 16:9
                             videoFrame.setViewFillMode(GPU.GPU_FILL_RATIO);
@@ -197,7 +197,7 @@ public class PictureActivity extends Activity implements SurfaceHolder.Callback{
                             videoFrame.setOutputSize(540,960);
                             videoFrame.processPicture(pic);
                             videoFrame.getBytes(picBytes);
-                            imageView.setImageBitmap(yuv420p2RGBABitmap(picBytes, 540, 960));
+                            imageView.setImageBitmap(nv122RGBABitmap(picBytes, 540, 960));
                             break;
                     }
                 }
@@ -235,7 +235,7 @@ public class PictureActivity extends Activity implements SurfaceHolder.Callback{
                     // 每次操作都要处理
                     videoFrame.processPicture(pic);
                     videoFrame.getBytes(picBytes);
-                    imageView.setImageBitmap(yuv420p2RGBABitmap(picBytes, videoFrame.outputWidth, videoFrame.outputHeight));
+                    imageView.setImageBitmap(nv122RGBABitmap(picBytes, videoFrame.outputWidth, videoFrame.outputHeight));
                 }
             }
         });
@@ -259,7 +259,7 @@ public class PictureActivity extends Activity implements SurfaceHolder.Callback{
                     // 每次操作都要处理
                     videoFrame.processPicture(pic);
                     videoFrame.getBytes(picBytes);
-                    imageView.setImageBitmap(yuv420p2RGBABitmap(picBytes, videoFrame.outputWidth, videoFrame.outputHeight));
+                    imageView.setImageBitmap(nv122RGBABitmap(picBytes, videoFrame.outputWidth, videoFrame.outputHeight));
                 }
             }
         });
@@ -279,7 +279,7 @@ public class PictureActivity extends Activity implements SurfaceHolder.Callback{
                 }
                 videoFrame.processPicture(pic);
                 videoFrame.getBytes(picBytes);
-                imageView.setImageBitmap(yuv420p2RGBABitmap(picBytes, videoFrame.outputWidth, videoFrame.outputHeight));
+                imageView.setImageBitmap(nv122RGBABitmap(picBytes, videoFrame.outputWidth, videoFrame.outputHeight));
             }
         });
     }
@@ -314,6 +314,27 @@ public class PictureActivity extends Activity implements SurfaceHolder.Callback{
                 int y = (0xff & ((int) data[i * width + j]));
                 int v = (0xff & ((int) data[frameSize + (i >> 1) * width + (j & ~1) + 0]));
                 int u = (0xff & ((int) data[frameSize + (i >> 1) * width + (j & ~1) + 1]));
+                y = y < 16 ? 16 : y;
+                int r = Math.round(1.164f * (y - 16) + 1.596f * (v - 128));
+                int g = Math.round(1.164f * (y - 16) - 0.813f * (v - 128) - 0.391f * (u - 128));
+                int b = Math.round(1.164f * (y - 16) + 2.018f * (u - 128));
+                r = r < 0 ? 0 : (r > 255 ? 255 : r);
+                g = g < 0 ? 0 : (g > 255 ? 255 : g);
+                b = b < 0 ? 0 : (b > 255 ? 255 : b);
+                rgba[i * width + j] = 0xff000000 + (r << 16) + (g << 8) + b;
+            }
+        Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        bmp.setPixels(rgba, 0, width, 0, 0, width, height);
+        return bmp;
+    }
+    public Bitmap nv122RGBABitmap(byte[] data, int width, int height) {
+        int frameSize = width * height;
+        int[] rgba = new int[frameSize];
+        for (int i = 0; i < height; i++)
+            for (int j = 0; j < width; j++) {
+                int y = (0xff & ((int) data[i * width + j]));
+                int u = (0xff & ((int) data[frameSize + (i >> 1) * width + (j & ~1) + 0]));
+                int v = (0xff & ((int) data[frameSize + (i >> 1) * width + (j & ~1) + 1]));
                 y = y < 16 ? 16 : y;
                 int r = Math.round(1.164f * (y - 16) + 1.596f * (v - 128));
                 int g = Math.round(1.164f * (y - 16) - 0.813f * (v - 128) - 0.391f * (u - 128));

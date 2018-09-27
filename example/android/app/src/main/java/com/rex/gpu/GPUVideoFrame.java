@@ -235,7 +235,7 @@ public class GPUVideoFrame extends GPU implements SurfaceTexture.OnFrameAvailabl
             super.setOutputFormat(format);
         }
 
-        if (format==GPU_YUV420P || format==GPU_YV12 || format== GPU_NV21){
+        if (format==GPU_YUV420P || format==GPU_NV12 || format== GPU_NV21){
             if (outputWidth==0 || outputHeight==0){
                 size = videoHeight*videoWidth*3/2;
             }
