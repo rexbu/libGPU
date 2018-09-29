@@ -31,6 +31,7 @@ public class GPU {
         NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setPreviewMirror", "(Z)V");
         NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setOutputMirror", "(Z)V");
         NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setOutputRotation", "(I)V");
+        NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setFrameRotation", "(I)V");
 
         NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setSmoothStrength", "(F)V");
         NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setWhitenStrength", "(F)V");
@@ -85,6 +86,7 @@ public class GPU {
     public native void setPreviewMirror(boolean mirror);
     public native void setOutputMirror(boolean mirror);
     public native void setOutputRotation(int rotation);
+    public native void setFrameRotation(int rotation);
 
     /// 美颜
     public native void setSmoothStrength(float level);

@@ -226,7 +226,6 @@ public class TextureActivity extends Activity implements SurfaceHolder.Callback{
                         case 0:
                             videoFrame.setViewFillMode(GPU.GPU_FILL_RATIOANDFILL);
                             videoFrame.setFrameSize(videoFrame.frameWidth, videoFrame.frameHeight);
-                            videoFrame.setOutputRotation(GPUVideoFrame.GPURotateLeft);
                             break;
                         case 1: // 1:1
                             videoFrame.setViewFillMode(GPU.GPU_FILL_RATIO);
@@ -256,16 +255,16 @@ public class TextureActivity extends Activity implements SurfaceHolder.Callback{
                 rotate = (rotate+1)%4;
                 switch (rotate){
                     case 0:
-                        videoFrame.setOutputRotation(GPUVideoFrame.GPUNoRotation);
+                        videoFrame.setFrameRotation(GPUVideoFrame.GPUNoRotation);
                         break;
                     case 1:
-                        videoFrame.setOutputRotation(GPUVideoFrame.GPURotateLeft);
+                        videoFrame.setFrameRotation(GPUVideoFrame.GPURotateLeft);
                         break;
                     case 2:
-                        videoFrame.setOutputRotation(GPUVideoFrame.GPURotate180);
+                        videoFrame.setFrameRotation(GPUVideoFrame.GPURotate180);
                         break;
                     case 3:
-                        videoFrame.setOutputRotation(GPUVideoFrame.GPURotateRight);
+                        videoFrame.setFrameRotation(GPUVideoFrame.GPURotateRight);
                 }
             }
         });

@@ -31,9 +31,11 @@ void setOutputFormat(JNIEnv * env, jobject jo, jint format);
 void setInputSize(JNIEnv * env, jobject jo, jint width, jint height);
 void setInputRotation(JNIEnv * env, jobject jo, jint rotation);
 
+void setViewRotation(JNIEnv * env, jobject jo, jint rotation);
 void setPreviewMirror(JNIEnv * env, jobject jo, jboolean mirror);
 void setOutputMirror(JNIEnv * env, jobject jo, jboolean mirror);
 void setOutputRotation(JNIEnv * env, jobject jo, jint rotation);
+void setFrameRotation(JNIEnv* env, jobject jo, jint rotation);
 
 void setSmoothStrength(JNIEnv * env, jobject jo, jfloat level);
 void setWhitenStrength(JNIEnv * env, jobject jo, jfloat level);
@@ -47,7 +49,6 @@ void setUnBlurRegion(JNIEnv * env, jobject jo, jint x, jint y, jint radius);
 
 void setOutputView(JNIEnv * env, jobject jo);
 void removeOutputView(JNIEnv * env, jobject jo);
-void setViewRotation(JNIEnv * env, jobject jo, jint rotation);
 void setFrameSize(JNIEnv* env, jobject jo, jint width, jint height);
 void setViewFillMode(JNIEnv* env, jobject jo, jint mode);
 
@@ -255,6 +256,9 @@ void setOutputMirror(JNIEnv * env, jobject jo, jboolean mirror){
 }
 void setOutputRotation(JNIEnv * env, jobject jo, jint rotation){
 	GPUStreamFrame::shareInstance()->setOutputRotation((gpu_rotation_t)rotation);
+}
+void setFrameRotation(JNIEnv* env, jobject jo, jint rotation){
+    GPUStreamFrame::shareInstance()->setFrameRotation((gpu_rotation_t)rotation);
 }
 void setSmoothStrength(JNIEnv * env, jobject jo, jfloat level){
 	GPUStreamFrame::shareInstance()->setSmoothStrength(level);
