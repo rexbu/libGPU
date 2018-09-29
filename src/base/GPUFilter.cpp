@@ -283,10 +283,14 @@ void GPUFilter::activeOutFrameBuffer(){
         m_vertex_buffer->setBuffer(&m_vertices[0]);
         // 更新纹理坐标
         if (m_coordinates[0]==-1) {
-            memcpy(&m_coordinates[0], GPUFilter::coordinatesRotation(m_rotation), sizeof(GLfloat)*8);
+            //memcpy(&m_coordinates[0], GPUFilter::coordinatesRotation(m_rotation), sizeof(GLfloat)*8);
+            m_coordinate_buffer->setBuffer(GPUFilter::coordinatesRotation(m_rotation));
         }
-        // 有可能中途切换镜像等操作，每次设置一次
-        m_coordinate_buffer->setBuffer(&m_coordinates[0]);
+        else{
+            // 有可能中途切换镜像等操作，每次设置一次
+            m_coordinate_buffer->setBuffer(&m_coordinates[0]);
+        }
+        
         m_outbuffer->activeBuffer();
         
         glClearColor(m_clear_color[0], m_clear_color[1], m_clear_color[2], m_clear_color[3]);

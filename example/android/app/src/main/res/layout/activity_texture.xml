@@ -42,7 +42,7 @@
         android:id="@+id/filterSpinner"
         android:layout_alignBaseline="@id/switchCamera"
         android:layout_toEndOf="@id/switchCamera"
-        android:layout_marginLeft="20dp"
+        android:layout_marginLeft="10dp"
         android:entries="@array/filter_name"
         android:background="@android:color/holo_orange_dark"
         />
@@ -52,7 +52,7 @@
         android:id="@+id/ratioSpinner"
         android:layout_alignBaseline="@id/filterSpinner"
         android:layout_toEndOf="@id/filterSpinner"
-        android:layout_marginLeft="20dp"
+        android:layout_marginLeft="10dp"
         android:entries="@array/ratio_name"
         android:background="@android:color/holo_orange_dark"
         />
@@ -62,8 +62,17 @@
         android:id="@+id/blankButton"
         android:layout_alignBaseline="@id/ratioSpinner"
         android:layout_toEndOf="@id/ratioSpinner"
-        android:layout_marginLeft="20dp"
+        android:layout_marginLeft="10dp"
         android:text="填充"
+        />
+    <Button
+        android:layout_width="60dp"
+        android:layout_height="40dp"
+        android:id="@+id/rotateButton"
+        android:layout_alignBaseline="@id/blankButton"
+        android:layout_toEndOf="@id/blankButton"
+        android:layout_marginLeft="10dp"
+        android:text="旋转"
         />
     <SeekBar
         android:layout_width="match_parent"

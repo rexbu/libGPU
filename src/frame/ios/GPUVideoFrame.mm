@@ -572,10 +572,19 @@
 }
 
 #pragma -mark 输出视频流
+-(void)setPreviewRotation:(gpu_rotation_t)previewRotation{
+    _previewRotation = previewRotation;
+    streamFrame->setPreviewRotation(previewRotation);
+}
 -(void)setOutputRotation:(gpu_rotation_t)outputRotation{
     _outputRotation = outputRotation;
-    streamFrame->m_zoom_filter.setOutputRotation(outputRotation);
+    streamFrame->setOutputRotation(outputRotation);
 }
+-(void)setFrameRotation:(gpu_rotation_t)frameRotation{
+    _frameRotation = frameRotation;
+    streamFrame->setFrameRotation(frameRotation);
+}
+
 -(void)setOutputFillMode:(gpu_fill_mode_t)outputFillMode{
     _outputFillMode = outputFillMode;
     streamFrame->m_zoom_filter.setFillMode(outputFillMode);

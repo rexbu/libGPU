@@ -55,6 +55,10 @@ public:
     float* getVertices(){
         return &m_vertices[0];
     }
+    float* getCoordinates(){
+        return &m_coordinates[0];
+    }
+
     void setClearColor(float r, float g, float b);
     void setFloat(const char* name, GLfloat val);
     void setFloat(const char* name, GLfloat* val, int num);

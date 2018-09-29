@@ -46,6 +46,7 @@ public class TextureActivity extends Activity implements SurfaceHolder.Callback{
     protected SeekBar shaperValueSeek;
     protected boolean isProps = true;
     protected boolean isShaper = true;
+    protected int rotate = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -225,6 +226,7 @@ public class TextureActivity extends Activity implements SurfaceHolder.Callback{
                         case 0:
                             videoFrame.setViewFillMode(GPU.GPU_FILL_RATIOANDFILL);
                             videoFrame.setFrameSize(videoFrame.frameWidth, videoFrame.frameHeight);
+                            videoFrame.setOutputRotation(GPUVideoFrame.GPURotateLeft);
                             break;
                         case 1: // 1:1
                             videoFrame.setViewFillMode(GPU.GPU_FILL_RATIO);
@@ -248,6 +250,25 @@ public class TextureActivity extends Activity implements SurfaceHolder.Callback{
             }
         });
 
+        findViewById(R.id.rotateButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rotate = (rotate+1)%4;
+                switch (rotate){
+                    case 0:
+                        videoFrame.setOutputRotation(GPUVideoFrame.GPUNoRotation);
+                        break;
+                    case 1:
+                        videoFrame.setOutputRotation(GPUVideoFrame.GPURotateLeft);
+                        break;
+                    case 2:
+                        videoFrame.setOutputRotation(GPUVideoFrame.GPURotate180);
+                        break;
+                    case 3:
+                        videoFrame.setOutputRotation(GPUVideoFrame.GPURotateRight);
+                }
+            }
+        });
         smoothValueSeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public int value;
             @Override

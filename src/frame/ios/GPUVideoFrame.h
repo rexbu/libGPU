@@ -21,8 +21,11 @@
 @property(nonatomic, assign)AVCaptureDevicePosition     cameraPosition;         // 前后摄像头
 @property(nonatomic, assign)UIInterfaceOrientation      outputImageOrientation; // 设备方向，默认UIInterfaceOrientationPortrait
 
-// 输出视频流旋转方向，如果设置会使视频流镜像函数失效，注意不能和镜像设置的4个参数同时使用
+// 输出预览和视频流旋转方向，如果设置会使视频流镜像函数失效，注意不能和镜像设置的4个参数同时使用
+@property(nonatomic, assign) gpu_rotation_t previewRotation;
 @property(nonatomic, assign) gpu_rotation_t outputRotation;
+// 同时作用于预览和视频流，在blank之前修改
+@property(nonatomic, assign) gpu_rotation_t frameRotation;
 
 @property(nonatomic, assign) BOOL mirrorFrontFacingCamera;  // 前置摄像头视频流是否镜像显示
 @property(nonatomic, assign) BOOL mirrorBackFacingCamera;   // 后置摄像头视频流是否镜像显示

@@ -57,7 +57,8 @@ public:
     void setShadows(float p);
     // 暗角 [0,1]
     void setVignette(float intensity);
-protected:
+
+public:
     GPUFilter       m_shot_filter;      // 处理曝光、饱和、褪色、对比度
     GPUFilter       m_adjust_filter;    // 处理模糊、锐化、色温、色调、高光、阴影、暗角
     GPUGaussianBlurFilter m_blur_filter;

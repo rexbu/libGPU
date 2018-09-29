@@ -57,6 +57,7 @@ public:
     void setPreviewBlend(GPUPicture* picture, gpu_rect_t rect, bool mirror);
     
     // 输出旋转与尺寸
+    void setFrameRotation(gpu_rotation_t rotation);
     void setOutputRotation(gpu_rotation_t rotation);
     void setOutputMirror(bool mirror);
     virtual void setOutputSize(uint32_t width, uint32_t height);

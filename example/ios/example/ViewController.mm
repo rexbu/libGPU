@@ -177,6 +177,7 @@ BOOL canRotateToAllOrientations;
             [ratioButton setTitle:@"比例" forState:UIControlStateNormal];
             [videoCamera setPreviewFillMode:GPUFillModePreserveAspectRatioAndFill];
             [videoCamera setPreviewSize:CGSizeMake(720, 1280)];
+            
             break;
         case 1: // 1：1
             [ratioButton setTitle:@"1 : 1" forState:UIControlStateNormal];

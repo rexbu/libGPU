@@ -275,7 +275,29 @@ void GPUStreamFrame::setPreviewRotation(gpu_rotation_t rotation){
     }
 }
 void GPUStreamFrame::setOutputRotation(gpu_rotation_t rotation){
+    info_log("set output rotation: %d", rotation);
     m_zoom_filter.setOutputRotation(rotation);
+}
+void GPUStreamFrame::setFrameRotation(gpu_rotation_t rotation){
+    if(m_color_filter.m_frame_width==0 || m_color_filter.m_frame_width==0){
+        err_log("setOutputRotation must be called after recv frame!!!");
+        return;
+    }
+
+    info_log("set output rotation: %d", rotation);
+    m_color_filter.m_shot_filter.setOutputRotation(rotation);
+    // smooth和extra_group可能disable
+    gpu_size_t size = m_whiten_filter.sizeOfFBO();
+    if (rotation==GPURotateLeft||rotation==GPURotateRight||rotation==GPURotateRightFlipHorizontal||rotation==GPURotateRightFlipVertical){
+        GPUContext::shareInstance()->glContextLock();
+        m_color_filter.m_shot_filter.setOutputSize(size.height, size.width);
+        GPUContext::shareInstance()->glContextUnlock();
+    }
+    else{
+        GPUContext::shareInstance()->glContextLock();
+        m_color_filter.m_shot_filter.setOutputSize(size.width, size.height);
+        GPUContext::shareInstance()->glContextUnlock();
+    }
 }
 
 void GPUStreamFrame::setOutputSize(uint32_t width, uint32_t height){
