@@ -106,6 +106,9 @@
 -(void)setFrameSize:(CGSize)size;
 // 添加边框
 -(void)setBlank:(int)blank color:(UIColor*)color;
+
+// 显示的销毁
+-(void)destroy;
 @end
 
 // 实时滤镜

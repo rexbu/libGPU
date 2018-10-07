@@ -160,6 +160,7 @@ static bool initViewFlag = true;
 }
 
 -(void)back{
+    [videoFrame destroy];
     videoFrame = nil;
     initViewFlag = true;
     [self dismissViewControllerAnimated:YES completion:nil];

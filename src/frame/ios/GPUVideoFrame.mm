@@ -659,14 +659,20 @@
 }
 
 -(void)dealloc{
-    DELETE_SET_NULL(bufferInput, false);
-    DELETE_SET_NULL(rawInput, false);
-    DELETE_SET_NULL(playView, false);
-    DELETE_SET_NULL(background, false);
-    GPUStreamFrame::destroyInstance();
-    GPUVertexBufferCache::destroyInstance();
-    GPUBufferCache::destroyInstance();
-    GPUContext::destroyInstance();
+    [self destroy];
+}
+
+-(void)destroy{
+    if(bufferInput!=NULL){
+        DELETE_SET_NULL(bufferInput, false);
+        DELETE_SET_NULL(rawInput, false);
+        DELETE_SET_NULL(playView, false);
+        DELETE_SET_NULL(background, false);
+        GPUStreamFrame::destroyInstance();
+        GPUVertexBufferCache::destroyInstance();
+        GPUBufferCache::destroyInstance();
+        GPUContext::destroyInstance();
+    }
 }
 
 #pragma --mark 美颜相关

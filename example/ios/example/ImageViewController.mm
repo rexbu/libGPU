@@ -204,6 +204,7 @@
 }
 
 -(void)back{
+    [videoFrame destroy];
     videoFrame = nil;
     [self dismissViewControllerAnimated:YES completion:nil];
 }

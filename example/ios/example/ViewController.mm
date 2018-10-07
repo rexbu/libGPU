@@ -161,6 +161,7 @@ BOOL canRotateToAllOrientations;
 
 -(void)back{
     [videoCamera stopCameraCapture];
+    [videoCamera destroy];
     videoCamera = nil;
     initViewFlag = true;
     [self dismissViewControllerAnimated:YES completion:nil];
