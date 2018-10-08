@@ -21,7 +21,7 @@ void destroyEGL(JNIEnv * env, jobject jo, jlong jl);
 
 void processTexture(JNIEnv * env, jobject jo, jint texture, jint texture_type);
 void processPicture(JNIEnv * env, jobject jo, jstring jpath);
-void processBytes(JNIEnv* env, jobject jo, jstring path);
+void processBytes(JNIEnv * env, jobject jo, jbyteArray jbytes, jint width, jint height, jint format);
 void getBytes(JNIEnv* env, jobject jo, jbyteArray jb);
 int getTexture(JNIEnv* env, jobject jo);
 
@@ -201,7 +201,7 @@ void processBytes(JNIEnv * env, jobject jo, jbyteArray jbytes, jint width, jint 
 	{
 		GPUStreamFrame* stream = GPUStreamFrame::shareInstance();
 		g_raw_input = new GPURawInput();
-
+        g_raw_input->setOutputRotation(stream->getOutputRotation());
 		//stream->setInputFormat((GPUPixelFormat_t)format);
 		g_raw_input->addTarget(stream);
 	}

@@ -44,6 +44,7 @@ public class PictureActivity extends Activity implements SurfaceHolder.Callback{
 
     protected String pic;
     protected byte[] picBytes;
+    protected int rotate = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,6 +101,7 @@ public class PictureActivity extends Activity implements SurfaceHolder.Callback{
 
     @Override
     public void surfaceChanged(SurfaceHolder surfaceHolder, int format, int width, int height) {
+        /*
         Configuration configuration = this.getResources().getConfiguration(); //获取设置的配置信息
         if (configuration.orientation==Configuration.ORIENTATION_LANDSCAPE){
             videoFrame.setOutputImageOritation(Configuration.ORIENTATION_LANDSCAPE);
@@ -107,7 +109,7 @@ public class PictureActivity extends Activity implements SurfaceHolder.Callback{
         else{
             videoFrame.setOutputImageOritation(Configuration.ORIENTATION_PORTRAIT);
         }
-
+        */
         Log.e("gpu", "change surface:"+width+"/"+height);
     }
 
@@ -280,6 +282,37 @@ public class PictureActivity extends Activity implements SurfaceHolder.Callback{
                 videoFrame.processPicture(pic);
                 videoFrame.getBytes(picBytes);
                 imageView.setImageBitmap(nv122RGBABitmap(picBytes, videoFrame.outputWidth, videoFrame.outputHeight));
+            }
+        });
+        findViewById(R.id.rotateButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rotate = (rotate+1)%4;
+                switch (rotate){
+                    case 0:
+                        videoFrame.setFrameRotation(GPUVideoFrame.GPUNoRotation);
+                        videoFrame.processPicture(pic);
+                        videoFrame.getBytes(picBytes);
+                        imageView.setImageBitmap(nv122RGBABitmap(picBytes, videoFrame.outputWidth, videoFrame.outputHeight));
+                        break;
+                    case 1:
+                        videoFrame.setFrameRotation(GPUVideoFrame.GPURotateLeft);
+                        videoFrame.processPicture(pic);
+                        videoFrame.getBytes(picBytes);
+                        imageView.setImageBitmap(nv122RGBABitmap(picBytes, videoFrame.outputWidth, videoFrame.outputHeight));
+                        break;
+                    case 2:
+                        videoFrame.setFrameRotation(GPUVideoFrame.GPURotate180);
+                        videoFrame.processPicture(pic);
+                        videoFrame.getBytes(picBytes);
+                        imageView.setImageBitmap(nv122RGBABitmap(picBytes, videoFrame.outputWidth, videoFrame.outputHeight));
+                        break;
+                    case 3:
+                        videoFrame.setFrameRotation(GPUVideoFrame.GPURotateRight);
+                        videoFrame.processPicture(pic);
+                        videoFrame.getBytes(picBytes);
+                        imageView.setImageBitmap(nv122RGBABitmap(picBytes, videoFrame.outputWidth, videoFrame.outputHeight));
+                }
             }
         });
     }
