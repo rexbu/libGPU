@@ -104,6 +104,7 @@ public class TextureActivity extends Activity implements SurfaceHolder.Callback{
         // videoFrame.setViewFillMode(GPU.GPU_FILL_RATIO);
         // 用于编码的图片尺寸
         videoFrame.setOutputSize(360, 640);
+        videoFrame.setPreviewColor(0, 0, 0);
         videoFrame.setVideoSize(videoSize.width, videoSize.height);
 
         videoFrame.setSmoothStrength(0.9f);

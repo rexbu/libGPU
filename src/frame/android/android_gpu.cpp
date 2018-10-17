@@ -59,6 +59,7 @@ void setVideoBlend(JNIEnv * env, jobject jo, jstring jpath, jfloat x, jfloat y, 
 void setVideoBlendBitmap(JNIEnv * env, jobject jo, jobject bitmap, jfloat x, jfloat y, jfloat w, jfloat h, jboolean mirror);
 
 void setBlank(JNIEnv* env, jobject jo, jint border, jint r, jint g, jint b);
+void setPreviewColor(JNIEnv* env, jobject jo, jint r, jint g, jint b);
 #ifdef __cplusplus
 }
 #endif
@@ -424,6 +425,11 @@ void setBlank(JNIEnv* env, jobject jo, jint border, jint r, jint g, jint b){
 	GPUStreamFrame::shareInstance()->setBlank(border, r, g, b);
 }
 
+void setPreviewColor(JNIEnv* env, jobject jo, jint r, jint g, jint b){
+    if(g_view != NULL){
+        g_view->setClearColor(r/255.0, g/255.0, b/255.0);
+    }
+}
 jint JNI_OnLoad(JavaVM *vm, void *reserved) {
 	return JNI_VERSION_1_4;
 }

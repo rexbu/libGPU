@@ -47,6 +47,7 @@ public class GPU {
         NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setViewFillMode", "(I)V");
         NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setFrameSize", "(II)V");
         NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setBlank", "(IIII)V");
+        NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setPreviewColor", "(III)V");
 
         NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setPreviewBlend", "(Ljava/lang/String;FFFFZ)V");
         NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setVideoBlend", "(Ljava/lang/String;FFFFZ)V");
@@ -112,6 +113,7 @@ public class GPU {
     public native void setViewFillMode(int mode);
     public native void setFrameSize(int width, int height);
     public native void setBlank(int border, int r, int g, int b);
+    public native void setPreviewColor(int r, int g, int b);
     // blend可用于logo
 
     /**
