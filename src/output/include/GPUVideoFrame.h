@@ -106,7 +106,8 @@
 -(void)setFrameSize:(CGSize)size;
 // 添加边框
 -(void)setBlank:(int)blank color:(UIColor*)color;
-
+// 预览背景颜色
+-(void)setPreviewColor:(UIColor*)color;
 // 显示的销毁
 -(void)destroy;
 @end

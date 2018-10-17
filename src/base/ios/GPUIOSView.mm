@@ -37,6 +37,10 @@ void GPUIOSView::setOutputRotation(gpu_rotation_t rotation){
     [m_view setRotation:rotation];
 }
 
+void GPUIOSView::setPreviewColor(UIColor* color){
+    m_view.previewColor = color;
+}
+
 #pragma mark -
 #pragma mark Private methods and instance variables
 
@@ -115,6 +119,7 @@ void GPUIOSView::setOutputRotation(gpu_rotation_t rotation){
     }
 
     GPUCheckGlError("IOSView init");
+    _previewColor = [UIColor blackColor];
     _viewSize = self.bounds.size;
     displayProgram = new GPUProgram(GPUFilter::g_vertex_shader, GPUFilter::g_fragment_shader);
     _rotation = GPUNoRotation;
@@ -230,7 +235,9 @@ void GPUIOSView::setOutputRotation(gpu_rotation_t rotation){
     
     glBindFramebuffer(GL_FRAMEBUFFER, displayFramebuffer);
     glViewport(0, 0, (GLint)_sizeInPixels.width, (GLint)_sizeInPixels.height);
-    glClearColor(0.0, 0.0, 0.0, 1.0);
+    CGFloat r,g,b,a;
+    [_previewColor getRed:&r green:&g blue:&b alpha:&a];
+    glClearColor(r, g, b, a);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 

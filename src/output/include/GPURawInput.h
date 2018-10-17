@@ -11,13 +11,12 @@
 #define	__GPU_RAWINPUT_H_
 #include "GPUContext.h"
 #include "GPUOutput.h"
-#include "GPUFilter.h"
+#include "GPUGroupFilter.h"
 #include "GPUYUVFilter.h"
 
-class GPURawInput: public GPUOutput{
+class GPURawInput: public GPUGroupFilter{
 public:
-    GPURawInput();
-    GPURawInput(gpu_pixel_format_t format);
+    GPURawInput(gpu_pixel_format_t format = GPU_RGBA);
     GPURawInput(int width, int height, gpu_pixel_format_t format = GPU_RGBA);
     ~GPURawInput();
     
@@ -28,13 +27,10 @@ public:
     gpu_pixel_format_t getFormat(){
         return m_in_format;
     }
-    /**
-     * 如果为nv21，设置美白
-     */
-    void setStrength(float level);
+
 protected:
-    GPUFilter*          m_filter;
-    
+    void setFormat(gpu_pixel_format_t format);
+
     gpu_pixel_format_t    m_in_format;
     int m_width;
     int m_height;

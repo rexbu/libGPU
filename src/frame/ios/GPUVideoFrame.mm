@@ -821,4 +821,10 @@
     _previewSize = previewSize;
     GPUStreamFrame::shareInstance()->m_preview_blend_filter.setOutputSize(previewSize.width, previewSize.height);
 }
+-(void)setPreviewColor:(UIColor*)color{
+    if(playView != nil){
+        ((GPUUIView*)playView->uiview()).previewColor = color;
+    }
+}
+
 @end
