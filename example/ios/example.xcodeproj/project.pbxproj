@@ -35,6 +35,9 @@
 		CD3BB79621292CA900B87F67 /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = CD3BB79521292CA900B87F67 /* logo.png */; };
 		CD5E8B3D2134549A00D62ECF /* ImageViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = CD5E8B3C2134549A00D62ECF /* ImageViewController.mm */; };
 		CD5E8B3F2134559F00D62ECF /* suyan.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = CD5E8B3E2134559E00D62ECF /* suyan.jpeg */; };
+		CDD0CFCA218F38DB0069519E /* filter.zip in Resources */ = {isa = PBXBuildFile; fileRef = CDD0CFC9218F38DB0069519E /* filter.zip */; };
+		CDD0CFDC218F39D00069519E /* ZipArchive.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CDD0CFD3218F39B00069519E /* ZipArchive.framework */; };
+		CDD0CFDD218F39D00069519E /* ZipArchive.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = CDD0CFD3218F39B00069519E /* ZipArchive.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		CDEF173D20FA4D800090D3CC /* filter4.png in Resources */ = {isa = PBXBuildFile; fileRef = CDEF172920FA4D7E0090D3CC /* filter4.png */; };
 		CDEF173E20FA4D800090D3CC /* filter17.png in Resources */ = {isa = PBXBuildFile; fileRef = CDEF172A20FA4D7E0090D3CC /* filter17.png */; };
 		CDEF173F20FA4D800090D3CC /* filter20.png in Resources */ = {isa = PBXBuildFile; fileRef = CDEF172B20FA4D7E0090D3CC /* filter20.png */; };
@@ -72,7 +75,63 @@
 			remoteGlobalIDString = C8A0ACA31ECE9CE10043ADE9;
 			remoteInfo = libGPU;
 		};
+		CDD0CFD2218F39B00069519E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CDD0CFCB218F39AF0069519E /* ZipArchive.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = B423AE1A1C0DF76A0004A2F1;
+			remoteInfo = "ZipArchive-iOS";
+		};
+		CDD0CFD4218F39B00069519E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CDD0CFCB218F39AF0069519E /* ZipArchive.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = AFF75A241C37279600F450AC;
+			remoteInfo = "ZipArchive-Mac";
+		};
+		CDD0CFD6218F39B00069519E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CDD0CFCB218F39AF0069519E /* ZipArchive.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 37952C261F63B50D00DD6677;
+			remoteInfo = "ZipArchive-tvos";
+		};
+		CDD0CFD8218F39B00069519E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CDD0CFCB218F39AF0069519E /* ZipArchive.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 37952C5E1F63BB7100DD6677;
+			remoteInfo = "ZipArchive-watchos";
+		};
+		CDD0CFDA218F39BC0069519E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CDD0CFCB218F39AF0069519E /* ZipArchive.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = B423AE191C0DF76A0004A2F1;
+			remoteInfo = "ZipArchive-iOS";
+		};
+		CDD0CFDE218F39D00069519E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CDD0CFCB218F39AF0069519E /* ZipArchive.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = B423AE191C0DF76A0004A2F1;
+			remoteInfo = "ZipArchive-iOS";
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		CDD0CFE0218F39D00069519E /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				CDD0CFDD218F39D00069519E /* ZipArchive.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		01DD12D42129C7DC00FE2DCC /* GPUVideoCamera.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GPUVideoCamera.m; sourceTree = "<group>"; };
@@ -111,6 +170,8 @@
 		CD5E8B3B2134549A00D62ECF /* ImageViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ImageViewController.h; sourceTree = "<group>"; };
 		CD5E8B3C2134549A00D62ECF /* ImageViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ImageViewController.mm; sourceTree = "<group>"; };
 		CD5E8B3E2134559E00D62ECF /* suyan.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = suyan.jpeg; sourceTree = "<group>"; };
+		CDD0CFC9218F38DB0069519E /* filter.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = filter.zip; sourceTree = "<group>"; };
+		CDD0CFCB218F39AF0069519E /* ZipArchive.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ZipArchive.xcodeproj; path = ZipArchive/ZipArchive.xcodeproj; sourceTree = "<group>"; };
 		CDEF172920FA4D7E0090D3CC /* filter4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = filter4.png; sourceTree = "<group>"; };
 		CDEF172A20FA4D7E0090D3CC /* filter17.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = filter17.png; sourceTree = "<group>"; };
 		CDEF172B20FA4D7E0090D3CC /* filter20.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = filter20.png; sourceTree = "<group>"; };
@@ -143,6 +204,7 @@
 				C80473831ED0139200947F74 /* libc++.1.dylib in Frameworks */,
 				C80473841ED0139300947F74 /* libz.1.dylib in Frameworks */,
 				C80473851ED0139300947F74 /* CoreVideo.framework in Frameworks */,
+				CDD0CFDC218F39D00069519E /* ZipArchive.framework in Frameworks */,
 				C80473861ED0139300947F74 /* OpenGLES.framework in Frameworks */,
 				C80473871ED0139300947F74 /* QuartzCore.framework in Frameworks */,
 				C80473881ED0139300947F74 /* UIKit.framework in Frameworks */,
@@ -182,6 +244,7 @@
 		C8A0ADD41ECFE5A00043ADE9 = {
 			isa = PBXGroup;
 			children = (
+				CDD0CFCB218F39AF0069519E /* ZipArchive.xcodeproj */,
 				CD0661281F21CC4C00098365 /* libGPU.xcodeproj */,
 				C8A0ADDF1ECFE5A10043ADE9 /* example */,
 				C8A0ADDE1ECFE5A10043ADE9 /* Products */,
@@ -200,6 +263,7 @@
 		C8A0ADDF1ECFE5A10043ADE9 /* example */ = {
 			isa = PBXGroup;
 			children = (
+				CDD0CFC9218F38DB0069519E /* filter.zip */,
 				C8A0ADE31ECFE5A10043ADE9 /* AppDelegate.h */,
 				C8A0ADE41ECFE5A10043ADE9 /* AppDelegate.m */,
 				C8A0ADEC1ECFE5A10043ADE9 /* Assets.xcassets */,
@@ -242,6 +306,17 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		CDD0CFCC218F39AF0069519E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CDD0CFD3218F39B00069519E /* ZipArchive.framework */,
+				CDD0CFD5218F39B00069519E /* ZipArchive.framework */,
+				CDD0CFD7218F39B00069519E /* ZipArchive.framework */,
+				CDD0CFD9218F39B00069519E /* ZipArchive.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		CDEF172820FA4D640090D3CC /* filters */ = {
 			isa = PBXGroup;
 			children = (
@@ -279,11 +354,14 @@
 				C8A0ADD91ECFE5A10043ADE9 /* Sources */,
 				C8A0ADDB1ECFE5A10043ADE9 /* Resources */,
 				C8A0ADDA1ECFE5A10043ADE9 /* Frameworks */,
+				CDD0CFE0218F39D00069519E /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				CDD0CFDB218F39BC0069519E /* PBXTargetDependency */,
 				CD06612F1F21CC5300098365 /* PBXTargetDependency */,
+				CDD0CFDF218F39D00069519E /* PBXTargetDependency */,
 			);
 			name = example;
 			productName = example;
@@ -322,6 +400,10 @@
 					ProductGroup = CD0661291F21CC4C00098365 /* Products */;
 					ProjectRef = CD0661281F21CC4C00098365 /* libGPU.xcodeproj */;
 				},
+				{
+					ProductGroup = CDD0CFCC218F39AF0069519E /* Products */;
+					ProjectRef = CDD0CFCB218F39AF0069519E /* ZipArchive.xcodeproj */;
+				},
 			);
 			projectRoot = "";
 			targets = (
@@ -338,6 +420,34 @@
 			remoteRef = CD06612C1F21CC4C00098365 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		CDD0CFD3218F39B00069519E /* ZipArchive.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = ZipArchive.framework;
+			remoteRef = CDD0CFD2218F39B00069519E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		CDD0CFD5218F39B00069519E /* ZipArchive.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = ZipArchive.framework;
+			remoteRef = CDD0CFD4218F39B00069519E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		CDD0CFD7218F39B00069519E /* ZipArchive.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = ZipArchive.framework;
+			remoteRef = CDD0CFD6218F39B00069519E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		CDD0CFD9218F39B00069519E /* ZipArchive.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = ZipArchive.framework;
+			remoteRef = CDD0CFD8218F39B00069519E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
@@ -349,6 +459,7 @@
 				CDEF174C20FA4D800090D3CC /* filter13.png in Resources */,
 				CDEF174A20FA4D800090D3CC /* filter7.png in Resources */,
 				CDEF174420FA4D800090D3CC /* filter9.png in Resources */,
+				CDD0CFCA218F38DB0069519E /* filter.zip in Resources */,
 				CDEF174920FA4D800090D3CC /* filter2.png in Resources */,
 				CDEF173D20FA4D800090D3CC /* filter4.png in Resources */,
 				CDEF174F20FA4D800090D3CC /* filter86.png in Resources */,
@@ -398,6 +509,16 @@
 			isa = PBXTargetDependency;
 			name = libGPU;
 			targetProxy = CD06612E1F21CC5300098365 /* PBXContainerItemProxy */;
+		};
+		CDD0CFDB218F39BC0069519E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "ZipArchive-iOS";
+			targetProxy = CDD0CFDA218F39BC0069519E /* PBXContainerItemProxy */;
+		};
+		CDD0CFDF218F39D00069519E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = "ZipArchive-iOS";
+			targetProxy = CDD0CFDE218F39D00069519E /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -516,7 +637,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = TWA5QS8JFT;
-				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../../src/output/include";
+				HEADER_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/../../src/output/include",
+					"$(PROJECT_DIR)/ZipArchive/SSZipArchive",
+				);
 				INFOPLIST_FILE = example/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
@@ -534,7 +658,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = TWA5QS8JFT;
-				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/../../src/output/include";
+				HEADER_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/../../src/output/include",
+					"$(PROJECT_DIR)/ZipArchive/SSZipArchive",
+				);
 				INFOPLIST_FILE = example/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (

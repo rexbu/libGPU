@@ -9,52 +9,46 @@
 #include "GPULookupFilter.h"
 
 const static char* g_lookup_fragment_shader = SHADER_STRING(
-uniform sampler2D inputImageTexture[2];
-uniform int hasLookup;
+varying highp vec2 textureCoordinate;
+// varying vec2 textureCoordinate;
 
-varying vec2 textureCoordinate;
+uniform sampler2D inputImageTexture[2];
+
+uniform float strength;
 
 void main() {
-    if (hasLookup == 0) {
-        gl_FragColor = texture2D(inputImageTexture[0], textureCoordinate);
-        return;
-    }
+    highp vec4 textureColor = texture2D(inputImageTexture[0], textureCoordinate);
     
-    highp vec4 result  = texture2D(inputImageTexture[0], textureCoordinate);
-    result = result * vec4(0.9, 0.9, 0.9, 1.0) + vec4(0.05, 0.05, 0.05, 0.0);
+    highp float blueColor = textureColor.b * 63.0;
     
-    // lookup filter
-    highp float blueColor = result.b * 63.0;
     highp vec2 quad1;
     quad1.y = floor(floor(blueColor) / 8.0);
     quad1.x = floor(blueColor) - (quad1.y * 8.0);
     
     highp vec2 quad2;
-    quad2.y = floor(ceil(blueColor) / 8.0);
+    quad2.y = floor(ceil(blueColor) /8.0);
     quad2.x = ceil(blueColor) - (quad2.y * 8.0);
     
     highp vec2 texPos1;
-    texPos1.x = (quad1.x * 0.125) + 0.5/512.0 + ((0.125 - 1.0/512.0) * result.r);
-    texPos1.y = (quad1.y * 0.125) + 0.5/512.0 + ((0.125 - 1.0/512.0) * result.g);
+    texPos1.x = (quad1.x * 1.0/8.0) + 0.5/512.0 + ((1.0/8.0 - 1.0/512.0) * textureColor.r);
+    texPos1.y = (quad1.y * 1.0/8.0) + 0.5/512.0 + ((1.0/8.0 - 1.0/512.0) * textureColor.g);
     
     highp vec2 texPos2;
-    texPos2.x = (quad2.x * 0.125) + 0.5/512.0 + ((0.125 - 1.0/512.0) * result.r);
-    texPos2.y = (quad2.y * 0.125) + 0.5/512.0 + ((0.125 - 1.0/512.0) * result.g);
+    texPos2.x = (quad2.x * 1.0/8.0) + 0.5/512.0 + ((1.0/8.0 - 1.0/512.0) * textureColor.r);
+    texPos2.y = (quad2.y * 1.0/8.0) + 0.5/512.0 + ((1.0/8.0 - 1.0/512.0) * textureColor.g);
     
-    highp vec4 newColor1 = texture2D(inputImageTexture[1], texPos1);
-    highp vec4 newColor2 = texture2D(inputImageTexture[1], texPos2);
+    lowp vec4 newColor1 = texture2D(inputImageTexture[1], texPos1);
+    lowp vec4 newColor2 = texture2D(inputImageTexture[1], texPos2);
     
-    highp vec4 newColor = mix(newColor1, newColor2, fract(blueColor));
-    result = vec4(newColor.rgb, result.w);
-    
-    gl_FragColor = result;
+    lowp vec4 newColor = mix(newColor1, newColor2, fract(blueColor));
+    gl_FragColor = mix(textureColor, vec4(newColor.rgb, textureColor.w), 1.0 - strength);
 }
 
 );
-GPULookupFilter::GPULookupFilter():
+GPULookupFilter::GPULookupFilter(const char* path):
 GPUFilter(g_lookup_fragment_shader, 2, "Lookup Filter"){
     m_lookup = NULL;
-    stopLookup();
+    setLookupImage(path);
 }
 
 GPULookupFilter::~GPULookupFilter(){
@@ -62,30 +56,35 @@ GPULookupFilter::~GPULookupFilter(){
         delete m_lookup;
     }
 }
-void GPULookupFilter::setLookupImage(const char* path){
-    stopLookup();
+bool GPULookupFilter::setLookupImage(const char* path){
+    GPUContext* context = GPUContext::shareInstance();
+    context->glContextLock();
+    
+    if (m_lookup!=NULL) {
+        m_lookup->removeAllTargets();
+        delete m_lookup;
+        m_lookup = NULL;
+    }
     
     m_lookup = new GPUPicture(path);
+    bool flag = true;
     if(m_lookup->exist()){
-        // 只需要更改texture数量
-        GPUInput::setInputs(2);
-        setInteger("hasLookup", 1);
         m_lookup->addTarget(this, 1);
     }
     else{
+        flag = false;
         delete m_lookup;
+        m_lookup = NULL;
     }
+    
+    context->glContextUnlock();
+    // 设置参数有锁
+    setExtraParameter(0.0);
+    return flag;
 }
 
-void GPULookupFilter::stopLookup(){
-    if (m_lookup) {
-        m_lookup->removeAllTargets();
-        delete m_lookup;
-    }
-    m_lookup = NULL;
-    setInteger("hasLookup", 0);
-    // 只需要更改texture数量
-    GPUInput::setInputs(1);
+void GPULookupFilter::setExtraParameter(float p){
+    setFloat("strength", p);
 }
 
 void GPULookupFilter::setInputFrameBuffer(GPUFrameBuffer *buffer, int location){

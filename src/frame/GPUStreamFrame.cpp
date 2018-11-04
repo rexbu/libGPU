@@ -147,23 +147,23 @@ void* changeExtraFilter(void* para){
 }
 
 void GPUStreamFrame::setExtraFilter(const char* image){
-    GPULookupFilter* extra_filter = new GPULookupFilter();
-    extra_filter->setLookupImage(image);
-    if (extra_filter==NULL) {
+    GPUFileFilter* extra_filter = new GPUFileFilter(image);
+    // extra_filter->setLookupImage(image);
+    if (!extra_filter->exist()) {
         return;
     }
-    
     GPUContext::shareInstance()->pushAsyncTask(changeExtraFilter, extra_filter);
 }
 
 void GPUStreamFrame::setExtraFilter(const char* file, const char* image){
-
+/*
     GPUFilter* extra_filter = new GPUFileFilter(file, image);
     if (extra_filter==NULL) {
         return;
     }
     
     GPUContext::shareInstance()->pushAsyncTask(changeExtraFilter, extra_filter);
+*/
     //info_log("Set Extra Filter %s", name);
 }
 

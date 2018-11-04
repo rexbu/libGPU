@@ -23,7 +23,7 @@ static bool initViewFlag = true;
     // 滤镜滑动框
     UICollectionView*   filterScrollView;
     NSMutableArray*     filterButtonArray;
-    NSArray*            filterNameArray;
+    NSDictionary*       filterNameArray;
     
     UIInterfaceOrientation old_orientation;
     int ratioIndex;
@@ -52,7 +52,7 @@ BOOL canRotateToAllOrientations;
     // 设置磨皮
     [videoCamera setSmoothStrength:0.9];
     // 设置美白
-    [videoCamera setWhitenStrength:0.9];
+    [videoCamera setWhitenStrength:0.0];
     // 设置预览显示模式，等比例，可能有黑框填充，默认GPUFillModePreserveAspectRatioAndFill
     //[videoCamera setPreviewFillMode:GPUFillModePreserveAspectRatio];
     // 设置预览显示比例，4：3
@@ -62,6 +62,11 @@ BOOL canRotateToAllOrientations;
     [videoCamera setOutputImageOrientation:UIInterfaceOrientationPortrait];
     [videoCamera setPreviewBlend:logo rect:CGRectMake(20, 20, 160, 280) mirror:FALSE];
     [videoCamera setPreviewColor:[UIColor blueColor]];
+    
+    NSArray* paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES);
+    NSString* path = [paths objectAtIndex:0];
+    NSString* filter = [NSString stringWithFormat:@"%@/%@", path, [filterNameArray objectForKey:@"origin"]];
+    [videoCamera setExtraFilter:filter];
     // 颜色滤镜
     //[videoCamera setColorFilter:GPU_COLOR_BLUR_FILTER strength:1];
     //[videoCamera setUnBlurRegion:CGPointMake(300, 400) radius:300];
@@ -142,8 +147,29 @@ BOOL canRotateToAllOrientations;
     [self.view addSubview:smoothView];
     
     // 滤镜滑动窗口
-    filterNameArray = [NSArray arrayWithObjects:@"无", @"filter0", @"filter1", @"filter2", @"filter3", @"filter4", @"filter5", @"filter6", @"filter7", @"filter8", @"filter9",
-                       @"filter10",@"filter11", @"filter13", @"filter15", @"filter16", @"filter17", @"filter18", @"filter20", @"filter21", @"filter86", nil];
+    filterNameArray = [NSDictionary dictionaryWithObjectsAndKeys:
+    @"10000_3", @"origin",
+    @"10001_2",@"valencia",
+    @"10003_2",@"vintage",
+    @"10004_2",@"brannan",
+    @"10005_2",@"inkwell",
+    @"10014_4",@"pink",
+    @"10015_3",@"walden",
+    @"10020_5",@"grass",
+    @"10021_4",@"beach",
+    @"10023_8",@"sweety",
+    @"10024_8",@"nature",
+    @"10026_8",@"clean",
+    @"10028_3",@"fresh",
+    @"10029_3",@"coral",
+    @"10030_5",@"sunset",
+    @"10031_2",@"vivid",
+    @"10032_3",@"lolita",
+    @"10033_2",@"crisp",
+    @"10034_2",@"rosy",
+    @"10035_1",@"urban",
+    @"10036_1",@"vintage",nil];
+    
     filterButtonArray = [[NSMutableArray alloc] init];
     UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
     flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
@@ -309,9 +335,10 @@ BOOL canRotateToAllOrientations;
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *cellID = @"myCell";
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellID forIndexPath:indexPath];
+    NSArray* keys = [filterNameArray allKeys];
     if (cell.contentView.subviews.count <= 0) {
         UIButton* button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 60, 40)];
-        [button setTitle:[filterNameArray objectAtIndex:indexPath.item] forState:UIControlStateNormal];
+        [button setTitle:[keys objectAtIndex:indexPath.item] forState:UIControlStateNormal];
         [button setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
         [button setTag:indexPath.item];
         [button addTarget:self action:@selector(filterSelcted:) forControlEvents:UIControlEventTouchUpInside];
@@ -319,7 +346,7 @@ BOOL canRotateToAllOrientations;
     }
     else{
         UIButton* button = (UIButton*)[cell.contentView.subviews objectAtIndex:0];
-        [button setTitle:[filterNameArray objectAtIndex:indexPath.item] forState:UIControlStateNormal];
+        [button setTitle:[keys objectAtIndex:indexPath.item] forState:UIControlStateNormal];
         [button setTag:indexPath.item];
     }
     
@@ -333,7 +360,11 @@ BOOL canRotateToAllOrientations;
         [videoCamera closeExtraFilter];
     }
     else{
-        [videoCamera setExtraFilter:[filterNameArray objectAtIndex:tag]];
+        NSArray* keys = [filterNameArray allKeys];
+        NSArray* paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES);
+        NSString* path = [paths objectAtIndex:0];
+        NSString* filter = [NSString stringWithFormat:@"%@/%@", path, [filterNameArray objectForKey:[keys objectAtIndex:tag]]];
+        [videoCamera setExtraFilter:filter];
     }
 }
 

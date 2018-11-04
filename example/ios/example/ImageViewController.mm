@@ -69,7 +69,7 @@
     colorFilter = new GPUColorFilter();
     blendFilter = new GPUBlend2Filter();
     // 用于设置滤镜
-    lookupFilter = new GPULookupFilter();
+    lookupFilter = new GPULookupFilter("浅草");
     
     view = new GPUIOSView(self.view.bounds);
     // 显示设置，按照图片比例等比缩放，预览view可能出现黑框
@@ -275,7 +275,7 @@
     NSInteger tag = button.tag;
     if (tag==0) {
         // 滤镜失效
-        lookupFilter->stopLookup();
+        lookupFilter->setExtraParameter(0);
         picture->processImage();
     }
     else{

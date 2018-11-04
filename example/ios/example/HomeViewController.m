@@ -10,6 +10,7 @@
 #import "ViewController.h"
 #import "ImageViewController.h"
 #import "PictureViewController.h"
+#import "SSZipArchive.h"
 
 @implementation HomeViewController
 
@@ -41,6 +42,11 @@
     [pictureButton setBackgroundColor:[UIColor blueColor]];
     [pictureButton addTarget:self action:@selector(enterPicture) forControlEvents:UIControlEventTouchDown];
     [self.view addSubview:pictureButton];
+    
+    NSString* filter = [[NSBundle mainBundle] pathForResource:@"filter" ofType:@"zip"];
+    NSArray* paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES);
+    NSString* path = [paths objectAtIndex:0];
+    [SSZipArchive unzipFileAtPath:filter toDestination:path];
 }
 
 -(void)enter{
