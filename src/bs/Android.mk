@@ -18,7 +18,8 @@ LOCAL_SRC_FILES += \
 	bs_common.c	\
 	bs_object.c	\
 	bs_string.c	\
-	bs_data.c
+	bs_data.c   \
+	bs_file.c
 # bs_time里的signal函数在r10里不支持
 #When you use the ndk r10, android-21 is used by default but it's not fully retro-compatible with devices running former Android versions. In your case, signal can't be found on your device (but it would run properly on Lollipop).
 #When using the NDK, you should use the platform (APP_PLATFORM:=android-XX) that corresponds to your android:minSdkVersion.
