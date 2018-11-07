@@ -37,13 +37,13 @@ m_output_group("OutputGroup")
     m_view = NULL;
     m_input = NULL;
     m_smooth_filter.m_filter_name = "smooth_filter";
-    m_whiten_filter.m_filter_name = "whiten_filter";
+    // m_whiten_filter.m_filter_name = "whiten_filter";
     m_video_blend_filter.m_filter_name = "video_blend0";
     
     // m_input = &m_smooth_filter;
     setInputFormat(GPU_RGBA);
-    m_smooth_filter.addTarget(&m_whiten_filter);
-    m_whiten_filter.addTarget(&m_extra_group);
+    // m_smooth_filter.addTarget(&m_whiten_filter);
+    m_smooth_filter.addTarget(&m_extra_group);
     m_extra_group.addTarget(&m_color_filter);
     m_color_filter.addTarget(&m_blank_filter);
     m_blank_filter.addTarget(&m_preview_blend_filter);
@@ -118,7 +118,7 @@ void GPUStreamFrame::setSmoothStrength(float strength){
     m_smooth_filter.setExtraParameter(strength);
 }
 void GPUStreamFrame::setWhitenStrength(float strength){
-    m_whiten_filter.setStrength(strength);
+    // m_whiten_filter.setStrength(strength);
 }
 #pragma --mark "Logo"
 void GPUStreamFrame::setPreviewBlend(GPUPicture* picture, gpu_rect_t rect, bool mirror){
@@ -287,7 +287,7 @@ void GPUStreamFrame::setFrameRotation(gpu_rotation_t rotation){
     info_log("set output rotation: %d", rotation);
     m_color_filter.m_shot_filter.setOutputRotation(rotation);
     // smooth和extra_group可能disable
-    gpu_size_t size = m_whiten_filter.sizeOfFBO();
+    gpu_size_t size = m_smooth_filter.sizeOfFBO();
     if (rotation==GPURotateLeft||rotation==GPURotateRight||rotation==GPURotateRightFlipHorizontal||rotation==GPURotateRightFlipVertical){
         GPUContext::shareInstance()->glContextLock();
         m_color_filter.m_shot_filter.setOutputSize(size.height, size.width);
