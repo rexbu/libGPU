@@ -264,7 +264,7 @@ void GPUStreamFrame::setInputRotation(gpu_rotation_t rotation){
 }
 
 void GPUStreamFrame::setInputSize(uint32_t width, uint32_t height){
-    m_input->setOutputSize(width, height);
+    m_input->setFrameSize(width, height);
     m_frame_width = width;
     m_frame_height = height;
     info_log("input size[%u/%u]", width, height);
