@@ -49,7 +49,9 @@ unsigned char* GPURawOutput::getBuffer(unsigned char* buffer, uint32_t size){
         }
     }
     else{
-        if (buffer==NULL || size<m_size)
+        // 如果中间从rgba换到nv12，size会小于m_size
+        // if (buffer==NULL || size<m_size)
+        if (buffer==NULL)
         {
             if (m_firstbuffer == NULL) {
                 return NULL;
