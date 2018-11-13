@@ -245,7 +245,9 @@ void GPUStreamFrame::setOutputFormat(gpu_pixel_format_t format){
 }
 
 void GPUStreamFrame::setStreamFrameSize(int width, int height){
-    m_blank_filter.setStreamFrameSize(width, height);
+    // m_blank_filter.setStreamFrameSize(width, height);
+    m_input->setOutputSize(width, height);
+    info_log("stream frame size[%u/%u]", width, height);
 }
 
 void GPUStreamFrame::setBlank(int border, int r, int g, int b){
@@ -303,7 +305,7 @@ void GPUStreamFrame::setFrameRotation(gpu_rotation_t rotation){
 void GPUStreamFrame::setOutputSize(uint32_t width, uint32_t height){
     GPUFilter::setOutputSize(width, height);
     m_zoom_filter.setOutputSize(width, height);
-    info_log("output size[%u/%u]", width, height);
+    info_log("stream output size[%u/%u]", width, height);
 }
 
 void GPUStreamFrame::setPreviewMirror(bool mirror){
