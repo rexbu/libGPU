@@ -246,6 +246,7 @@ void GPUStreamFrame::setOutputFormat(gpu_pixel_format_t format){
 
 void GPUStreamFrame::setStreamFrameSize(int width, int height){
     // m_blank_filter.setStreamFrameSize(width, height);
+    m_input->setFillMode(GPUFillModePreserveAspectRatioAndFill);
     m_input->setOutputSize(width, height);
     info_log("stream frame size[%u/%u]", width, height);
 }
