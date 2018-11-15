@@ -24,6 +24,7 @@ public class GPU {
 
         NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setOutputSize", "(II)V");
         NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setOutputFormat", "(I)V");
+        NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setRawFormat", "(I)V");
 
         NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setInputSize", "(II)V");
         NativeLoad.registJNIMethod(so, "com/rex/gpu/GPU", "setInputRotation", "(I)V");
@@ -80,6 +81,7 @@ public class GPU {
     /// 输出
     public native void setOutputSize(int width, int height);
     public native void setOutputFormat(int format);
+    public native void setRawFormat(int format);
     /// 输入
     public native void setInputSize(int width, int height);
     public native void setInputRotation(int rotation);

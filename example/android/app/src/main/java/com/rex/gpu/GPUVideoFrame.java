@@ -287,6 +287,15 @@ public class GPUVideoFrame extends GPU implements SurfaceTexture.OnFrameAvailabl
         setOutputFormat(GPU_NV12);
     }
 
+    public void setRawNV21Callback(GPURawBytesCallback nv21Callback){
+        this.rawBytesCallback = nv21Callback;
+        setRawFormat(GPU_NV21);
+    }
+
+    public void setRawNV12Callback(GPURawBytesCallback nv12Callback){
+        this.rawBytesCallback = nv12Callback;
+        setRawFormat(GPU_NV12);
+    }
     /**
      * 设置镜像
      */

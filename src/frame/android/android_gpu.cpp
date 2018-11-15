@@ -27,6 +27,7 @@ int getTexture(JNIEnv* env, jobject jo);
 
 void setOutputSize(JNIEnv * env, jobject jo, jint width, jint height);
 void setOutputFormat(JNIEnv * env, jobject jo, jint format);
+void setRawFormat(JNIEnv * env, jobject jo, jint format);
 
 void setInputSize(JNIEnv * env, jobject jo, jint width, jint height);
 void setInputRotation(JNIEnv * env, jobject jo, jint rotation);
@@ -233,6 +234,9 @@ void setOutputSize(JNIEnv * env, jobject jo, jint width, jint height){
 
 void setOutputFormat(JNIEnv * env, jobject jo, jint format){
 	GPUStreamFrame::shareInstance()->setOutputFormat((gpu_pixel_format_t)format);
+}
+void setRawFormat(JNIEnv * env, jobject jo, jint format){
+    GPUStreamFrame::shareInstance()->setRawFormat((gpu_pixel_format_t)format);
 }
 
 void setInputSize(JNIEnv * env, jobject jo, jint width, jint height){

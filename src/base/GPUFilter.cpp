@@ -52,11 +52,11 @@ const char* GPUFilter::g_fragment_shader = SHADER_STRING(
 
 const char* GPUFilter::g_bgra_fragment_shader = SHADER_STRING(
         varying vec2 textureCoordinate;
-        uniform sampler2D inputImageTexture;
+        uniform sampler2D inputImageTexture[1];
 
         void main()
         {
-            gl_FragColor = texture2D(inputImageTexture, textureCoordinate).bgra;
+            gl_FragColor = texture2D(inputImageTexture[0], textureCoordinate).bgra;
         }
 );
 
