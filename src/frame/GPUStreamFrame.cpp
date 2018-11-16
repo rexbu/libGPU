@@ -206,8 +206,6 @@ void GPUStreamFrame::setOutputFormat(gpu_pixel_format_t format){
     m_output_format = format;
     m_zoom_filter.removeAllTargets();
     m_yuv_filter->removeAllTargets();
-    m_input->removeTarget(m_raw_output, NULL);
-    m_input->removeTarget(m_yuv_filter, NULL);
     m_output_group.enable();
     
     switch(m_output_format){
@@ -242,61 +240,6 @@ void GPUStreamFrame::setOutputFormat(gpu_pixel_format_t format){
             break;
         case GPU_NV12:
             m_zoom_filter.addTarget(m_yuv_filter);
-            m_yuv_filter->addTarget(m_nv12_filter);
-            m_nv12_filter->addTarget(m_raw_output);
-            err_log("output format nv12");
-            break;
-        default:
-            err_log("Error: Not Support Format!");
-            break;
-    }
-}
-
-void GPUStreamFrame::setRawFormat(gpu_pixel_format_t format){
-    if (format == GPU_UNKNOWN)
-    {
-        return;
-    }
-
-    m_output_format = format;
-    m_zoom_filter.removeAllTargets();
-    m_yuv_filter->removeAllTargets();
-    m_input->removeTarget(m_raw_output, NULL);
-    m_input->removeTarget(m_yuv_filter, NULL);
-    m_output_group.enable();
-
-    switch(m_output_format){
-        case GPU_BGRA:
-            m_input->setOutputFormat(GPU_BGRA);
-            err_log("output format bgra");
-#ifdef __ANDROID__
-            m_input->addTarget(m_raw_output, 1);
-#endif
-            break;
-        case GPU_RGBA:
-            m_input->setOutputFormat(GPU_RGBA);
-            m_input->addTarget(m_raw_output, 1);
-            err_log("output format rgba");
-            break;
-        case GPU_ARGB:
-            m_input->setOutputFormat(GPU_ARGB);
-            m_input->addTarget(m_raw_output, 1);
-            err_log("output format argb");
-            break;
-        case GPU_I420:
-            m_input->addTarget(m_yuv_filter, 1);
-            m_yuv_filter->addTarget(m_yuv420_filter);
-            m_yuv420_filter->addTarget(m_raw_output);
-            err_log("output format yuv420p");
-            break;
-        case GPU_NV21:
-            m_input->addTarget(m_yuv_filter, 1);
-            m_yuv_filter->addTarget(m_nv21_filter);
-            m_nv21_filter->addTarget(m_raw_output);
-            err_log("output format nv21");
-            break;
-        case GPU_NV12:
-            m_input->addTarget(m_yuv_filter, 1);
             m_yuv_filter->addTarget(m_nv12_filter);
             m_nv12_filter->addTarget(m_raw_output);
             err_log("output format nv12");

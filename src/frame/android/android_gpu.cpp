@@ -4,6 +4,7 @@
 #include "bs.h"
 #include "GPU.h"
 #include "GPUStreamFrame.h"
+#include "GPURawGroup.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -65,9 +66,10 @@ void setPreviewColor(JNIEnv* env, jobject jo, jint r, jint g, jint b);
 }
 #endif
 
-static GPUTextureInput*  g_texture_input = NULL;
-static GPURawInput*      g_raw_input = NULL;
-static GPUView*          g_view = NULL;
+static GPUTextureInput*	g_texture_input = NULL;
+static GPURawInput*     g_raw_input = NULL;
+static GPUView*         g_view = NULL;
+static GPURawGroup*		g_raw_group = NULL;
 
 // 创建Android NV21 Texture
 jint createTexture(JNIEnv * env, jclass jc){
@@ -143,6 +145,10 @@ void destroyEGL(JNIEnv * env, jobject jo, jlong jcontext){
 		delete g_view;
 		g_view = NULL;
 	}
+	if(g_raw_group!=NULL){
+		delete g_raw_group;
+		g_raw_group = NULL;
+	}
 
 	GPUStreamFrame::destroyInstance();
 	GPUBufferCache::destroyInstance();
@@ -167,6 +173,9 @@ void processTexture(JNIEnv * env, jobject jo, jint texture, jint texture_type){
 		g_texture_input->setOutputRotation(stream->getOutputRotation());
 		//stream->setInputFilter(g_texture_input);
 		g_texture_input->addTarget(stream);
+		if (g_raw_group!=NULL){
+			g_texture_input->addTarget(g_raw_group);
+		}
 	}
 
     GPUContext::shareInstance()->runAsyncTasks();
@@ -220,7 +229,13 @@ void getBytes(JNIEnv * env, jobject jobj, jbyteArray jbytes){
 		return;
 	}
 
-	GPUStreamFrame::shareInstance()->m_raw_output->getBuffer((unsigned char*)bytes, env->GetArrayLength(jbytes));
+	if(g_raw_group==NULL){
+		GPUStreamFrame::shareInstance()->m_raw_output->getBuffer((unsigned char*)bytes, env->GetArrayLength(jbytes));
+	}
+	else{
+		g_raw_group->m_raw_output.getBuffer((unsigned char*)bytes, env->GetArrayLength(jbytes));
+	}
+
 	env->ReleasePrimitiveArrayCritical(jbytes, bytes, 0);
 }
 
@@ -236,7 +251,14 @@ void setOutputFormat(JNIEnv * env, jobject jo, jint format){
 	GPUStreamFrame::shareInstance()->setOutputFormat((gpu_pixel_format_t)format);
 }
 void setRawFormat(JNIEnv * env, jobject jo, jint format){
-    GPUStreamFrame::shareInstance()->setRawFormat((gpu_pixel_format_t)format);
+    if(g_raw_group==NULL){
+		g_raw_group = new GPURawGroup();
+	}
+    g_raw_group->setOutputFormat((gpu_pixel_format_t)format);
+	// 如果此时还没有视频流，那么需要在processTexture函数设置pipeline
+	if(g_texture_input!=NULL){
+		g_texture_input->addTarget(g_raw_group, 1);
+	}
 }
 
 void setInputSize(JNIEnv * env, jobject jo, jint width, jint height){

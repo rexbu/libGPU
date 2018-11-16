@@ -109,10 +109,11 @@ public class TextureActivity extends Activity implements SurfaceHolder.Callback{
 
         videoFrame.setSmoothStrength(0.9f);
         videoFrame.setWhitenStrength(0.9f);
-        videoFrame.setNV12Callback(new GPURawBytesCallback() {
+        // 如果要获取处理后的流，使用setNV12Callback
+        videoFrame.setRawNV12Callback(new GPURawBytesCallback() {
             @Override
             public void outputBytes(byte[] bytes) {
-                imageView.setImageBitmap(nv122RGBABitmap(bytes, 360, 640));
+                imageView.setImageBitmap(nv122RGBABitmap(bytes, videoFrame.frameWidth, videoFrame.frameHeight));
             }
         });
 

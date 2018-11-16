@@ -228,6 +228,7 @@ public class GPUVideoFrame extends GPU implements SurfaceTexture.OnFrameAvailabl
         super.setOutputSize(width, height);
         setOutputFormat(outputFormat);
     }
+
     public void setOutputFormat(int format){
         int size = 0;
         outputFormat = format;
@@ -255,6 +256,25 @@ public class GPUVideoFrame extends GPU implements SurfaceTexture.OnFrameAvailabl
             outputBytes = new byte[size];
         }
     }
+
+    public void setRawFormat(int format){
+        int size = 0;
+        outputFormat = format;
+        if (outputFormat!=GPU_UNKNOWN){
+            super.setRawFormat(format);
+        }
+
+        if (format==GPU_YUV420P || format==GPU_NV12 || format== GPU_NV21){
+            size = videoHeight*videoWidth*3/2;
+        }
+        else if (format == GPU_RGBA){
+            size = videoHeight*videoWidth*4;
+        }
+        if (outputFormat!= GPU_UNKNOWN && (outputBytes==null || outputBytes.length<size)){
+            outputBytes = new byte[size];
+        }
+    }
+
     public void setRGBACallback(GPURawBytesCallback rgbaCallback){
         this.rawBytesCallback = rgbaCallback;
         setOutputFormat(GPU_RGBA);
@@ -287,6 +307,11 @@ public class GPUVideoFrame extends GPU implements SurfaceTexture.OnFrameAvailabl
         setOutputFormat(GPU_NV12);
     }
 
+
+    public void setRawRGBACallback(GPURawBytesCallback rgbaCallback){
+        this.rawBytesCallback = rgbaCallback;
+        setRawFormat(GPU_RGBA);
+    }
     public void setRawNV21Callback(GPURawBytesCallback nv21Callback){
         this.rawBytesCallback = nv21Callback;
         setRawFormat(GPU_NV21);

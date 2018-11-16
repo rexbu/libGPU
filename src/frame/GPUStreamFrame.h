@@ -63,8 +63,6 @@ public:
     virtual void setOutputSize(uint32_t width, uint32_t height);
     // 设置输出的byte格式，目前支持yuv420p, rgba, nv21, nv12
     void setOutputFormat(gpu_pixel_format_t format);
-    // 设置原始的byte格式，目前支持yuv420p, rgba, nv21, nv12
-    void setRawFormat(gpu_pixel_format_t format);
     void setVideoBlend(GPUPicture* picture, gpu_rect_t rect, bool mirror);
 
     void setStreamFrameSize(int width, int height);
