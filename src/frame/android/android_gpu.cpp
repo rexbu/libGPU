@@ -257,7 +257,7 @@ void setRawFormat(JNIEnv * env, jobject jo, jint format){
     g_raw_group->setOutputFormat((gpu_pixel_format_t)format);
 	// 如果此时还没有视频流，那么需要在processTexture函数设置pipeline
 	if(g_texture_input!=NULL){
-		g_texture_input->addTarget(g_raw_group, 1);
+		g_texture_input->addTarget(g_raw_group);
 	}
 }
 
