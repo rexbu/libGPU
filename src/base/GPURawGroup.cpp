@@ -10,9 +10,6 @@
 
 GPURawGroup::GPURawGroup(){
     m_input = &m_zoom_filter;
-#ifdef __ANDROID__
-    m_yuv_filter.setOutputRotation(GPUFlipVertical);
-#endif
     //m_output = &m_raw_output;
 }
 void GPURawGroup::setOutputFormat(gpu_pixel_format_t format){
