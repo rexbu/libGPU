@@ -22,8 +22,8 @@
     GPUIOSView*             playView;
     GPUPicture*             background;
     GPURawInput*            rawInput;
-    
-    GPUStreamFrame*          streamFrame;
+    GPUFilter               rawFilter;
+    GPUStreamFrame*         streamFrame;
     
     BOOL                    running;
     BOOL                    closeBeauty;
@@ -229,6 +229,16 @@
     }
     
     bufferInput->processPixelBuffer(imageBuffer);
+    glFinish();
+    
+    if (_rawPixelBlock!=nil){
+        GPUIOSFrameBuffer* outbuffer = (GPUIOSFrameBuffer*)rawFilter.m_outbuffer;
+        if(outbuffer != NULL){
+            CVPixelBufferRef pixel = outbuffer->getPixelBuffer();
+            _rawPixelBlock(pixel, _presentTimeStamp);
+        }
+    }
+    
     if (_bgraPixelBlock!=nil) {
         GPUIOSFrameBuffer* outbuffer = (GPUIOSFrameBuffer*)streamFrame->m_zoom_filter.m_outbuffer;
         if(outbuffer == NULL){
@@ -237,11 +247,11 @@
             return FALSE;
         }
         else {
-            glFinish();
             CVPixelBufferRef pixel = outbuffer->getPixelBuffer();
             _bgraPixelBlock(pixel, _presentTimeStamp);
         }
     }
+    
     if (_yuv420pPixelBlock!=nil) {
         _yuv420pPixelBlock(streamFrame->m_raw_output->getBuffer(), _presentTimeStamp);
     }
@@ -412,7 +422,7 @@
             break;
     }
     
-    [self setFrameVertical:streamFrame->m_input];
+    [self setFrameVertical:bufferInput];
     if (_cameraPosition==AVCaptureDevicePositionFront) {
         streamFrame->m_camera_position = GPU_CAMERA_FRONT;
         [self setMirrorFrontPreview:_mirrorFrontPreview];
@@ -550,7 +560,7 @@
         default:
             _videoSize = CGSizeMake(originSize.width, originSize.height);
     }
-    streamFrame->setInputSize(_videoSize.width, _videoSize.height);
+    bufferInput->setOutputSize(_videoSize.width, _videoSize.height);
 }
 
 -(void)setMirrorFrontPreview:(BOOL)mirrorFrontPreview{
@@ -613,6 +623,12 @@
     _nv21BytesBlock = nil;
     _nv12BytesBlock = nv12BytesBlock;
     streamFrame->setOutputFormat(GPU_NV12);
+}
+
+-(void)setRawPixelBlock:(void (^)(CVPixelBufferRef, CMTime))rawPixelBlock{
+    _rawPixelBlock = rawPixelBlock;
+    rawFilter.setOutputFormat(GPU_BGRA);
+    bufferInput->addTarget(&rawFilter);
 }
 
 -(void)setBgraPixelBlock:(void (^)(CVPixelBufferRef, CMTime))bgraPixelBlock{

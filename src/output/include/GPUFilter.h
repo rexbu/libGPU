@@ -40,6 +40,8 @@ public:
     int getFillMode(){return m_fill_mode;}
     // 设置输出重新计算裁剪
 	virtual void setOutputSize(uint32_t width, uint32_t height);
+    /// 更新帧尺寸并重新计算裁剪
+    virtual void setFrameSize(uint32_t width, uint32_t height);
     
     // 修改shader
     virtual void setOutputFormat(gpu_pixel_format_t format);
@@ -58,7 +60,10 @@ public:
     float* getCoordinates(){
         return &m_coordinates[0];
     }
-
+    void setSpecialBuffer(GPUFrameBuffer* buffer){
+        m_special_outbuffer = buffer;
+    }
+    
     void setClearColor(float r, float g, float b);
     void setFloat(const char* name, GLfloat val);
     void setFloat(const char* name, GLfloat* val, int num);
@@ -72,8 +77,6 @@ protected:
     virtual void initShader();
     void initParams();
     
-    /// 更新帧尺寸并重新计算裁剪
-    virtual void setFrameSize(uint32_t width, uint32_t height);
     // 计算裁剪比例，更新顶点
     virtual void calAspectRatio();
 

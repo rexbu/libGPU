@@ -15,6 +15,7 @@
 #include "GPU.h"
 #include "GPUGroupFilter.h"
 #include "GPUYUVFilter.h"
+#include "GPUIOSBuffer.h"
 
 class GPUSampleBufferInput: public GPUGroupFilter{
 public:
@@ -24,8 +25,9 @@ public:
     void processSampleBuffer(CMSampleBufferRef sampleBuffer);
     void processPixelBuffer(CVImageBufferRef pixelBuffer);
     
+    GPUIOSFrameBuffer*  m_rawbuffer;
 protected:
-    OSType    m_format;        // 是否YUV数据
+    OSType              m_format;        // 是否YUV数据
 };
 
 #endif

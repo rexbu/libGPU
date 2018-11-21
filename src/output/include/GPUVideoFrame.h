@@ -43,6 +43,7 @@
 @property(nonatomic, copy)void (^nv21PixelBlock)(unsigned char* buffer, CMTime time);
 @property(nonatomic, copy)void (^nv12PixelBlock)(unsigned char* buffer, CMTime time);
 @property(nonatomic, copy)void (^textureBlock)(unsigned int texture, CMTime time);   // 返回处理后的texture
+@property(nonatomic, copy)void (^rawPixelBlock)(CVPixelBufferRef buffer, CMTime time); // 返回未处理的调正的原始视频流
 // 当使用processVideoBytes时获取处理后数据使用以下回调
 @property(nonatomic, copy)void (^bgraBytesBlock)(unsigned char* buffer,int width,int height);
 @property(nonatomic, copy)void (^nv21BytesBlock)(unsigned char* buffer,int width,int height);

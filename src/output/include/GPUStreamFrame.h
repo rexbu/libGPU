@@ -75,7 +75,7 @@ public:
     GPUGroupFilter      m_output_group; // output不会再有target
     // 美颜
     GPUSmoothFilter     m_smooth_filter;
-    //GPUWhiteningFilter  m_whiten_filter;
+    GPUWhiteningFilter  m_whiten_filter;
     // 滤镜
     GPUFilter*          m_extra_filter;
     GPUColorFilter      m_color_filter;

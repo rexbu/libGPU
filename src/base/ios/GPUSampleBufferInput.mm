@@ -13,6 +13,7 @@
 
 GPUSampleBufferInput::GPUSampleBufferInput(){
     m_format = 0;
+    m_rawbuffer = NULL;
 }
 
 void GPUSampleBufferInput::processSampleBuffer(CMSampleBufferRef sampleBuffer){
@@ -75,11 +76,16 @@ void GPUSampleBufferInput::processPixelBuffer(CVImageBufferRef cameraFrame){
         if (m_input == NULL) {
             m_input = new GPUNV12ToRGBFilter();
             m_input->setOutputRotation(m_rotation);
+            if(m_out_width!=0 && m_out_height!=0){
+                m_input->setOutputSize(m_out_width, m_out_height);
+                m_rawbuffer = new GPUIOSFrameBuffer(m_out_width, m_out_height, false);
+            }
             m_output = m_input;
         }
         
         setInputFrameBuffer(&luma_buffer, 0);
         setInputFrameBuffer(&chrom_buffer, 1);
+        m_input->setSpecialBuffer(m_rawbuffer);
         newFrame();
         
         CFRelease(luminanceTextureRef);
@@ -106,9 +112,14 @@ void GPUSampleBufferInput::processPixelBuffer(CVImageBufferRef cameraFrame){
         if (m_input==NULL) {
             m_input = new GPUFilter();
             m_input->setOutputRotation(m_rotation);
+            if(m_out_width!=0 && m_out_height!=0){
+                m_input->setOutputSize(m_out_width, m_out_height);
+                m_rawbuffer = new GPUIOSFrameBuffer(m_out_width, m_out_height);
+            }
             m_output = m_input;
         }
         setInputFrameBuffer(outbuffer);
+        m_input->setSpecialBuffer(m_rawbuffer);
         newFrame();
     }
     
@@ -121,5 +132,8 @@ void GPUSampleBufferInput::processPixelBuffer(CVImageBufferRef cameraFrame){
 GPUSampleBufferInput::~GPUSampleBufferInput(){
     if(m_input!=NULL){
         delete m_input;
+    }
+    if(m_rawbuffer!=NULL){
+        delete m_rawbuffer;
     }
 }

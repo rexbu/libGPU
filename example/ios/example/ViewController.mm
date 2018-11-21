@@ -72,15 +72,16 @@ BOOL canRotateToAllOrientations;
     //[videoCamera setUnBlurRegion:CGPointMake(300, 400) radius:300];
     
     __block typeof(self) parent = self;
-    videoCamera.bgraPixelBlock = ^(CVPixelBufferRef pixelBuffer, CMTime time){
+    // 获取原始视频流，如果获取其他视频流，调用其他回调
+    videoCamera.rawPixelBlock = ^(CVPixelBufferRef pixelBuffer, CMTime time){
         // 获取处理后视频帧
         // 视频流预览
         if (parent->videoView!=nil) {
             // 此处对性能影响比较大，如果不用测试视频流是否正确，可以把以下代码关闭
             UIImage* image = [self pixelBuffer2Image:pixelBuffer];
-//            dispatch_async(dispatch_get_main_queue(), ^(){
-//                [parent->videoView setImage:image];
-//            });
+            dispatch_async(dispatch_get_main_queue(), ^(){
+                [parent->videoView setImage:image];
+            });
         }
     };
     
@@ -92,7 +93,7 @@ BOOL canRotateToAllOrientations;
     // 视频流预览
     videoView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 150, 135, 240)];
     [videoView setBackgroundColor:[UIColor whiteColor]];
-    // [self.view addSubview:videoView];
+    [self.view addSubview:videoView];
     
     UIButton* record = [[UIButton alloc]initWithFrame:CGRectMake(10, 20, 60, 40)];
     [record setTitle:@"返回" forState:UIControlStateNormal];
