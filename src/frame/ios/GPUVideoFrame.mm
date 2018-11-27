@@ -523,6 +523,14 @@
     if (_cameraPosition!=AVCaptureDevicePositionFront) {
         return;
     }
+    if(_rawPixelBlock!=nil){
+        if (_mirrorFrontFacingCamera) {
+            rawFilter.setOutputRotation(GPUFlipHorizonal);
+        }
+        else{
+            rawFilter.setOutputRotation(GPUNoRotation);
+        }
+    }
     streamFrame->setOutputMirror(_mirrorFrontFacingCamera);
     [self setVideoSize];
 }
@@ -531,6 +539,14 @@
     _mirrorBackFacingCamera = mirrorBackFacingCamera;
     if (_cameraPosition!=AVCaptureDevicePositionBack) {
         return;
+    }
+    if(_rawPixelBlock!=nil){
+        if (_mirrorBackFacingCamera) {
+            rawFilter.setOutputRotation(GPUFlipHorizonal);
+        }
+        else{
+            rawFilter.setOutputRotation(GPUNoRotation);
+        }
     }
     streamFrame->setOutputMirror(_mirrorBackFacingCamera);
     [self setVideoSize];
@@ -629,6 +645,15 @@
     _rawPixelBlock = rawPixelBlock;
     rawFilter.setOutputFormat(GPU_BGRA);
     bufferInput->addTarget(&rawFilter);
+    if (_cameraPosition==AVCaptureDevicePositionFront && _mirrorFrontFacingCamera) {
+        rawFilter.setOutputRotation(GPUFlipHorizonal);
+    }
+    else if(_cameraPosition==AVCaptureDevicePositionBack && _mirrorBackFacingCamera){
+        rawFilter.setOutputRotation(GPUFlipHorizonal);
+    }
+    else{
+        rawFilter.setOutputRotation(GPUNoRotation);
+    }
 }
 
 -(void)setBgraPixelBlock:(void (^)(CVPixelBufferRef, CMTime))bgraPixelBlock{
