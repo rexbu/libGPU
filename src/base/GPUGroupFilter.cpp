@@ -27,8 +27,8 @@ void GPUGroupFilter::newFrame(){
 //        m_input->setOutputSize(m_out_width, m_out_height);
         
         m_input->newFrame();
-        if (m_output->m_outbuffer==NULL) {
-            err_log("%s newFrame Failed!", m_filter_name.c_str());
+        if (m_output==NULL || m_output->m_outbuffer==NULL) {
+            //err_log("%s newFrame Failed!", m_filter_name.c_str());
             return;
         }
         m_outbuffer = m_output->m_outbuffer;

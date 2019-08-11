@@ -186,6 +186,7 @@ static const char* g_tonv21_fragment_shader = SHADER_STRING(
 	varying vec2 textureCoordinate;
     uniform sampler2D inputImageTexture[1];
 
+    uniform mediump float frameWStep;
     uniform mediump float frameHStep;	// 1.0/(frameHeight-1)
     uniform mediump float wStep;	// 1.0/(420width-1)
     uniform mediump float hStep;	// 1.0/(420height-1)
@@ -203,9 +204,9 @@ static const char* g_tonv21_fragment_shader = SHADER_STRING(
     		mediump float x = 4.0*(textureCoordinate.x-ystep*floor(textureCoordinate.x/ystep));
     		mediump float y = h*frameHStep*4.0 + floor(textureCoordinate.x/ystep)*frameHStep;
     		mediump vec4 p0 = texture2D(inputImageTexture[0], vec2(x, y));
-    		mediump vec4 p1 = texture2D(inputImageTexture[0], vec2(x+wStep, y));
-    		mediump vec4 p2 = texture2D(inputImageTexture[0], vec2(x+2.0*wStep, y));
-    		mediump vec4 p3 = texture2D(inputImageTexture[0], vec2(x+3.0*wStep, y));
+    		mediump vec4 p1 = texture2D(inputImageTexture[0], vec2(x+frameWStep, y));
+    		mediump vec4 p2 = texture2D(inputImageTexture[0], vec2(x+2.0*frameWStep, y));
+    		mediump vec4 p3 = texture2D(inputImageTexture[0], vec2(x+3.0*frameWStep, y));
     		gl_FragColor = vec4(p0.r, p1.r, p2.r, p3.r);
     	}
     	else
@@ -237,9 +238,10 @@ static const char* g_tonv12_fragment_shader = SHADER_STRING(
 	varying vec2 textureCoordinate;
     uniform sampler2D inputImageTexture[1];
 
+    uniform mediump float frameWStep;
     uniform mediump float frameHStep;	// 1.0/(frameHeight-1)
-    uniform mediump float wStep;	// 1.0/(420width-1)
-    uniform mediump float hStep;	// 1.0/(420height-1)
+    uniform mediump float wStep;	// 1.0/(420width)
+    uniform mediump float hStep;	// 1.0/(420height)
 
     const mediump float yh = 2.0/3.0;
     const mediump float uh = 5.0/6.0;
@@ -247,26 +249,27 @@ static const char* g_tonv12_fragment_shader = SHADER_STRING(
     const mediump float ustep = 1.0/4.0;
     void main()
     {
-    	// 第几行
-    	mediump float h = textureCoordinate.y/hStep;
-    	if (textureCoordinate.y<yh)
-    	{
-    		mediump float x = 4.0*(textureCoordinate.x-ystep*floor(textureCoordinate.x/ystep));
-    		mediump float y = h*frameHStep*4.0 + floor(textureCoordinate.x/ystep)*frameHStep;
-    		mediump vec4 p0 = texture2D(inputImageTexture[0], vec2(x, y));
-    		mediump vec4 p1 = texture2D(inputImageTexture[0], vec2(x+wStep, y));
-    		mediump vec4 p2 = texture2D(inputImageTexture[0], vec2(x+2.0*wStep, y));
-    		mediump vec4 p3 = texture2D(inputImageTexture[0], vec2(x+3.0*wStep, y));
-    		gl_FragColor = vec4(p0.r, p1.r, p2.r, p3.r);
-    	}
-    	else
+
+        // 第几行
+        mediump float h = textureCoordinate.y/hStep - 0.5;
+        if (textureCoordinate.y<yh)
         {
-    		mediump float x = 4.0*(textureCoordinate.x-ustep*floor(textureCoordinate.x/ustep));
-    		mediump float y = (h-yh/hStep)*frameHStep*8.0 + 2.0*floor(textureCoordinate.x/ustep)*frameHStep;
-    		mediump vec4 p0 = texture2D(inputImageTexture[0], vec2(x, y));
-    		mediump vec4 p1 = texture2D(inputImageTexture[0], vec2(x+2.0*wStep, y));
-    		gl_FragColor = vec4(p0.g, p0.b, p1.g, p1.b);
-    	}
+            mediump float x = 4.0*(textureCoordinate.x-ystep*floor(textureCoordinate.x/ystep));
+            mediump float y = h*frameHStep*4.0 + floor(textureCoordinate.x/ystep)*frameHStep;
+            mediump vec4 p0 = texture2D(inputImageTexture[0], vec2(x, y));
+            mediump vec4 p1 = texture2D(inputImageTexture[0], vec2(x+frameWStep, y));
+            mediump vec4 p2 = texture2D(inputImageTexture[0], vec2(x+2.0*frameWStep, y));
+            mediump vec4 p3 = texture2D(inputImageTexture[0], vec2(x+3.0*frameWStep, y));
+            gl_FragColor = vec4(p0.r, p1.r, p2.r, p3.r);
+        }
+        else
+        {
+            mediump float x = 4.0*(textureCoordinate.x-ustep*floor(textureCoordinate.x/ustep));
+            mediump float y = (h-yh/hStep)*frameHStep*8.0 + 2.0*floor(textureCoordinate.x/ustep)*frameHStep;
+            mediump vec4 p0 = texture2D(inputImageTexture[0], vec2(x, y));
+            mediump vec4 p1 = texture2D(inputImageTexture[0], vec2(x+2.0*wStep, y));
+            gl_FragColor = vec4(p0.g, p0.b, p1.g, p1.b);
+        }
     }
 );
 
@@ -277,11 +280,11 @@ GPUToNV12Filter::GPUToNV12Filter():GPUToYUV420Filter(g_tonv12_fragment_shader){
 void GPUToNV12Filter::setFrameSize(uint32_t width, uint32_t height){
     GPUFilter::setFrameSize(width, height);
     setOutputSize(m_frame_width, m_frame_height*3/8);
-    
-    setFloat("frameHStep", 1.0/(m_frame_height-1));
-    setFloat("frameWStep", 1.0/(m_frame_width-1));
-    //setFloat("wStep", 1.0/(m_frame_width/4-1));
-    setFloat("hStep", 1.0/(m_frame_height*3/8-1));
+
+    setFloat("frameHStep", 1.0/(m_frame_height));
+    setFloat("frameWStep", 1.0/(m_frame_width));
+    setFloat("wStep", 1.0/(m_frame_width));
+    setFloat("hStep", 1.0/(m_frame_height*3/8));
 }
 
 #pragma --mark "GPUToGrayFilter"

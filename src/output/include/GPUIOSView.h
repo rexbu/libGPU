@@ -26,6 +26,8 @@
 @property(assign, nonatomic) gpu_fill_mode_t fillMode;
 @property(nonatomic, assign)gpu_rotation_t rotation;
 @property(readonly, nonatomic) CGSize sizeInPixels;
+@property(readonly, nonatomic)CGSize viewSize;
+@property(assign, nonatomic)UIColor* previewColor;
 
 @property(nonatomic) BOOL enabled;
 - (void)newFrame;
@@ -46,6 +48,7 @@ public:
         return m_view;
     }
     
+    void setPreviewColor(UIColor* color);
     void newFrame();
     void setInputFrameBuffer(GPUFrameBuffer* buffer, int location=0);
     

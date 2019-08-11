@@ -34,15 +34,18 @@
 #include "GPULineFilter.h"
 
 #include "GPULookupFilter.h"
+#include "GPUSmoothFilter.h"        // 磨皮
+#include "GPUWhiteningFilter.h"     // 美白
 #include "GPUMedianFilter.h"        // 中值滤波
 #include "GPUGaussianBlurFilter.h"  // 高斯滤波
 #include "GPULuminanceFilter.h"     // 灰度
 #include "GPUSobelEdgeFilter.h"     // Sobel边缘检测
 #include "GPUBilateralBlurFilter.h" // 平滑滤波
-#include "GPUColorFilter.h"
+#include "GPUColorFilter.h"         // 曝光、饱和度、对比度、锐化等调节
 
 #include "GPUBezierFilter.h"        // 贝塞尔曲线
 #include "GPUPaintFilter.h"
+#include "GPUBlankFilter.h"
 
 #include "GPUBlendImageFilter.h"
 #include "GPUBlend2Filter.h"

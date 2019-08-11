@@ -15,16 +15,18 @@ static bool initViewFlag = true;
 
 @interface ViewController (){
     GPUVideoCamera* videoCamera;
-    
+    UIImage*        logo;
     UITextView*     smoothView;
     UIImageView*    videoView;
+    UIButton*       ratioButton;
     
     // 滤镜滑动框
     UICollectionView*   filterScrollView;
     NSMutableArray*     filterButtonArray;
-    NSArray*            filterNameArray;
+    NSDictionary*       filterNameArray;
     
     UIInterfaceOrientation old_orientation;
+    int ratioIndex;
 }
 
 @end
@@ -35,6 +37,7 @@ BOOL canRotateToAllOrientations;
 -(id) init{
     self = [super init];
     old_orientation = UIInterfaceOrientationUnknown;
+    ratioIndex = 0;
     return self;
 }
 
@@ -42,23 +45,43 @@ BOOL canRotateToAllOrientations;
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     bs_log_init("stdout");
-    
+    logo = [UIImage imageNamed:@"logo.png"];
     videoCamera = [[GPUVideoCamera alloc] initWithSessionPreset:AVCaptureSessionPresetHigh position:AVCaptureDevicePositionFront view:self.view];
     [videoCamera setMirrorFrontFacingCamera:TRUE];
     [videoCamera setMirrorFrontPreview:TRUE];
+    // 设置磨皮
+    [videoCamera setSmoothStrength:0.9];
+    // 设置美白
+    [videoCamera setWhitenStrength:0.0];
+    // 设置预览显示模式，等比例，可能有黑框填充，默认GPUFillModePreserveAspectRatioAndFill
+    //[videoCamera setPreviewFillMode:GPUFillModePreserveAspectRatio];
+    // 设置预览显示比例，4：3
+    //[videoCamera setPreviewSize:CGSizeMake(200, 600)];
+    // 设置输出视频流尺寸
     [videoCamera setOutputSize:CGSizeMake(480, 640)];
     [videoCamera setOutputImageOrientation:UIInterfaceOrientationPortrait];
+    [videoCamera setPreviewBlend:logo rect:CGRectMake(20, 20, 160, 280) mirror:FALSE];
+    [videoCamera setPreviewColor:[UIColor blueColor]];
+    
+    NSArray* paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES);
+    NSString* path = [paths objectAtIndex:0];
+    NSString* filter = [NSString stringWithFormat:@"%@/%@", path, [filterNameArray objectForKey:@"origin"]];
+    [videoCamera setExtraFilter:filter];
+    // 颜色滤镜
+    //[videoCamera setColorFilter:GPU_COLOR_BLUR_FILTER strength:1];
+    //[videoCamera setUnBlurRegion:CGPointMake(300, 400) radius:300];
     
     __block typeof(self) parent = self;
-    videoCamera.bgraPixelBlock = ^(CVPixelBufferRef pixelBuffer, CMTime time){
+    // 获取原始视频流，如果获取其他视频流，调用其他回调
+    videoCamera.rawPixelBlock = ^(CVPixelBufferRef pixelBuffer, CMTime time){
         // 获取处理后视频帧
         // 视频流预览
         if (parent->videoView!=nil) {
             // 此处对性能影响比较大，如果不用测试视频流是否正确，可以把以下代码关闭
             UIImage* image = [self pixelBuffer2Image:pixelBuffer];
-//            dispatch_async(dispatch_get_main_queue(), ^(){
-//                [parent->videoView setImage:image];
-//            });
+            dispatch_async(dispatch_get_main_queue(), ^(){
+                [parent->videoView setImage:image];
+            });
         }
     };
     
@@ -70,7 +93,7 @@ BOOL canRotateToAllOrientations;
     // 视频流预览
     videoView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 150, 135, 240)];
     [videoView setBackgroundColor:[UIColor whiteColor]];
-    // [self.view addSubview:videoView];
+    [self.view addSubview:videoView];
     
     UIButton* record = [[UIButton alloc]initWithFrame:CGRectMake(10, 20, 60, 40)];
     [record setTitle:@"返回" forState:UIControlStateNormal];
@@ -86,9 +109,15 @@ BOOL canRotateToAllOrientations;
     [rotate setBackgroundColor:[UIColor orangeColor]];
     [rotate addTarget:videoCamera action:@selector(rotateCamera) forControlEvents:UIControlEventTouchUpInside];
     
+    ratioButton = [[UIButton alloc]initWithFrame:CGRectMake(220, 20, 60, 40)];
+    [ratioButton setTitle:@"比例" forState:UIControlStateNormal];
+    [ratioButton setBackgroundColor:[UIColor orangeColor]];
+    [ratioButton addTarget:self action:@selector(ratioSwitch) forControlEvents:UIControlEventTouchUpInside];
+    
     [self.view addSubview:record];
     [self.view addSubview:stop];
     [self.view addSubview:rotate];
+    [self.view addSubview:ratioButton];
     
     UILabel* smoothLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 480, 40, 20)];
     [smoothLabel setText:@"美颜"];
@@ -101,6 +130,17 @@ BOOL canRotateToAllOrientations;
     [smooth addTarget:self action:@selector(smoothValueChanged:) forControlEvents:UIControlEventValueChanged];
     [self.view addSubview:smooth];
     
+    UILabel* whitenLabel = [[UILabel alloc] initWithFrame:CGRectMake(10, 530, 40, 20)];
+    [whitenLabel setText:@"美白"];
+    [self.view addSubview:whitenLabel];
+    UISlider* whiten = [[UISlider alloc] initWithFrame:CGRectMake(60, 530, 280, 20)];
+    whiten.minimumValue = 0.0;
+    whiten.maximumValue = 1.0;
+    whiten.value = 0.9;
+    whiten.continuous = NO;
+    [whiten addTarget:self action:@selector(whitenValueChanged:) forControlEvents:UIControlEventValueChanged];
+    [self.view addSubview:whiten];
+    
     smoothView = [[UITextView alloc] initWithFrame:CGRectMake(10, 80, 100, 30)];
     [smoothView setBackgroundColor:[UIColor clearColor]];
     NSString* text = [[NSString alloc] initWithFormat:@"磨皮:%0.2f", 0.5];
@@ -108,12 +148,33 @@ BOOL canRotateToAllOrientations;
     [self.view addSubview:smoothView];
     
     // 滤镜滑动窗口
-    filterNameArray = [NSArray arrayWithObjects:@"无", @"filter0", @"filter1", @"filter2", @"filter3", @"filter4", @"filter5", @"filter6", @"filter7", @"filter8", @"filter9",
-                       @"filter10",@"filter11", @"filter13", @"filter15", @"filter16", @"filter17", @"filter18", @"filter20", @"filter21", @"filter86", nil];
+    filterNameArray = [NSDictionary dictionaryWithObjectsAndKeys:
+    @"10000_3", @"origin",
+    @"10001_2",@"valencia",
+    @"10003_2",@"vintage",
+    @"10004_2",@"brannan",
+    @"10005_2",@"inkwell",
+    @"10014_4",@"pink",
+    @"10015_3",@"walden",
+    @"10020_5",@"grass",
+    @"10021_4",@"beach",
+    @"10023_8",@"sweety",
+    @"10024_8",@"nature",
+    @"10026_8",@"clean",
+    @"10028_3",@"fresh",
+    @"10029_3",@"coral",
+    @"10030_5",@"sunset",
+    @"10031_2",@"vivid",
+    @"10032_3",@"lolita",
+    @"10033_2",@"crisp",
+    @"10034_2",@"rosy",
+    @"10035_1",@"urban",
+    @"10036_1",@"vintage",nil];
+    
     filterButtonArray = [[NSMutableArray alloc] init];
     UICollectionViewFlowLayout *flowLayout = [[UICollectionViewFlowLayout alloc] init];
     flowLayout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
-    filterScrollView = [[UICollectionView alloc] initWithFrame:CGRectMake(10, 530, 320, 40) collectionViewLayout:flowLayout];
+    filterScrollView = [[UICollectionView alloc] initWithFrame:CGRectMake(10, 580, 320, 40) collectionViewLayout:flowLayout];
     filterScrollView.backgroundColor = [UIColor clearColor];
     [self.view addSubview:filterScrollView];
     filterScrollView.delegate = self;
@@ -128,6 +189,7 @@ BOOL canRotateToAllOrientations;
 
 -(void)back{
     [videoCamera stopCameraCapture];
+    [videoCamera destroy];
     videoCamera = nil;
     initViewFlag = true;
     [self dismissViewControllerAnimated:YES completion:nil];
@@ -137,7 +199,34 @@ BOOL canRotateToAllOrientations;
     [videoCamera stopCameraCapture];
     videoCamera = nil;
 }
-
+-(void)ratioSwitch{
+    ratioIndex = (++ratioIndex)%3;
+    switch (ratioIndex) {
+        case 0: // 原始尺寸
+            [ratioButton setTitle:@"比例" forState:UIControlStateNormal];
+            [videoCamera setPreviewFillMode:GPUFillModePreserveAspectRatioAndFill];
+            [videoCamera setPreviewSize:CGSizeMake(720, 1280)];
+            
+            break;
+        case 1: // 1：1
+            [ratioButton setTitle:@"1 : 1" forState:UIControlStateNormal];
+            [videoCamera setPreviewSize:CGSizeMake(720, 720)];
+            [videoCamera setPreviewFillMode:GPUFillModePreserveAspectRatio];
+            break;
+        case 2: // 3:2
+            [ratioButton setTitle:@"3 : 2" forState:UIControlStateNormal];
+            [videoCamera setPreviewSize:CGSizeMake(640, 960)];
+            [videoCamera setPreviewFillMode:GPUFillModePreserveAspectRatio];
+            break;
+        case 3: // 16:9
+            [ratioButton setTitle:@"16: 9" forState:UIControlStateNormal];
+            [videoCamera setPreviewSize:CGSizeMake(540, 960)];
+            [videoCamera setPreviewFillMode:GPUFillModePreserveAspectRatio];
+            break;
+        default:
+            break;
+    }
+}
 - (void)viewDidLayoutSubviews {
     //self.view setBounds:CGRectMake(0, 0, self.view, CGFloat height)
     if (initViewFlag) {
@@ -155,6 +244,9 @@ BOOL canRotateToAllOrientations;
     NSString* text = [[NSString alloc] initWithFormat:@"磨皮:%0.2f", [(UISlider*)sender value]];
     [smoothView setText:text];
     [videoCamera setSmoothStrength:[(UISlider*)sender value]];
+}
+-(void)whitenValueChanged:(id)sender{
+    [videoCamera setWhitenStrength:[(UISlider*)sender value]];
 }
 
 -(void)setNoneSmooth{
@@ -244,9 +336,10 @@ BOOL canRotateToAllOrientations;
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *cellID = @"myCell";
     UICollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:cellID forIndexPath:indexPath];
+    NSArray* keys = [filterNameArray allKeys];
     if (cell.contentView.subviews.count <= 0) {
         UIButton* button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 60, 40)];
-        [button setTitle:[filterNameArray objectAtIndex:indexPath.item] forState:UIControlStateNormal];
+        [button setTitle:[keys objectAtIndex:indexPath.item] forState:UIControlStateNormal];
         [button setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
         [button setTag:indexPath.item];
         [button addTarget:self action:@selector(filterSelcted:) forControlEvents:UIControlEventTouchUpInside];
@@ -254,7 +347,7 @@ BOOL canRotateToAllOrientations;
     }
     else{
         UIButton* button = (UIButton*)[cell.contentView.subviews objectAtIndex:0];
-        [button setTitle:[filterNameArray objectAtIndex:indexPath.item] forState:UIControlStateNormal];
+        [button setTitle:[keys objectAtIndex:indexPath.item] forState:UIControlStateNormal];
         [button setTag:indexPath.item];
     }
     
@@ -268,7 +361,11 @@ BOOL canRotateToAllOrientations;
         [videoCamera closeExtraFilter];
     }
     else{
-        [videoCamera setExtraFilter:[filterNameArray objectAtIndex:tag]];
+        NSArray* keys = [filterNameArray allKeys];
+        NSArray* paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES);
+        NSString* path = [paths objectAtIndex:0];
+        NSString* filter = [NSString stringWithFormat:@"%@/%@", path, [filterNameArray objectForKey:[keys objectAtIndex:tag]]];
+        [videoCamera setExtraFilter:filter];
     }
 }
 

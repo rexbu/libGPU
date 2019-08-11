@@ -4,6 +4,7 @@
 #include "bs.h"
 #include "GPU.h"
 #include "GPUStreamFrame.h"
+#include "GPURawGroup.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -20,43 +21,55 @@ void makeCurrent(JNIEnv * env, jobject jo, jlong jl);
 void destroyEGL(JNIEnv * env, jobject jo, jlong jl);
 
 void processTexture(JNIEnv * env, jobject jo, jint texture, jint texture_type);
-void processBytes(JNIEnv* env, jobject jo, jbyteArray jb, jint w, jint h, jint format);
+void processPicture(JNIEnv * env, jobject jo, jstring jpath);
+void processBytes(JNIEnv * env, jobject jo, jbyteArray jbytes, jint width, jint height, jint format);
 void getBytes(JNIEnv* env, jobject jo, jbyteArray jb);
 int getTexture(JNIEnv* env, jobject jo);
 
 void setOutputSize(JNIEnv * env, jobject jo, jint width, jint height);
 void setOutputFormat(JNIEnv * env, jobject jo, jint format);
+void setRawFormat(JNIEnv * env, jobject jo, jint format);
 
 void setInputSize(JNIEnv * env, jobject jo, jint width, jint height);
 void setInputRotation(JNIEnv * env, jobject jo, jint rotation);
 
+void setViewRotation(JNIEnv * env, jobject jo, jint rotation);
 void setPreviewMirror(JNIEnv * env, jobject jo, jboolean mirror);
 void setOutputMirror(JNIEnv * env, jobject jo, jboolean mirror);
 void setOutputRotation(JNIEnv * env, jobject jo, jint rotation);
+void setFrameRotation(JNIEnv* env, jobject jo, jint rotation);
 
 void setSmoothStrength(JNIEnv * env, jobject jo, jfloat level);
+void setWhitenStrength(JNIEnv * env, jobject jo, jfloat level);
 
 void setExtraFilter(JNIEnv * env, jobject jo, jstring jname);
 void closeExtraFilter(JNIEnv * env, jobject jo);
 void setExtraParameter(JNIEnv * env, jobject jo, jfloat para);
 
+void setColorFilter(JNIEnv * env, jobject jo, jint f, jfloat strength);
+void setUnBlurRegion(JNIEnv * env, jobject jo, jint x, jint y, jint radius);
+
 void setOutputView(JNIEnv * env, jobject jo);
 void removeOutputView(JNIEnv * env, jobject jo);
-void setViewRotation(JNIEnv * env, jobject jo, jint rotation);
-void setViewOutputSize(JNIEnv* env, jobject jo, jint width, jint height);
+void setFrameSize(JNIEnv* env, jobject jo, jint width, jint height);
 void setViewFillMode(JNIEnv* env, jobject jo, jint mode);
 
 // blend用于logo
 void setPreviewBlend(JNIEnv * env, jobject jo, jstring jpath, jfloat x, jfloat y, jfloat w, jfloat h, jboolean mirror);
+void setPreviewBlendBitmap(JNIEnv * env, jobject jo, jobject bitmap, jfloat x, jfloat y, jfloat w, jfloat h, jboolean mirror);
 void setVideoBlend(JNIEnv * env, jobject jo, jstring jpath, jfloat x, jfloat y, jfloat w, jfloat h, jboolean mirror);
+void setVideoBlendBitmap(JNIEnv * env, jobject jo, jobject bitmap, jfloat x, jfloat y, jfloat w, jfloat h, jboolean mirror);
 
+void setBlank(JNIEnv* env, jobject jo, jint border, jint r, jint g, jint b);
+void setPreviewColor(JNIEnv* env, jobject jo, jint r, jint g, jint b);
 #ifdef __cplusplus
 }
 #endif
 
-static GPUTextureInput*  g_texture_input = NULL;
-static GPURawInput*      g_raw_input = NULL;
-static GPUView*          g_view = NULL;
+static GPUTextureInput*	g_texture_input = NULL;
+static GPURawInput*     g_raw_input = NULL;
+static GPUView*         g_view = NULL;
+static GPURawGroup*		g_raw_group = NULL;
 
 // 创建Android NV21 Texture
 jint createTexture(JNIEnv * env, jclass jc){
@@ -132,6 +145,10 @@ void destroyEGL(JNIEnv * env, jobject jo, jlong jcontext){
 		delete g_view;
 		g_view = NULL;
 	}
+	if(g_raw_group!=NULL){
+		delete g_raw_group;
+		g_raw_group = NULL;
+	}
 
 	GPUStreamFrame::destroyInstance();
 	GPUBufferCache::destroyInstance();
@@ -153,11 +170,34 @@ void processTexture(JNIEnv * env, jobject jo, jint texture, jint texture_type){
 			return;
 		}
 		g_texture_input = new GPUTextureInput(stream->m_frame_width, stream->m_frame_height, texture_type);
-		stream->setInputFilter(g_texture_input);
+		g_texture_input->setOutputRotation(stream->getOutputRotation());
+		//stream->setInputFilter(g_texture_input);
+		g_texture_input->addTarget(stream);
+		if (g_raw_group!=NULL){
+			g_texture_input->addTarget(g_raw_group);
+		}
 	}
 
     GPUContext::shareInstance()->runAsyncTasks();
 	g_texture_input->processTexture(texture);
+}
+
+void processPicture(JNIEnv * env, jobject jo, jstring jpath){
+	const char* path = env->GetStringUTFChars(jpath, NULL);
+	if(path == NULL || strlen(path)==0) {
+		return;
+	}
+
+	GPUStreamFrame* stream = GPUStreamFrame::shareInstance();
+
+	GPUPicture pic(path);
+	pic.addTarget(stream);
+
+	stream->m_input->setOutputRotation(stream->getOutputRotation());
+	pic.processImage();
+    glFinish();
+	pic.removeAllTargets();
+	env->ReleaseStringUTFChars(jpath, path);
 }
 
 void processBytes(JNIEnv * env, jobject jo, jbyteArray jbytes, jint width, jint height, jint format){
@@ -172,7 +212,7 @@ void processBytes(JNIEnv * env, jobject jo, jbyteArray jbytes, jint width, jint 
 	{
 		GPUStreamFrame* stream = GPUStreamFrame::shareInstance();
 		g_raw_input = new GPURawInput();
-
+        g_raw_input->setOutputRotation(stream->getOutputRotation());
 		//stream->setInputFormat((GPUPixelFormat_t)format);
 		g_raw_input->addTarget(stream);
 	}
@@ -189,7 +229,13 @@ void getBytes(JNIEnv * env, jobject jobj, jbyteArray jbytes){
 		return;
 	}
 
-	GPUStreamFrame::shareInstance()->m_raw_output->getBuffer((unsigned char*)bytes, env->GetArrayLength(jbytes));
+	if(g_raw_group==NULL){
+		GPUStreamFrame::shareInstance()->m_raw_output->getBuffer((unsigned char*)bytes, env->GetArrayLength(jbytes));
+	}
+	else{
+		g_raw_group->m_raw_output.getBuffer((unsigned char*)bytes, env->GetArrayLength(jbytes));
+	}
+
 	env->ReleasePrimitiveArrayCritical(jbytes, bytes, 0);
 }
 
@@ -204,6 +250,16 @@ void setOutputSize(JNIEnv * env, jobject jo, jint width, jint height){
 void setOutputFormat(JNIEnv * env, jobject jo, jint format){
 	GPUStreamFrame::shareInstance()->setOutputFormat((gpu_pixel_format_t)format);
 }
+void setRawFormat(JNIEnv * env, jobject jo, jint format){
+    if(g_raw_group==NULL){
+		g_raw_group = new GPURawGroup();
+	}
+    g_raw_group->setOutputFormat((gpu_pixel_format_t)format);
+	// 如果此时还没有视频流，那么需要在processTexture函数设置pipeline
+	if(g_texture_input!=NULL){
+		g_texture_input->addTarget(g_raw_group);
+	}
+}
 
 void setInputSize(JNIEnv * env, jobject jo, jint width, jint height){
 	if (g_texture_input!=NULL)
@@ -214,6 +270,9 @@ void setInputSize(JNIEnv * env, jobject jo, jint width, jint height){
 }
 void setInputRotation(JNIEnv * env, jobject jo, jint rotation){
 	GPUStreamFrame::shareInstance()->setInputRotation((gpu_rotation_t)rotation);
+	if (g_texture_input!=NULL){
+		g_texture_input->setOutputRotation((gpu_rotation_t)rotation);
+	}
 }
 
 void setPreviewMirror(JNIEnv * env, jobject jo, jboolean mirror){
@@ -225,8 +284,14 @@ void setOutputMirror(JNIEnv * env, jobject jo, jboolean mirror){
 void setOutputRotation(JNIEnv * env, jobject jo, jint rotation){
 	GPUStreamFrame::shareInstance()->setOutputRotation((gpu_rotation_t)rotation);
 }
+void setFrameRotation(JNIEnv* env, jobject jo, jint rotation){
+    GPUStreamFrame::shareInstance()->setFrameRotation((gpu_rotation_t)rotation);
+}
 void setSmoothStrength(JNIEnv * env, jobject jo, jfloat level){
-	//GPUStreamFrame::shareInstance()->setSmoothStrength(level);
+	GPUStreamFrame::shareInstance()->setSmoothStrength(level);
+}
+void setWhitenStrength(JNIEnv * env, jobject jo, jfloat level){
+    GPUStreamFrame::shareInstance()->setWhitenStrength(level);
 }
 
 void setOutputView(JNIEnv *env, jobject obj){
@@ -248,6 +313,50 @@ void setExtraFilter(JNIEnv * env, jobject obj, jstring filter){
 	env->ReleaseStringUTFChars(filter, name);
 }
 
+void setColorFilter(JNIEnv * env, jobject jo, jint filter, jfloat strength){
+	switch(filter){
+		case GPU_COLOR_CONTRAST_FILTER:
+			GPUStreamFrame::shareInstance()->m_color_filter.setContrast(strength);
+			break;
+		case GPU_COLOR_GAMMA_FILTER:
+			GPUStreamFrame::shareInstance()->m_color_filter.setGamma(strength);
+			break;
+		case GPU_COLOR_SATURATION_FILTER:
+			GPUStreamFrame::shareInstance()->m_color_filter.setSaturation(strength);
+			break;
+		case GPU_COLOR_FADE_FILTER:
+			GPUStreamFrame::shareInstance()->m_color_filter.setFade(strength);
+			break;
+		case GPU_COLOR_BLUR_FILTER:
+			GPUStreamFrame::shareInstance()->m_color_filter.setBlur(strength);
+			break;
+		case GPU_COLOR_SHARPNESS_FILTER:
+			GPUStreamFrame::shareInstance()->m_color_filter.setSharpness(strength);
+			break;
+		case GPU_COLOR_TEMPERATURE_FILTER:
+			GPUStreamFrame::shareInstance()->m_color_filter.setTemperature(strength);
+			break;
+		case GPU_COLOR_TINT_FILTER:
+			GPUStreamFrame::shareInstance()->m_color_filter.setTint(strength);
+			break;
+		case GPU_COLOR_HIGHLIGHTS_FILTER:
+			GPUStreamFrame::shareInstance()->m_color_filter.setHighlights(strength);
+			break;
+		case GPU_COLOR_SHADOWS_FILTER:
+			GPUStreamFrame::shareInstance()->m_color_filter.setShadows(strength);
+			break;
+		case GPU_COLOR_VIGNETTE_FILTER:
+			GPUStreamFrame::shareInstance()->m_color_filter.setVignette(strength);
+			break;
+        default:
+            err_log("unkown color filter: %d", filter);
+	}
+}
+
+void setUnBlurRegion(JNIEnv * env, jobject jo, jint x, jint y, jint radius){
+	GPUStreamFrame::shareInstance()->m_color_filter.setUnBlurRegion(x, y, radius);
+}
+
 void setViewRotation(JNIEnv * env, jobject jo, jint rotation){
 	if (GPUStreamFrame::shareInstance()->m_view!=NULL)
 	{
@@ -258,8 +367,9 @@ void setViewRotation(JNIEnv * env, jobject jo, jint rotation){
 	}
 }
 
-void setViewOutputSize(JNIEnv* env, jobject jo, jint width, jint height){
-	GPUStreamFrame::shareInstance()->m_preview_blend_filter.setOutputSize(width, height);
+void setFrameSize(JNIEnv* env, jobject jo, jint width, jint height){
+	//GPUStreamFrame::shareInstance()->m_blank_filter.setFillMode(GPUFillModePreserveAspectRatioAndFill);
+	GPUStreamFrame::shareInstance()->setStreamFrameSize(width, height);
 }
 
 void setViewFillMode(JNIEnv* env, jobject jo, jint mode){
@@ -293,6 +403,18 @@ void setPreviewBlend(JNIEnv * env, jobject jo, jstring jpath, jfloat x, jfloat y
 
 	env->ReleaseStringUTFChars(jpath, path);
 }
+void setPreviewBlendBitmap(JNIEnv * env, jobject jo, jobject bitmap, jfloat x, jfloat y, jfloat w, jfloat h, jboolean mirror){
+    GPUStreamFrame* stream = GPUStreamFrame::shareInstance();
+    gpu_rect_t rect;
+
+    rect.pointer.x = x;
+    rect.pointer.y = y;
+    rect.size.width = w;
+    rect.size.height = h;
+    GPUPicture* pic = new GPUPicture(bitmap);
+    stream->setPreviewBlend(pic, rect, mirror);
+}
+
 void setVideoBlend(JNIEnv * env, jobject jo, jstring jpath, jfloat x, jfloat y, jfloat w, jfloat h, jboolean mirror){
 	GPUStreamFrame* stream = GPUStreamFrame::shareInstance();
 	gpu_rect_t rect;
@@ -313,6 +435,27 @@ void setVideoBlend(JNIEnv * env, jobject jo, jstring jpath, jfloat x, jfloat y, 
 	env->ReleaseStringUTFChars(jpath, path);
 }
 
+void setVideoBlendBitmap(JNIEnv * env, jobject jo, jobject bitmap, jfloat x, jfloat y, jfloat w, jfloat h, jboolean mirror){
+    GPUStreamFrame* stream = GPUStreamFrame::shareInstance();
+    gpu_rect_t rect;
+
+    rect.pointer.x = x;
+    rect.pointer.y = y;
+    rect.size.width = w;
+    rect.size.height = h;
+    GPUPicture* pic = new GPUPicture(bitmap);
+    stream->setVideoBlend(pic, rect, mirror);
+}
+
+void setBlank(JNIEnv* env, jobject jo, jint border, jint r, jint g, jint b){
+	GPUStreamFrame::shareInstance()->setBlank(border, r, g, b);
+}
+
+void setPreviewColor(JNIEnv* env, jobject jo, jint r, jint g, jint b){
+    if(g_view != NULL){
+        g_view->setClearColor(r/255.0, g/255.0, b/255.0);
+    }
+}
 jint JNI_OnLoad(JavaVM *vm, void *reserved) {
 	return JNI_VERSION_1_4;
 }

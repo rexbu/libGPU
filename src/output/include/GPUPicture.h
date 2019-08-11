@@ -28,6 +28,9 @@ public:
     // pathForResource路径初始化
     GPUPicture(const char* file, const char* type);
 #endif
+#if __ANDROID__
+    GPUPicture(jobject bitmap);
+#endif
     ~GPUPicture();
     
     bool load(const char* path);

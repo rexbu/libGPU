@@ -40,10 +40,18 @@ void GPURawOutput::newFrame(){
 unsigned char* GPURawOutput::getBuffer(unsigned char* buffer, uint32_t size){
     if (m_direct)
     {
-        return m_bytebuffer;
+        if (buffer==NULL || size<m_size){
+            return m_bytebuffer;
+        }
+        else{
+            memcpy(buffer, m_bytebuffer, m_size);
+            return buffer;
+        }
     }
     else{
-        if (buffer==NULL || size<m_size)
+        // 如果中间从rgba换到nv12，size会小于m_size
+        // if (buffer==NULL || size<m_size)
+        if (buffer==NULL)
         {
             if (m_firstbuffer == NULL) {
                 return NULL;

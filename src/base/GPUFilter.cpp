@@ -50,6 +50,16 @@ const char* GPUFilter::g_fragment_shader = SHADER_STRING(
   }
 );
 
+const char* GPUFilter::g_bgra_fragment_shader = SHADER_STRING(
+        varying vec2 textureCoordinate;
+        uniform sampler2D inputImageTexture[1];
+
+        void main()
+        {
+            gl_FragColor = texture2D(inputImageTexture[0], textureCoordinate).bgra;
+        }
+);
+
 const GLfloat GPUFilter::g_vertices[] = {
     -1.0f, -1.0f,
     1.0f, -1.0f,
@@ -110,6 +120,11 @@ GPUFilter::~GPUFilter()
     }
 }
 #pragma --mark "初始化"
+void GPUFilter::setOutputFormat(gpu_pixel_format_t format){
+    const char *fragment = (format==GPU_BGRA) ? g_bgra_fragment_shader : g_fragment_shader;
+    changeShader(fragment, g_vertex_shader);
+}
+
 void GPUFilter::changeShader(const char* fragment, const char* vertex){
     if (fragment==NULL) {
         return;
@@ -156,8 +171,9 @@ void GPUFilter::initParams(){
     // 初始化顶点数据
     m_vertices.resize(8);
     memcpy(&m_vertices[0], g_vertices, sizeof(GLfloat)*8);
-    
-    setFillMode(GPUFillModeStretch);
+
+    m_fill_mode = GPUFillModeStretch;
+    memcpy(&m_vertices[0], g_vertices, sizeof(GLfloat)*8);
 }
 void GPUFilter::initShader(){
     if (m_program==NULL)
@@ -212,27 +228,20 @@ void GPUFilter::render(){
     context->glContextLock();   // 加锁，防止此时设置参数
     
     context->setActiveProgram(m_program);
-    GPUCheckGlError((m_filter_name+" end0").c_str(), true, false);
     activeOutFrameBuffer();
-    GPUCheckGlError((m_filter_name+" end1").c_str(), true, false);
     for (int i=0; i<m_inputs; i++) {
         m_input_buffers[i]->activeTexture(GL_TEXTURE0+i);
         glUniform1i(m_input_textures[i], 0+i);
     }
-    GPUCheckGlError((m_filter_name+" end2").c_str(), true, false);
     m_coordinate_buffer->activeBuffer(m_input_coordinate);
-    GPUCheckGlError((m_filter_name+" end3").c_str(), true, false);
     m_vertex_buffer->activeBuffer(m_position);
-    GPUCheckGlError((m_filter_name+" end4").c_str(), true, false);
     
     glDrawArrays(GL_TRIANGLE_STRIP, 0, (GLsizei)m_vertices.size()/2);
-    GPUCheckGlError((m_filter_name+" end5").c_str(), true, false);
     glFlush();
     m_coordinate_buffer->disableBuffer(m_input_coordinate);
     m_vertex_buffer->disableBuffer(m_position);
     m_outbuffer->unactive();
     
-    GPUCheckGlError((m_filter_name+" end").c_str(), true, false);
     context->glContextUnlock();
 }
 
@@ -267,26 +276,30 @@ void GPUFilter::activeOutFrameBuffer(){
         else{
             m_outbuffer = GPUBufferCache::shareInstance()->getFrameBuffer(sizeOfFBO(), m_option, false);
         }
-        if (m_vertex_buffer == NULL) {
-            m_coordinate_buffer = new GPUVertexBuffer();
-            m_vertex_buffer = new GPUVertexBuffer();
-            m_vertex_buffer->setBuffer(&m_vertices[0]);
-            // 更新纹理坐标
-            if (m_coordinates[0]==-1) {
-                memcpy(&m_coordinates[0], GPUFilter::coordinatesRotation(m_rotation), sizeof(GLfloat)*8);
-            }
-        }
-        // 有可能中途切换镜像等操作，每次设置一次
-        m_coordinate_buffer->setBuffer(&m_coordinates[0]);
-        m_outbuffer->activeBuffer();
-        
-        glClearColor(m_clear_color[0], m_clear_color[1], m_clear_color[2], m_clear_color[3]);
-        glClear( GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     }
     else{
         m_outbuffer = m_special_outbuffer;
-        m_outbuffer->activeBuffer();
     }
+    
+    if (m_vertex_buffer == NULL) {
+        m_coordinate_buffer = new GPUVertexBuffer();
+        m_vertex_buffer = new GPUVertexBuffer();
+    }
+    m_vertex_buffer->setBuffer(&m_vertices[0]);
+    // 更新纹理坐标
+    if (m_coordinates[0]==-1) {
+        //memcpy(&m_coordinates[0], GPUFilter::coordinatesRotation(m_rotation), sizeof(GLfloat)*8);
+        m_coordinate_buffer->setBuffer(GPUFilter::coordinatesRotation(m_rotation));
+    }
+    else{
+        // 有可能中途切换镜像等操作，每次设置一次
+        m_coordinate_buffer->setBuffer(&m_coordinates[0]);
+    }
+    
+    m_outbuffer->activeBuffer();
+    
+    glClearColor(m_clear_color[0], m_clear_color[1], m_clear_color[2], m_clear_color[3]);
+    glClear( GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 }
 
 gpu_size_t GPUFilter::sizeOfFBO(){
@@ -479,7 +492,20 @@ const GLfloat* GPUFilter::coordinatesRotation(gpu_rotation_t mode)
 		default: return noRotationTextureCoordinates;
     }
 }
-
+void GPUFilter::setVertices(float* v){
+    GPUContext* c = GPUContext::shareInstance();
+    c->glContextLock();
+    memcpy(&m_vertices[0], v, sizeof(float)*8);
+    c->glContextUnlock();
+}
+void GPUFilter::setClearColor(float r, float g, float b){
+    GPUContext* c = GPUContext::shareInstance();
+    c->glContextLock();
+    m_clear_color[0] = r;
+    m_clear_color[1] = g;
+    m_clear_color[2] = b;
+    c->glContextUnlock();
+}
 void GPUFilter::enableAttribArray(const char* name){
     GLuint index = m_program->attributeIndex(name);
     glEnableVertexAttribArray(index);

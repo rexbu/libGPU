@@ -29,4 +29,5 @@
 #include "bs_object.h"
 #include "bs_string.h"
 #include "bs_data.h"
+#include "bs_file.h"
 #endif

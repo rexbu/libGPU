@@ -17,15 +17,16 @@ extern int g_file_filter_num;
 
 class GPUFileFilter: public GPUFilter{
 public:
-    GPUFileFilter(const char* fragment, const char* image);
-    GPUFileFilter(const char* fragment, const char* image[], int size);
+    GPUFileFilter(const char* folder);
     ~GPUFileFilter();
     
     virtual void setInputFrameBuffer(GPUFrameBuffer* buffer, int location=0);
-
+    
+    bool exist(){ return m_exist; }
 protected:
     //用于查表的图片
     std::vector<GPUPicture*>    m_images;
+    bool    m_exist;
 };
 
 #endif

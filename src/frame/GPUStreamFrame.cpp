@@ -36,11 +36,18 @@ m_output_group("OutputGroup")
     m_frame_height = 0;
     m_view = NULL;
     m_input = NULL;
+    m_smooth_filter.m_filter_name = "smooth_filter";
+    m_whiten_filter.m_filter_name = "whiten_filter";
+    m_video_blend_filter.m_filter_name = "video_blend0";
     
-    // 用于人脸
-    m_input = &m_extra_group;
-    m_extra_group.addTarget(&m_preview_blend_filter);
-    m_extra_group.addTarget(&m_video_blend_filter);
+    // m_input = &m_smooth_filter;
+    setInputFormat(GPU_RGBA);
+    m_smooth_filter.addTarget(&m_whiten_filter);
+    m_whiten_filter.addTarget(&m_extra_group);
+    m_extra_group.addTarget(&m_color_filter);
+    m_color_filter.addTarget(&m_blank_filter);
+    m_blank_filter.addTarget(&m_preview_blend_filter);
+    m_blank_filter.addTarget(&m_video_blend_filter);
     m_video_blend_filter.addTarget(&m_output_group);
 
     m_video_blend_filter.disable();
@@ -48,14 +55,14 @@ m_output_group("OutputGroup")
     m_output = &m_output_group;
     
     // 输出
-    m_zoom_filter = new GPUZoomFilter();
+    m_zoom_filter.m_filter_name = "zoom_filter";
     m_yuv_filter = new GPURGBToYUVFilter();
     m_yuv420_filter = new GPUToYUV420Filter();
     m_nv21_filter = new GPUToNV21Filter();
     m_nv12_filter = new GPUToNV12Filter();
     m_raw_output = new GPURawOutput();
-    m_output_group.setFirstFilter(m_zoom_filter);
-    m_output_group.setLastFilter(m_zoom_filter);
+    m_output_group.setFirstFilter(&m_zoom_filter);
+    m_output_group.setLastFilter(&m_zoom_filter);
     m_output_group.disable();
     
     m_extra_filter = NULL;
@@ -86,12 +93,12 @@ void GPUStreamFrame::setInputFormat(gpu_pixel_format_t format){
         case GPU_RGBA:
         default:
         {
-            m_input = new GPUFilter();
+            m_input = new GPUZoomFilter();
             break;
         }
     }
     
-    m_input->addTarget(&m_extra_group);
+    m_input->addTarget(&m_smooth_filter);
 }
 
 void GPUStreamFrame::setInputFilter(GPUFilter* input){
@@ -106,6 +113,13 @@ void GPUStreamFrame::setInputFilter(GPUFilter* input){
     m_input = input;
 }
 
+#pragma --mark beauty
+void GPUStreamFrame::setSmoothStrength(float strength){
+    m_smooth_filter.setExtraParameter(strength);
+}
+void GPUStreamFrame::setWhitenStrength(float strength){
+    m_whiten_filter.setStrength(strength);
+}
 #pragma --mark "Logo"
 void GPUStreamFrame::setPreviewBlend(GPUPicture* picture, gpu_rect_t rect, bool mirror){
     m_preview_blend_filter.setBlendImage(picture, rect, mirror);
@@ -133,23 +147,23 @@ void* changeExtraFilter(void* para){
 }
 
 void GPUStreamFrame::setExtraFilter(const char* image){
-    GPULookupFilter* extra_filter = new GPULookupFilter();
-    extra_filter->setLookupImage(image);
-    if (extra_filter==NULL) {
+    GPUFileFilter* extra_filter = new GPUFileFilter(image);
+    // extra_filter->setLookupImage(image);
+    if (!extra_filter->exist()) {
         return;
     }
-    
     GPUContext::shareInstance()->pushAsyncTask(changeExtraFilter, extra_filter);
 }
 
 void GPUStreamFrame::setExtraFilter(const char* file, const char* image){
-
+/*
     GPUFilter* extra_filter = new GPUFileFilter(file, image);
     if (extra_filter==NULL) {
         return;
     }
     
     GPUContext::shareInstance()->pushAsyncTask(changeExtraFilter, extra_filter);
+*/
     //info_log("Set Extra Filter %s", name);
 }
 
@@ -190,36 +204,42 @@ void GPUStreamFrame::setOutputFormat(gpu_pixel_format_t format){
     }
     
     m_output_format = format;
-    m_zoom_filter->removeAllTargets();
+    m_zoom_filter.removeAllTargets();
     m_yuv_filter->removeAllTargets();
     m_output_group.enable();
     
     switch(m_output_format){
         case GPU_BGRA:
-            m_zoom_filter->setOutputFormat(GPU_BGRA);
+            m_zoom_filter.setOutputFormat(GPU_BGRA);
             err_log("output format bgra");
 #ifdef __ANDROID__
-            m_zoom_filter->addTarget(m_raw_output);
+            m_zoom_filter.addTarget(m_raw_output);
 #endif
             break;
         case GPU_RGBA:
-            m_zoom_filter->addTarget(m_raw_output);
+            m_zoom_filter.setOutputFormat(GPU_RGBA);
+            m_zoom_filter.addTarget(m_raw_output);
             err_log("output format rgba");
             break;
+        case GPU_ARGB:
+            m_zoom_filter.setOutputFormat(GPU_ARGB);
+            m_zoom_filter.addTarget(m_raw_output);
+            err_log("output format argb");
+            break;
         case GPU_I420:
-            m_zoom_filter->addTarget(m_yuv_filter);
+            m_zoom_filter.addTarget(m_yuv_filter);
             m_yuv_filter->addTarget(m_yuv420_filter);
             m_yuv420_filter->addTarget(m_raw_output);
             err_log("output format yuv420p");
             break;
         case GPU_NV21:
-            m_zoom_filter->addTarget(m_yuv_filter);
+            m_zoom_filter.addTarget(m_yuv_filter);
             m_yuv_filter->addTarget(m_nv21_filter);
             m_nv21_filter->addTarget(m_raw_output);
             err_log("output format nv21");
             break;
         case GPU_NV12:
-            m_zoom_filter->addTarget(m_yuv_filter);
+            m_zoom_filter.addTarget(m_yuv_filter);
             m_yuv_filter->addTarget(m_nv12_filter);
             m_nv12_filter->addTarget(m_raw_output);
             err_log("output format nv12");
@@ -230,13 +250,30 @@ void GPUStreamFrame::setOutputFormat(gpu_pixel_format_t format){
     }
 }
 
+void GPUStreamFrame::setStreamFrameSize(int width, int height){
+    // m_blank_filter.setStreamFrameSize(width, height);
+    m_input->setFillMode(GPUFillModePreserveAspectRatioAndFill);
+    m_input->setOutputSize(width, height);
+    info_log("stream frame size[%u/%u]", width, height);
+}
+
+void GPUStreamFrame::setBlank(int border, int r, int g, int b){
+    m_blank_filter.setBlank(border, r, g, b);
+}
+
 #pragma --mark "输入、输出的尺寸与旋转方向"
 void GPUStreamFrame::setInputRotation(gpu_rotation_t rotation){
-    info_log("input rotation[%d]", rotation);
+    err_log("set input rotation[%d]", rotation);
+#if __ANDROID__
+    // android旋转方向由g_texture_input控制
+    GPUInput::setOutputRotation(rotation);
+#else
     m_input->setOutputRotation(rotation);
+#endif
 }
+
 void GPUStreamFrame::setInputSize(uint32_t width, uint32_t height){
-    m_input->setOutputSize(width, height);
+    m_input->setFrameSize(width, height);
     m_frame_width = width;
     m_frame_height = height;
     info_log("input size[%u/%u]", width, height);
@@ -247,13 +284,35 @@ void GPUStreamFrame::setPreviewRotation(gpu_rotation_t rotation){
     }
 }
 void GPUStreamFrame::setOutputRotation(gpu_rotation_t rotation){
-    m_zoom_filter->setOutputRotation(rotation);
+    info_log("set output rotation: %d", rotation);
+    m_zoom_filter.setOutputRotation(rotation);
+}
+void GPUStreamFrame::setFrameRotation(gpu_rotation_t rotation){
+    if(m_color_filter.m_frame_width==0 || m_color_filter.m_frame_width==0){
+        err_log("setOutputRotation must be called after recv frame!!!");
+        return;
+    }
+
+    info_log("set output rotation: %d", rotation);
+    m_color_filter.m_shot_filter.setOutputRotation(rotation);
+    // smooth和extra_group可能disable
+    gpu_size_t size = m_smooth_filter.sizeOfFBO();
+    if (rotation==GPURotateLeft||rotation==GPURotateRight||rotation==GPURotateRightFlipHorizontal||rotation==GPURotateRightFlipVertical){
+        GPUContext::shareInstance()->glContextLock();
+        m_color_filter.m_shot_filter.setOutputSize(size.height, size.width);
+        GPUContext::shareInstance()->glContextUnlock();
+    }
+    else{
+        GPUContext::shareInstance()->glContextLock();
+        m_color_filter.m_shot_filter.setOutputSize(size.width, size.height);
+        GPUContext::shareInstance()->glContextUnlock();
+    }
 }
 
 void GPUStreamFrame::setOutputSize(uint32_t width, uint32_t height){
     GPUFilter::setOutputSize(width, height);
-    m_zoom_filter->setOutputSize(width, height);
-    info_log("output size[%u/%u]", width, height);
+    m_zoom_filter.setOutputSize(width, height);
+    info_log("stream output size[%u/%u]", width, height);
 }
 
 void GPUStreamFrame::setPreviewMirror(bool mirror){
@@ -269,16 +328,17 @@ void GPUStreamFrame::setPreviewMirror(bool mirror){
 
 void GPUStreamFrame::setOutputMirror(bool mirror){
 #ifdef __ANDROID__
-    m_zoom_filter->setOutputRotation(mirror ? GPUNoRotation:GPUFlipHorizonal);
+    m_zoom_filter.setOutputRotation(mirror ? GPUNoRotation:GPUFlipHorizonal);
 #else
-    m_zoom_filter->setOutputRotation(mirror ? GPUFlipHorizonal:GPUNoRotation);
+    m_zoom_filter.setOutputRotation(mirror ? GPUFlipHorizonal:GPUNoRotation);
 #endif
     //    m_zoom_filter->setOutputRotation(mirror ? GPUFlipHorizonal:GPUNoRotation);
 }
+
 #pragma --mark "析构函数"
 GPUStreamFrame::~GPUStreamFrame(){
     m_input->removeAllTargets();
-    if (m_outer_input)
+    if (!m_outer_input)
     {
         delete m_input;
     }
@@ -288,8 +348,7 @@ GPUStreamFrame::~GPUStreamFrame(){
     // m_background_group.removeAllTargets();
     // m_props_group.removeAllTargets();
     // m_extra_group.removeAllTargets();
-    
-    delete m_zoom_filter;
+
     delete m_yuv_filter;
     delete m_yuv420_filter;
     delete m_raw_output;

@@ -12,11 +12,22 @@
 const static char* g_gaussian_fragment_shader = SHADER_STRING(
     varying vec2 textureCoordinate;
     uniform sampler2D inputImageTexture[1];
-
+    uniform lowp vec2 unblur_center;
+    uniform lowp vec2 unblur_raduis;
     uniform mediump float xStep;
     uniform mediump float yStep;
     void main()
     {
+        // 长宽不一需要计算椭圆
+        if(unblur_raduis.x>0.0 && unblur_raduis.y>0.0){
+            mediump float dis_x = pow((textureCoordinate.x-unblur_center.x)/unblur_raduis.x,2.0);
+            mediump float dis_y = pow((textureCoordinate.y-unblur_center.y)/unblur_raduis.y,2.0);
+            if(dis_x+dis_y < 1.0){
+                gl_FragColor = texture2D(inputImageTexture[0], textureCoordinate);
+                return;
+            }
+        }
+        
         mediump vec4 value = vec4(0.0);
         mediump vec2 stepOffset = vec2(xStep, yStep);
         
@@ -25,13 +36,18 @@ const static char* g_gaussian_fragment_shader = SHADER_STRING(
     }
 );
 
-GPUGaussianBlurFilter::GPUGaussianBlurFilter(uint32_t radius, float sigma):GPUTwoPassFilter(generateShader(radius, sigma), generateShader(radius, sigma)){
-    m_frame_width = 0;
-    m_frame_height = 0;
+GPUGaussianBlurFilter::GPUGaussianBlurFilter(uint32_t radius, float sigma):m_x_filter(generateShader(radius, sigma)), m_y_filter(generateShader(radius, sigma)){
+    m_input = &m_x_filter;
+    m_output = &m_y_filter;
+    m_x_filter.addTarget(&m_y_filter);
+    
+    m_unblur_x = 0;
+    m_unblur_y = 0;
+    m_unblur_radius = 0;
 }
 
-void GPUGaussianBlurFilter::setExtraParameter(float pixel){
-    float blurRadiusInPixels = round(pixel); // For now, only do integral sigmas
+void GPUGaussianBlurFilter::setExtraParameter(float sigma){
+    float blurRadiusInPixels = round(sigma); // For now, only do integral sigmas
     
     uint32_t calculatedSampleRadius = 0;
     if (blurRadiusInPixels >= 1) // Avoid a divide-by-zero error here
@@ -42,10 +58,20 @@ void GPUGaussianBlurFilter::setExtraParameter(float pixel){
         calculatedSampleRadius += calculatedSampleRadius % 2; // There's nothing to gain from handling odd radius sizes, due to the optimizations I use
     }
 
-    changeShader(generateShader(calculatedSampleRadius, blurRadiusInPixels), generateShader(calculatedSampleRadius, blurRadiusInPixels));
+    m_x_filter.changeShader(generateShader(calculatedSampleRadius, blurRadiusInPixels));
+    m_y_filter.changeShader(generateShader(calculatedSampleRadius, blurRadiusInPixels));
+
+    m_x_filter.setFloat("xStep", 1.0/(m_frame_width-1));
+    m_x_filter.setFloat("yStep", 0.0);
+    m_y_filter.setFloat("xStep", 0.0);
+    m_y_filter.setFloat("yStep", 1.0/(m_frame_height-1));
+    setUnBlurRegion();
 }
 
 char* GPUGaussianBlurFilter::generateShader(uint32_t radius, float sigma){
+    m_pixel_radius = radius;
+    m_pixel_sigma = sigma;
+
     char circalValue[10240] = {0};
     float* weight = (float*)malloc(sizeof(float)*(radius+1));
     float sumWeight = 0;
@@ -119,16 +145,34 @@ char* GPUGaussianBlurFilter::generateShader(uint32_t radius, float sigma){
 }
 
 void GPUGaussianBlurFilter::setInputFrameBuffer(GPUFrameBuffer *buffer, int location){
-    GPUTwoPassFilter::setInputFrameBuffer(buffer, location);
-    
     // 如果尺寸发生变化，重新设置尺寸
     if (m_frame_width!=buffer->m_width || m_frame_height!=buffer->m_height)
     {
         m_frame_width = buffer->m_width;
         m_frame_height = buffer->m_height;
-        m_first_filter->setFloat("xStep", 1.0/(m_frame_width-1));
-        m_first_filter->setFloat("yStep", 0.0);
-        m_second_filter->setFloat("xStep", 0.0);
-        m_second_filter->setFloat("yStep", 1.0/(m_frame_height-1));
+        m_x_filter.setFloat("xStep", 1.0/(m_frame_width-1));
+        m_x_filter.setFloat("yStep", 0.0);
+        m_y_filter.setFloat("xStep", 0.0);
+        m_y_filter.setFloat("yStep", 1.0/(m_frame_height-1));
+        setUnBlurRegion();
     }
+    GPUGroupFilter::setInputFrameBuffer(buffer, location);
+}
+
+void GPUGaussianBlurFilter::setUnBlurRegion(int x, int y, int radius){
+    m_unblur_x = x;
+    m_unblur_y = y;
+    m_unblur_radius = radius;
+    if (m_frame_width>0 && m_frame_height>0) {
+        setUnBlurRegion();
+    }
+}
+
+void GPUGaussianBlurFilter::setUnBlurRegion(){
+    float center[2] = {m_unblur_x*1.0f/m_frame_width, m_unblur_y*1.0f/m_frame_height};
+    float radius[2] = {m_unblur_radius*1.0f/m_frame_width, m_unblur_radius*1.0f/m_frame_height};
+    m_x_filter.setFloat("unblur_center", center, 2);
+    m_x_filter.setFloat("unblur_raduis", radius, 2);
+    m_y_filter.setFloat("unblur_center", center, 2);
+    m_y_filter.setFloat("unblur_raduis", radius, 2);
 }

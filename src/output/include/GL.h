@@ -21,6 +21,7 @@ typedef enum{
     GPU_NV12 = 6,
     GPU_BGRA = 7,
     GPU_GRAY = 8,
+    GPU_ARGB = 9
 }gpu_pixel_format_t;
 
 // texture类别，GPU_TEXTURE_OES只能用于安卓

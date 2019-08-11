@@ -107,7 +107,7 @@ public class GPUVideoFrame extends GPU implements SurfaceTexture.OnFrameAvailabl
         super.processBytes(bytes, width, height, format);
         if (rawBytesCallback!=null){
             getBytes(outputBytes);
-            rawBytesCallback.outputBytes(outputBytes);
+            rawBytesCallback.outputBytes(outputBytes,surfaceTexture);
         }
 
         isProcessingByte=false;
@@ -146,7 +146,7 @@ public class GPUVideoFrame extends GPU implements SurfaceTexture.OnFrameAvailabl
         super.processTexture(textureId, GPU_TEXTURE_OES);
         if (rawBytesCallback!=null) {
             getBytes(outputBytes);
-            rawBytesCallback.outputBytes(outputBytes);
+            rawBytesCallback.outputBytes(outputBytes,surfaceTexture);
         }
         isProcessing=false;
     }
@@ -158,6 +158,7 @@ public class GPUVideoFrame extends GPU implements SurfaceTexture.OnFrameAvailabl
      */
     public void setCameraPosition(int position){
         cameraPosition = position;
+        /* 如果要分离视频流和预览，则设置此处，如果是短视频录制，则直接设置InputRotation
         if (position == CAMERA_FACING_FRONT){
             super.setOutputMirror(this.mirrorFrontVideo);
             super.setPreviewMirror(this.mirrorFrontPreview);
@@ -166,6 +167,7 @@ public class GPUVideoFrame extends GPU implements SurfaceTexture.OnFrameAvailabl
             super.setOutputMirror(this.mirrorBackVideo);
             super.setPreviewMirror(this.mirrorBackPreview);
         }
+        */
         setOutputImageOritation(outputImageOritation);
     }
     protected int outputImageOritation = Configuration.ORIENTATION_PORTRAIT;
@@ -176,12 +178,23 @@ public class GPUVideoFrame extends GPU implements SurfaceTexture.OnFrameAvailabl
     public void setOutputImageOritation(int outputImageOritation){
         this.outputImageOritation = outputImageOritation;
         //TODO: 前摄像头默认就是带镜像的，后摄像头默认不带镜像，但是经过left旋转后带了镜像，暂时没查出原因
+        // 如果要分离视频流和预览，则设置此处，如果是短视频录制，则直接设置InputRotation
         if (outputImageOritation==Configuration.ORIENTATION_PORTRAIT){
             if (cameraPosition==CAMERA_FACING_FRONT) {
-                super.setInputRotation(GPURotateRightFlipVertical);
+                if (this.mirrorFrontVideo) {
+                    super.setInputRotation(GPURotateRightFlipVertical);
+                }
+                else{
+                    super.setInputRotation(GPURotateLeft);
+                }
             }
             else{
-                super.setInputRotation(GPURotateRightFlipHorizontal);
+                if (this.mirrorBackVideo){
+                    super.setInputRotation(GPURotateRightFlipHorizontal);
+                }
+                else{
+                    super.setInputRotation(GPURotateRight);
+                }
             }
         }
         else{
@@ -194,6 +207,8 @@ public class GPUVideoFrame extends GPU implements SurfaceTexture.OnFrameAvailabl
 
     protected int videoWidth = 0;
     protected int videoHeight = 0;
+    public int frameWidth = 0;
+    public int frameHeight = 0;
     /**
      * 设置视频帧尺寸，VisioninSDK会根据图片旋转做调整，Surface方向显示放在Size设置之前
      * @param width
@@ -204,24 +219,29 @@ public class GPUVideoFrame extends GPU implements SurfaceTexture.OnFrameAvailabl
         videoHeight = height;
         if (outputImageOritation==Configuration.ORIENTATION_PORTRAIT) {
             super.setInputSize(height, width);
+            frameWidth = height;
+            frameHeight = width;
         }
         else{
             super.setInputSize(width, height);
+            frameWidth = width;
+            frameHeight = height;
         }
     }
 
     /**
      * 设置输出尺寸及输出格式
      */
-    protected int outputWidth = 0;
-    protected int outputHeight = 0 ;
-    protected int outputFormat = GPU_UNKNOWN;
+    public int outputWidth = 0;
+    public int outputHeight = 0 ;
+    public int outputFormat = GPU_UNKNOWN;
     public void setOutputSize(int width, int height){
         outputWidth = width;
         outputHeight = height;
         super.setOutputSize(width, height);
         setOutputFormat(outputFormat);
     }
+
     public void setOutputFormat(int format){
         int size = 0;
         outputFormat = format;
@@ -229,7 +249,7 @@ public class GPUVideoFrame extends GPU implements SurfaceTexture.OnFrameAvailabl
             super.setOutputFormat(format);
         }
 
-        if (format==GPU_YUV420P || format==GPU_YV12 || format== GPU_NV21){
+        if (format==GPU_YUV420P || format==GPU_NV12 || format== GPU_NV21){
             if (outputWidth==0 || outputHeight==0){
                 size = videoHeight*videoWidth*3/2;
             }
@@ -245,10 +265,29 @@ public class GPUVideoFrame extends GPU implements SurfaceTexture.OnFrameAvailabl
                 size = outputWidth*outputHeight*4;
             }
         }
-        if (outputFormat!= GPU_UNKNOWN && (outputBytes==null || outputBytes.length<size)){
+        if (outputFormat!= GPU_UNKNOWN && (outputBytes==null || outputBytes.length!=size)){
             outputBytes = new byte[size];
         }
     }
+
+    public void setRawFormat(int format){
+        int size = 0;
+        outputFormat = format;
+        if (outputFormat!=GPU_UNKNOWN){
+            super.setRawFormat(format);
+        }
+
+        if (format==GPU_YUV420P || format==GPU_NV12 || format== GPU_NV21){
+            size = videoHeight*videoWidth*3/2;
+        }
+        else if (format == GPU_RGBA){
+            size = videoHeight*videoWidth*4;
+        }
+        if (outputFormat!= GPU_UNKNOWN && (outputBytes==null || outputBytes.length!=size)){
+            outputBytes = new byte[size];
+        }
+    }
+
     public void setRGBACallback(GPURawBytesCallback rgbaCallback){
         this.rawBytesCallback = rgbaCallback;
         setOutputFormat(GPU_RGBA);
@@ -281,6 +320,20 @@ public class GPUVideoFrame extends GPU implements SurfaceTexture.OnFrameAvailabl
         setOutputFormat(GPU_NV12);
     }
 
+
+    public void setRawRGBACallback(GPURawBytesCallback rgbaCallback){
+        this.rawBytesCallback = rgbaCallback;
+        setRawFormat(GPU_RGBA);
+    }
+    public void setRawNV21Callback(GPURawBytesCallback nv21Callback){
+        this.rawBytesCallback = nv21Callback;
+        setRawFormat(GPU_NV21);
+    }
+
+    public void setRawNV12Callback(GPURawBytesCallback nv12Callback){
+        this.rawBytesCallback = nv12Callback;
+        setRawFormat(GPU_NV12);
+    }
     /**
      * 设置镜像
      */
@@ -292,26 +345,30 @@ public class GPUVideoFrame extends GPU implements SurfaceTexture.OnFrameAvailabl
     public void setMirrorFrontVideo(boolean mirrorFrontVideo) {
         this.mirrorFrontVideo = mirrorFrontVideo;
         if(this.cameraPosition == CAMERA_FACING_FRONT) {
-            super.setOutputMirror(this.mirrorFrontVideo);
+            // super.setOutputMirror(this.mirrorFrontVideo);
+            setCameraPosition(this.cameraPosition);
         }
     }
     public void setMirrorFrontPreview(boolean mirrorFrontPreview) {
         this.mirrorFrontPreview = mirrorFrontPreview;
         if(this.cameraPosition == CAMERA_FACING_FRONT) {
-            super.setPreviewMirror(this.mirrorFrontPreview);
+            // super.setPreviewMirror(this.mirrorFrontPreview);
+            setCameraPosition(this.cameraPosition);
         }
     }
     public void setMirrorBackVideo(boolean mirrorBackVideo) {
         this.mirrorBackVideo = mirrorBackVideo;
         if(this.cameraPosition == CAMERA_FACING_BACK) {
-            super.setOutputMirror(this.mirrorBackVideo);
+            // super.setOutputMirror(this.mirrorBackVideo);
+            setCameraPosition(this.cameraPosition);
         }
     }
 
     public void setMirrorBackPreview(boolean mirrorBackPreview) {
         this.mirrorBackPreview = mirrorBackPreview;
         if(this.cameraPosition == CAMERA_FACING_BACK) {
-            super.setPreviewMirror(this.mirrorBackPreview);
+            // super.setPreviewMirror(this.mirrorBackPreview);
+            setCameraPosition(this.cameraPosition);
         }
     }
 
@@ -328,6 +385,10 @@ public class GPUVideoFrame extends GPU implements SurfaceTexture.OnFrameAvailabl
             surfaceTexture=null;
         }
         destroyEGL(mEGLContext);
+    }
+
+    public int getCameraTextureId(){
+        return textureId;
     }
 
 

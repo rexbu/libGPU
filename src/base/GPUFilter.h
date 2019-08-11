@@ -37,17 +37,34 @@ public:
     
     /// 设置填充并计算裁剪
     virtual void setFillMode(gpu_fill_mode_t fillmode);
+    int getFillMode(){return m_fill_mode;}
     // 设置输出重新计算裁剪
 	virtual void setOutputSize(uint32_t width, uint32_t height);
+    /// 更新帧尺寸并重新计算裁剪
+    virtual void setFrameSize(uint32_t width, uint32_t height);
     
     // 修改shader
+    virtual void setOutputFormat(gpu_pixel_format_t format);
     virtual void changeShader(const char* fragment, const char* vertex = NULL);
     virtual void setExtraParameter(float p){}
     
     // 设置输出framebuffer，如果设置了，则不再从cache中获取buffer
     virtual void setOutputFrameBuffer(GPUFrameBuffer* buffer){ m_special_outbuffer = buffer;}
     virtual void activeOutFrameBuffer();
+    virtual gpu_size_t sizeOfFBO();
     
+    void setVertices(float* v);
+    float* getVertices(){
+        return &m_vertices[0];
+    }
+    float* getCoordinates(){
+        return &m_coordinates[0];
+    }
+    void setSpecialBuffer(GPUFrameBuffer* buffer){
+        m_special_outbuffer = buffer;
+    }
+    
+    void setClearColor(float r, float g, float b);
     void setFloat(const char* name, GLfloat val);
     void setFloat(const char* name, GLfloat* val, int num);
     void setFloatv(const char* name, GLfloat* val, int num);
@@ -60,9 +77,6 @@ protected:
     virtual void initShader();
     void initParams();
     
-    virtual gpu_size_t sizeOfFBO();
-    /// 更新帧尺寸并重新计算裁剪
-    virtual void setFrameSize(uint32_t width, uint32_t height);
     // 计算裁剪比例，更新顶点
     virtual void calAspectRatio();
 
@@ -72,6 +86,7 @@ public:
     static const char* g_vertex_shaders[];
     static const char* g_vertex_shader;
     static const char* g_fragment_shader;
+    static const char* g_bgra_fragment_shader;
     static const char* g_vertext30_shader;
     static const char* g_fragment30_shader;
     static const GLfloat g_vertices[];
@@ -98,6 +113,8 @@ protected:
     GPUFrameBuffer*     m_special_outbuffer;
     gpu_frame_option_t* m_option;   // 外部传入的option
     float               m_clear_color[4];
+
+public:
     std::string m_filter_name;  // 用于debug
 };
 

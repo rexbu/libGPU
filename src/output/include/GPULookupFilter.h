@@ -14,11 +14,15 @@
 
 class GPULookupFilter: public GPUFilter{
 public:
-    GPULookupFilter();
+    GPULookupFilter(const char* path);
     ~GPULookupFilter();
-    void setLookupImage(const char* path);
-    void stopLookup();
+    bool setLookupImage(const char* path);
+    bool exist(){
+        return m_lookup!=NULL;
+    }
+    
     virtual void setInputFrameBuffer(GPUFrameBuffer *buffer, int location = 0);
+    virtual void setExtraParameter(float p);
     
 protected:
     GPUPicture*     m_lookup;

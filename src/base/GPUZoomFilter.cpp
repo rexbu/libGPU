@@ -20,6 +20,16 @@ static const char* g_bgra_fragment_shader = SHADER_STRING(
         gl_FragColor = texture2D(inputImageTexture, textureCoordinate).bgra;
     }
 );
+static const char* g_argb_fragment_shader = SHADER_STRING(
+        varying vec2 textureCoordinate;
+        //uniform samplerExternalOES inputImageTexture;
+        uniform sampler2D inputImageTexture;
+
+        void main()
+        {
+            gl_FragColor = texture2D(inputImageTexture, textureCoordinate).argb;
+        }
+);
 
 GPUZoomFilter::GPUZoomFilter(gpu_fill_mode_t mode)
 {
@@ -32,6 +42,16 @@ void GPUZoomFilter::render(){
 }
 
 void GPUZoomFilter::setOutputFormat(gpu_pixel_format_t format){
-	const char *fragment = (format==GPU_BGRA) ? g_bgra_fragment_shader : g_fragment_shader;
+    const char* fragment = NULL;
+    switch (format){
+        case GPU_BGRA:
+            fragment = g_bgra_fragment_shader;
+            break;
+        case GPU_ARGB:
+            fragment = g_argb_fragment_shader;
+            break;
+        default:
+            fragment = g_fragment_shader;
+    }
 	changeShader(fragment, g_vertex_shader);
 }

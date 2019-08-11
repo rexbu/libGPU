@@ -22,8 +22,8 @@
     GPUIOSView*             playView;
     GPUPicture*             background;
     GPURawInput*            rawInput;
-    
-    GPUStreamFrame*          streamFrame;
+    GPUFilter               rawFilter;
+    GPUStreamFrame*         streamFrame;
     
     BOOL                    running;
     BOOL                    closeBeauty;
@@ -38,7 +38,7 @@
 @implementation GPUVideoFrame
 
 #pragma -mark "初始化"
--(id)initWithPosition:(AVCaptureDevicePosition)position pixelFormat:(OSType)format view:(UIView*)view{
+-(id)initWithPosition:(AVCaptureDevicePosition)position view:(UIView*)view{
     self = [super init];
     if (self==nil) {
         return nil;
@@ -113,7 +113,7 @@
     originSize = CGSizeMake(0, 0);
     
     streamFrame = new GPUStreamFrame();
-    streamFrame->setInputFormat((gpu_pixel_format_t)format);
+    streamFrame->setInputFormat(GPU_RGBA);
     
     _outputImageOrientation = UIInterfaceOrientationPortrait;
     _frontVideoOrientation = AVCaptureVideoOrientationLandscapeLeft;
@@ -213,7 +213,12 @@
     }
     isProcessing = TRUE;
     
+    // 获取时间戳
+    _presentTimeStamp = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
     CVPixelBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+    return [self processVideoPixelBuffer:imageBuffer];
+}
+-(BOOL)processVideoPixelBuffer:(CVPixelBufferRef)imageBuffer{
     //CVPixelBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
     float width = CVPixelBufferGetWidth(imageBuffer);
     float height = CVPixelBufferGetHeight(imageBuffer);
@@ -222,11 +227,66 @@
         originSize = CGSizeMake(width, height);
         [self setVideoSize];
     }
-    // 获取时间戳
-    _presentTimeStamp = CMSampleBufferGetPresentationTimeStamp(sampleBuffer);
-    bufferInput->processSampleBuffer(sampleBuffer);
+    
+    bufferInput->processPixelBuffer(imageBuffer);
+    glFinish();
+    
+    if (_rawPixelBlock!=nil){
+        GPUIOSFrameBuffer* outbuffer = (GPUIOSFrameBuffer*)rawFilter.m_outbuffer;
+        if(outbuffer != NULL){
+            CVPixelBufferRef pixel = outbuffer->getPixelBuffer();
+            _rawPixelBlock(pixel, _presentTimeStamp);
+        }
+    }
+    
     if (_bgraPixelBlock!=nil) {
-        GPUIOSFrameBuffer* outbuffer = (GPUIOSFrameBuffer*)streamFrame->m_zoom_filter->m_outbuffer;
+        GPUIOSFrameBuffer* outbuffer = (GPUIOSFrameBuffer*)streamFrame->m_zoom_filter.m_outbuffer;
+        if(outbuffer == NULL){
+            err_log("Visionin Error: ZoomFilter not run!");
+            isProcessing = FALSE;
+            return FALSE;
+        }
+        else {
+            CVPixelBufferRef pixel = outbuffer->getPixelBuffer();
+            _bgraPixelBlock(pixel, _presentTimeStamp);
+        }
+    }
+    
+    if (_yuv420pPixelBlock!=nil) {
+        _yuv420pPixelBlock(streamFrame->m_raw_output->getBuffer(), _presentTimeStamp);
+    }
+    if (_nv21PixelBlock!=nil) {
+        _nv21PixelBlock(streamFrame->m_raw_output->getBuffer(), _presentTimeStamp);
+    }
+    if (_nv12PixelBlock!=nil) {
+        _nv12PixelBlock(streamFrame->m_raw_output->getBuffer(), _presentTimeStamp);
+    }
+    if (_textureBlock!=nil) {
+        if ((GPUIOSFrameBuffer*)streamFrame->m_zoom_filter.m_outbuffer==NULL) {
+            err_log("Visionin Error: ZoomFilter not run!");
+            isProcessing = FALSE;
+            return FALSE;
+        }
+        
+        GPUIOSFrameBuffer* outbuffer = (GPUIOSFrameBuffer*)streamFrame->m_zoom_filter.m_outbuffer;
+        if (outbuffer!=NULL) {
+            _textureBlock(outbuffer->m_texture, _presentTimeStamp);
+        }
+    }
+    
+//    g_service_log->refresh();
+    isProcessing = FALSE;
+    return TRUE;
+}
+-(BOOL)processCGImage:(CGImageRef)cgImage{
+    GPUPicture picture((void*)cgImage);
+    picture.addTarget(streamFrame);
+    picture.processImage();
+    // 释放
+    picture.removeAllTargets();
+    
+    if (_bgraPixelBlock!=nil) {
+        GPUIOSFrameBuffer* outbuffer = (GPUIOSFrameBuffer*)streamFrame->m_zoom_filter.m_outbuffer;
         if(outbuffer == NULL){
             err_log("Visionin Error: ZoomFilter not run!");
             isProcessing = FALSE;
@@ -248,23 +308,20 @@
         _nv12PixelBlock(streamFrame->m_raw_output->getBuffer(), _presentTimeStamp);
     }
     if (_textureBlock!=nil) {
-        if ((GPUIOSFrameBuffer*)streamFrame->m_zoom_filter->m_outbuffer==NULL) {
+        if ((GPUIOSFrameBuffer*)streamFrame->m_zoom_filter.m_outbuffer==NULL) {
             err_log("Visionin Error: ZoomFilter not run!");
             isProcessing = FALSE;
             return FALSE;
         }
         
-        GPUIOSFrameBuffer* outbuffer = (GPUIOSFrameBuffer*)streamFrame->m_zoom_filter->m_outbuffer;
+        GPUIOSFrameBuffer* outbuffer = (GPUIOSFrameBuffer*)streamFrame->m_zoom_filter.m_outbuffer;
         if (outbuffer!=NULL) {
             _textureBlock(outbuffer->m_texture, _presentTimeStamp);
         }
     }
     
-//    g_service_log->refresh();
-    isProcessing = FALSE;
     return TRUE;
 }
-
 //-(void)setPreview:(UIView *)preview{
 //    if (preview==nil) {
 //        return;
@@ -326,9 +383,6 @@
     rotateAngle = 0;
     switch(_outputImageOrientation)
     {
-        case UIInterfaceOrientationPortrait:
-            rotateAngle = 0;
-            break;
         case UIInterfaceOrientationPortraitUpsideDown:
             rotateAngle = 180;
             break;
@@ -338,18 +392,21 @@
         case UIInterfaceOrientationLandscapeRight:
             rotateAngle = -90;
             break;
+        case UIInterfaceOrientationPortrait:
+        default:
+            rotateAngle = 0;
     }
     
-    AVCaptureVideoOrientation orientation = _frontVideoOrientation;
-    if (_cameraPosition == AVCaptureDevicePositionBack) {
+    AVCaptureVideoOrientation orientation = AVCaptureVideoOrientationPortrait;
+    if (_cameraPosition == AVCaptureDevicePositionFront) {
+        orientation = _frontVideoOrientation;
+    }
+    else if (_cameraPosition == AVCaptureDevicePositionBack) {
         orientation = _backVideoOrientation;
     }
     
     switch(orientation)
     {
-        case AVCaptureVideoOrientationPortrait:
-            rotateAngle += 0;
-            break;
         case AVCaptureVideoOrientationPortraitUpsideDown:
             rotateAngle += 180;
             break;
@@ -359,9 +416,13 @@
         case AVCaptureVideoOrientationLandscapeRight:
             rotateAngle += 90;
             break;
+        case AVCaptureVideoOrientationPortrait:
+        default:
+            rotateAngle += 0;
+            break;
     }
     
-    [self setFrameVertical:streamFrame->m_input];
+    [self setFrameVertical:bufferInput];
     if (_cameraPosition==AVCaptureDevicePositionFront) {
         streamFrame->m_camera_position = GPU_CAMERA_FRONT;
         [self setMirrorFrontPreview:_mirrorFrontPreview];
@@ -462,6 +523,14 @@
     if (_cameraPosition!=AVCaptureDevicePositionFront) {
         return;
     }
+    if(_rawPixelBlock!=nil){
+        if (_mirrorFrontFacingCamera) {
+            rawFilter.setOutputRotation(GPUFlipHorizonal);
+        }
+        else{
+            rawFilter.setOutputRotation(GPUNoRotation);
+        }
+    }
     streamFrame->setOutputMirror(_mirrorFrontFacingCamera);
     [self setVideoSize];
 }
@@ -470,6 +539,14 @@
     _mirrorBackFacingCamera = mirrorBackFacingCamera;
     if (_cameraPosition!=AVCaptureDevicePositionBack) {
         return;
+    }
+    if(_rawPixelBlock!=nil){
+        if (_mirrorBackFacingCamera) {
+            rawFilter.setOutputRotation(GPUFlipHorizonal);
+        }
+        else{
+            rawFilter.setOutputRotation(GPUNoRotation);
+        }
     }
     streamFrame->setOutputMirror(_mirrorBackFacingCamera);
     [self setVideoSize];
@@ -499,7 +576,7 @@
         default:
             _videoSize = CGSizeMake(originSize.width, originSize.height);
     }
-    streamFrame->setInputSize(_videoSize.width, _videoSize.height);
+    bufferInput->setOutputSize(_videoSize.width, _videoSize.height);
 }
 
 -(void)setMirrorFrontPreview:(BOOL)mirrorFrontPreview{
@@ -521,13 +598,22 @@
 }
 
 #pragma -mark 输出视频流
+-(void)setPreviewRotation:(gpu_rotation_t)previewRotation{
+    _previewRotation = previewRotation;
+    streamFrame->setPreviewRotation(previewRotation);
+}
 -(void)setOutputRotation:(gpu_rotation_t)outputRotation{
     _outputRotation = outputRotation;
-    streamFrame->m_zoom_filter->setOutputRotation(outputRotation);
+    streamFrame->setOutputRotation(outputRotation);
 }
+-(void)setFrameRotation:(gpu_rotation_t)frameRotation{
+    _frameRotation = frameRotation;
+    streamFrame->setFrameRotation(frameRotation);
+}
+
 -(void)setOutputFillMode:(gpu_fill_mode_t)outputFillMode{
     _outputFillMode = outputFillMode;
-    streamFrame->m_zoom_filter->setFillMode(outputFillMode);
+    streamFrame->m_zoom_filter.setFillMode(outputFillMode);
 }
 -(void)setOutputSize:(CGSize)outputSize{
     _outputSize = outputSize;
@@ -553,6 +639,21 @@
     _nv21BytesBlock = nil;
     _nv12BytesBlock = nv12BytesBlock;
     streamFrame->setOutputFormat(GPU_NV12);
+}
+
+-(void)setRawPixelBlock:(void (^)(CVPixelBufferRef, CMTime))rawPixelBlock{
+    _rawPixelBlock = rawPixelBlock;
+    rawFilter.setOutputFormat(GPU_BGRA);
+    bufferInput->addTarget(&rawFilter);
+    if (_cameraPosition==AVCaptureDevicePositionFront && _mirrorFrontFacingCamera) {
+        rawFilter.setOutputRotation(GPUFlipHorizonal);
+    }
+    else if(_cameraPosition==AVCaptureDevicePositionBack && _mirrorBackFacingCamera){
+        rawFilter.setOutputRotation(GPUFlipHorizonal);
+    }
+    else{
+        rawFilter.setOutputRotation(GPUNoRotation);
+    }
 }
 
 -(void)setBgraPixelBlock:(void (^)(CVPixelBufferRef, CMTime))bgraPixelBlock{
@@ -599,20 +700,36 @@
 }
 
 -(void)dealloc{
-    DELETE_SET_NULL(bufferInput, false);
-    DELETE_SET_NULL(rawInput, false);
-    DELETE_SET_NULL(playView, false);
-    DELETE_SET_NULL(background, false);
-    GPUStreamFrame::destroyInstance();
-    GPUVertexBufferCache::destroyInstance();
-    GPUBufferCache::destroyInstance();
-    GPUContext::destroyInstance();
+    [self destroy];
 }
 
-#pragma -mark 额外滤镜
+-(void)destroy{
+    if(bufferInput!=NULL){
+        DELETE_SET_NULL(bufferInput, false);
+        DELETE_SET_NULL(rawInput, false);
+        DELETE_SET_NULL(playView, false);
+        DELETE_SET_NULL(background, false);
+        GPUStreamFrame::destroyInstance();
+        GPUVertexBufferCache::destroyInstance();
+        GPUBufferCache::destroyInstance();
+        GPUContext::destroyInstance();
+    }
+}
+
+#pragma --mark 美颜相关
+-(void)setSmoothStrength:(float)smoothStrength{
+    _smoothStrength = smoothStrength;
+    streamFrame->setSmoothStrength(smoothStrength);
+}
+-(void)setWhitenStrength:(float)whitenStrength{
+    _whitenStrength = whitenStrength;
+    streamFrame->setWhitenStrength(whitenStrength);
+}
+
+#pragma --mark 额外滤镜
 -(void)setExtraFilter:(NSString*)filterName{
-    NSString* path = [[NSBundle mainBundle] pathForResource:filterName ofType:@"png"];
-    streamFrame->setExtraFilter([path UTF8String]);
+    //NSString* path = [[NSBundle mainBundle] pathForResource:filterName ofType:@"png"];
+    streamFrame->setExtraFilter([filterName UTF8String]);
 }
 -(void)closeExtraFilter{
     streamFrame->removeExtraFilter();
@@ -669,9 +786,86 @@
     gpu_rect.size.height = rect.size.height;
     stream->setVideoBlend(pic, gpu_rect, mirror);
 }
+
 -(void)removeVideoBlend;{
     GPUStreamFrame* stream = GPUStreamFrame::shareInstance();
     gpu_rect_t rect = {0};
     stream->setVideoBlend(NULL, rect, false);
 }
+
+# pragma --mark "边框"
+-(void)setFrameSize:(CGSize)size{
+    streamFrame->setStreamFrameSize(size.width, size.height);
+}
+// 添加边框
+-(void)setBlank:(int)blank color:(UIColor*)color{
+    if (color==NULL) {
+        color = [UIColor whiteColor];
+    }
+    CGFloat r,g,b,a;
+    [color getRed:&r green:&g blue:&b alpha:&a];
+    streamFrame->setBlank(blank, r*255, g*255, b*255);
+}
+
+-(void)setColorFilter:(int)filter strength:(float)strength{
+    switch(filter){
+        case GPU_COLOR_CONTRAST_FILTER:
+            streamFrame->m_color_filter.setContrast(strength);
+            break;
+        case GPU_COLOR_GAMMA_FILTER:
+            streamFrame->m_color_filter.setGamma(strength);
+            break;
+        case GPU_COLOR_SATURATION_FILTER:
+            streamFrame->m_color_filter.setSaturation(strength);
+            break;
+        case GPU_COLOR_FADE_FILTER:
+            streamFrame->m_color_filter.setFade(strength);
+            break;
+        case GPU_COLOR_BLUR_FILTER:
+            streamFrame->m_color_filter.setBlur(strength);
+            break;
+        case GPU_COLOR_SHARPNESS_FILTER:
+            streamFrame->m_color_filter.setSharpness(strength);
+            break;
+        case GPU_COLOR_TEMPERATURE_FILTER:
+            streamFrame->m_color_filter.setTemperature(strength);
+            break;
+        case GPU_COLOR_TINT_FILTER:
+            streamFrame->m_color_filter.setTint(strength);
+            break;
+        case GPU_COLOR_HIGHLIGHTS_FILTER:
+            streamFrame->m_color_filter.setHighlights(strength);
+            break;
+        case GPU_COLOR_SHADOWS_FILTER:
+            streamFrame->m_color_filter.setShadows(strength);
+            break;
+        case GPU_COLOR_VIGNETTE_FILTER:
+            streamFrame->m_color_filter.setVignette(strength);
+            break;
+        default:
+            err_log("unkown color filter: %d", filter);
+    }
+}
+
+-(void)setUnBlurRegion:(CGPoint)center radius:(int)radius{
+    streamFrame->m_color_filter.setUnBlurRegion(center.x, center.y, radius);
+}
+
+#pragma --mark "预览模式"
+-(void)setPreviewFillMode:(gpu_fill_mode_t)previewFillMode{
+    _previewFillMode = previewFillMode;
+    if (playView!=nil) {
+        ((GPUUIView*)playView->uiview()).fillMode = previewFillMode;
+    }
+}
+-(void)setPreviewSize:(CGSize)previewSize{
+    _previewSize = previewSize;
+    GPUStreamFrame::shareInstance()->m_preview_blend_filter.setOutputSize(previewSize.width, previewSize.height);
+}
+-(void)setPreviewColor:(UIColor*)color{
+    if(playView != nil){
+        ((GPUUIView*)playView->uiview()).previewColor = color;
+    }
+}
+
 @end

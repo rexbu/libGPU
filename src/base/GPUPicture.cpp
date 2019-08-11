@@ -44,6 +44,8 @@ void GPUPicture::processImage(){
 }
 
 GPUPicture::~GPUPicture(){
-    m_outbuffer->release();
-    delete m_outbuffer;
+    if (m_outbuffer!=NULL) {
+        m_outbuffer->release();
+        delete m_outbuffer;
+    }
 }

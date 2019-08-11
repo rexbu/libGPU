@@ -21,7 +21,8 @@ GPUFilter(true, "GPUView")
 GPUView::GPUView(ANativeWindow * surface):
 GPUFilter(true, "GPUView")
 {
-    m_rotation = GPUNoRotation;
+    // 安卓默认倒立
+    m_rotation = GPUFlipVertical;
     m_fill_mode = GPUFillModePreserveAspectRatioAndFill;
     m_eglsurface = EGL_NO_SURFACE;
     setNativeWindow(surface);
@@ -53,7 +54,7 @@ void GPUView::newFrame(){
     
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glViewport(0, 0, (int)m_out_width, (int)m_out_height);
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glClearColor(m_clear_color[0], m_clear_color[1], m_clear_color[2], m_clear_color[3]);
     glClear( GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     
     m_firstbuffer->activeTexture(GL_TEXTURE2);
