@@ -15,6 +15,7 @@ C++实现，完美支持安卓+ios，cpu占用率大约是GPUImage的1/3。
 ### History
 * 2018.3.27 适配opengles 3.0
 * 2018.7.15 添加安卓、ios相机滤镜demo
+* 2022.2.12 处理几个编译错误和滤镜加载错误，注意打开demo app前授予权限。
 
 # English
 An cross-platform open source framework for GPU-based image and video processing like GPUImage

@@ -107,7 +107,7 @@ public class GPUVideoFrame extends GPU implements SurfaceTexture.OnFrameAvailabl
         super.processBytes(bytes, width, height, format);
         if (rawBytesCallback!=null){
             getBytes(outputBytes);
-            rawBytesCallback.outputBytes(outputBytes,surfaceTexture);
+            rawBytesCallback.outputBytes(outputBytes);
         }
 
         isProcessingByte=false;
@@ -146,7 +146,7 @@ public class GPUVideoFrame extends GPU implements SurfaceTexture.OnFrameAvailabl
         super.processTexture(textureId, GPU_TEXTURE_OES);
         if (rawBytesCallback!=null) {
             getBytes(outputBytes);
-            rawBytesCallback.outputBytes(outputBytes,surfaceTexture);
+            rawBytesCallback.outputBytes(outputBytes);
         }
         isProcessing=false;
     }

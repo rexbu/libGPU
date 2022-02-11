@@ -147,8 +147,8 @@ void* changeExtraFilter(void* para){
 }
 
 void GPUStreamFrame::setExtraFilter(const char* image){
-    GPUFileFilter* extra_filter = new GPUFileFilter(image);
-    // extra_filter->setLookupImage(image);
+    GPULookupFilter* extra_filter = new GPULookupFilter(image);
+    extra_filter->setLookupImage(image);
     if (!extra_filter->exist()) {
         return;
     }
